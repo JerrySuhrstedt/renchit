@@ -81,3 +81,15 @@ model KeywordIdea {
   category String // question | comparison | alphabetical
   saved    Boolean       @default(false)
 }
+
+model ContentGrade {
+  id            String   @id @default(cuid())
+  url           String
+  targetKeyword String
+  status        String   @default("running") // running | completed | failed
+  errorMessage  String?
+  score         Int?
+  wordCount     Int?
+  checksJson    String? // JSON-serialized GradeCheck[]
+  createdAt     DateTime @default(now())
+}
