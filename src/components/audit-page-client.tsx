@@ -43,7 +43,7 @@ export function AuditPageClient({ initialAudit }: { initialAudit: AuditDTO }) {
             "Something went wrong while crawling this site."}
         </p>
         <Link
-          href="/"
+          href="/audit"
           className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-strong hover:underline"
         >
           <ArrowLeft className="h-4 w-4" />

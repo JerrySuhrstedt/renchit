@@ -5,7 +5,7 @@ import { auth, signIn } from "@/lib/auth";
 export default async function SignInPage() {
   const session = await auth();
   if (session?.user) {
-    redirect("/");
+    redirect("/audit");
   }
 
   return (
@@ -41,7 +41,7 @@ export default async function SignInPage() {
       <form
         action={async () => {
           "use server";
-          await signIn("google", { redirectTo: "/" });
+          await signIn("google", { redirectTo: "/audit" });
         }}
       >
         <button

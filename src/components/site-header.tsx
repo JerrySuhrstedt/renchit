@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const TOOLS = [
-  { href: "/", label: "Site Audit", match: (path: string) => path === "/" || path.startsWith("/audits") },
+  { href: "/audit", label: "Site Audit", match: (path: string) => path === "/audit" || path.startsWith("/audits") },
   { href: "/keywords", label: "Keyword Ideas", match: (path: string) => path.startsWith("/keywords") },
   { href: "/grader", label: "Content Grader", match: (path: string) => path.startsWith("/grader") },
   { href: "/projects", label: "Projects", match: (path: string) => path.startsWith("/projects") },
@@ -30,7 +30,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-30 border-b border-border/70 bg-background/85 backdrop-blur-md">
       <div className="mx-auto flex max-w-5xl flex-col gap-3 px-5 py-3 sm:h-16 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:py-0 sm:px-8">
         <div className="flex items-center justify-between gap-3">
-          <Logo />
+          <Logo href="/audit" />
           {session?.user && (
             <DropdownMenu>
               <DropdownMenuTrigger className="rounded-full outline-none ring-brand focus-visible:ring-2 sm:hidden">

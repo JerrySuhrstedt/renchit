@@ -54,7 +54,7 @@ export function AuditResultsView({ audit }: { audit: AuditDTO }) {
   return (
     <div className="mx-auto w-full max-w-3xl px-5 pb-24 pt-8 sm:px-8">
       <Link
-        href="/"
+        href="/audit"
         className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" />
