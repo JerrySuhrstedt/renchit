@@ -14,7 +14,7 @@ import { LandingHeroPreview } from "@/components/landing-hero-preview";
 import { Logo } from "@/components/logo";
 
 export const metadata = {
-  title: "web wrench — Plain-English SEO tools for real websites",
+  title: "renchit — Plain-English SEO tools for real websites",
   description:
     "Audit your site, find real content ideas, and grade your pages — in plain English, with zero SEO jargon. Free to start.",
 };
@@ -114,8 +114,8 @@ export default function LandingPage() {
               Stop guessing what&apos;s wrong with your website.
             </h1>
             <p className="max-w-lg text-balance text-lg text-muted-foreground">
-              web wrench audits your site, finds real content ideas, and
-              grades your pages — in plain English, with zero SEO jargon.
+              renchit audits your site, finds real content ideas, and grades
+              your pages — in plain English, with zero SEO jargon.
             </p>
             <Link
               href="/sign-in"
@@ -162,7 +162,7 @@ export default function LandingPage() {
                 about next? Is this page actually ready to publish?
               </p>
               <p className="font-semibold text-foreground">
-                web wrench does three things, does them well, and explains
+                renchit does three things, does them well, and explains
                 every result in plain English — so you can fix your site
                 today, not learn a new discipline first.
               </p>

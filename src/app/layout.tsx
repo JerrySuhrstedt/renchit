@@ -10,7 +10,7 @@ const sans = Inter_Tight({
 });
 
 export const metadata: Metadata = {
-  title: "web wrench — Site Audit",
+  title: "renchit — Site Audit",
   description:
     "Crawl your site, find what's holding your SEO back, and get plain-English fixes. No jargon, no clutter — just a healthier site.",
 };
@@ -26,7 +26,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           THESIS: A site audit tool with the warmth of Mailchimp, not the density of an SEO
           suite — one job, done with confidence and plain language.
           OWN-WORLD: Warm cream ground (#fdf8f3), near-black warm text, single committed
-          brand accent (#fc5434), an all-lowercase "web wrench" wordmark (no icon mark),
+          brand accent (#fc5434), an all-lowercase "renchit" wordmark (no icon mark),
           big pill/rounded-3xl cards, Inter Tight throughout for a confident, tightly-set
           voice, severity colors (red/amber/blue/green) kept visually distinct from brand.
           STORY: Visitor pastes a URL, watches a live crawl, gets a satisfying health-score
