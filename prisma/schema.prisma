@@ -12,6 +12,8 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  company       String?
+  linkedinUrl   String?
   createdAt     DateTime  @default(now())
 
   accounts       Account[]

@@ -3,14 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { LogOut } from "lucide-react";
+import { LogOut, User } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -42,10 +41,29 @@ export function SiteHeader() {
                 </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel className="truncate">
-                  {session.user.email}
-                </DropdownMenuLabel>
+                <div className="flex items-center gap-3 px-2 py-1.5">
+                  <Avatar className="h-12 w-12">
+                    <AvatarImage src={session.user.image ?? undefined} alt="" />
+                    <AvatarFallback className="bg-brand-tint text-base font-semibold text-brand-strong">
+                      {session.user.name?.[0]?.toUpperCase() ?? "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0">
+                    {session.user.name && (
+                      <p className="truncate text-sm font-semibold text-foreground">
+                        {session.user.name}
+                      </p>
+                    )}
+                    <p className="truncate text-xs text-muted-foreground">
+                      {session.user.email}
+                    </p>
+                  </div>
+                </div>
                 <DropdownMenuSeparator />
+                <DropdownMenuItem render={<Link href="/profile" />}>
+                  <User className="h-4 w-4" />
+                  Profile
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => signOut({ redirectTo: "/sign-in" })}>
                   <LogOut className="h-4 w-4" />
                   Sign out
@@ -86,10 +104,29 @@ export function SiteHeader() {
                 </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel className="truncate">
-                  {session.user.email}
-                </DropdownMenuLabel>
+                <div className="flex items-center gap-3 px-2 py-1.5">
+                  <Avatar className="h-12 w-12">
+                    <AvatarImage src={session.user.image ?? undefined} alt="" />
+                    <AvatarFallback className="bg-brand-tint text-base font-semibold text-brand-strong">
+                      {session.user.name?.[0]?.toUpperCase() ?? "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0">
+                    {session.user.name && (
+                      <p className="truncate text-sm font-semibold text-foreground">
+                        {session.user.name}
+                      </p>
+                    )}
+                    <p className="truncate text-xs text-muted-foreground">
+                      {session.user.email}
+                    </p>
+                  </div>
+                </div>
                 <DropdownMenuSeparator />
+                <DropdownMenuItem render={<Link href="/profile" />}>
+                  <User className="h-4 w-4" />
+                  Profile
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => signOut({ redirectTo: "/sign-in" })}>
                   <LogOut className="h-4 w-4" />
                   Sign out

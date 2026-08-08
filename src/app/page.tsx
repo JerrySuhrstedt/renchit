@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   Check,
@@ -10,7 +11,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { LandingHeader } from "@/components/landing-header";
-import { LandingHeroPreview } from "@/components/landing-hero-preview";
+import { HealthScoreDial } from "@/components/health-score-dial";
 import { Logo } from "@/components/logo";
 
 export const metadata = {
@@ -108,12 +109,21 @@ export default function LandingPage() {
       <LandingHeader />
       <main className="flex flex-1 flex-col">
         {/* Hero */}
-        <section className="mx-auto flex w-full max-w-6xl flex-col items-center gap-12 px-5 pb-20 pt-16 sm:px-8 sm:pt-24 lg:flex-row lg:items-center lg:gap-16">
-          <div className="flex flex-col items-center gap-6 text-center lg:items-start lg:text-left">
-            <h1 className="max-w-xl text-balance text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl">
+        <section className="relative isolate flex min-h-[560px] items-center overflow-hidden sm:min-h-[640px]">
+          <Image
+            src="/hero/hero-woman-v2.jpg"
+            alt="A satisfied renchit customer standing in her office"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-[72%_18%] sm:object-[68%_20%]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/20" />
+          <div className="relative mx-auto flex w-full max-w-6xl flex-col items-start gap-6 px-5 py-16 sm:px-8">
+            <h1 className="max-w-xl text-balance text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
               Stop guessing what&apos;s wrong with your website.
             </h1>
-            <p className="max-w-lg text-balance text-lg text-muted-foreground">
+            <p className="max-w-lg text-balance text-lg text-white/90">
               renchit audits your site, finds real content ideas, and grades
               your pages — in plain English, with zero SEO jargon.
             </p>
@@ -124,7 +134,7 @@ export default function LandingPage() {
               {CTA_LABEL}
               <ArrowRight className="h-4 w-4" />
             </Link>
-            <ul className="flex flex-col items-start gap-2 text-sm text-foreground">
+            <ul className="flex flex-col items-start gap-2 text-sm font-medium text-white">
               {[
                 "Real site crawl & health score, not vague guesses",
                 "Content ideas pulled straight from Google",
@@ -137,8 +147,26 @@ export default function LandingPage() {
               ))}
             </ul>
           </div>
-          <div className="flex w-full justify-center lg:w-auto">
-            <LandingHeroPreview />
+        </section>
+
+        {/* Health score explainer */}
+        <section className="border-b border-border/70 bg-card/60">
+          <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-5 py-16 sm:px-8 sm:py-20 md:grid-cols-[auto_1fr] md:gap-16">
+            <div className="flex justify-center md:justify-start">
+              <HealthScoreDial score={78} size="lg" />
+            </div>
+            <div className="flex flex-col gap-3 text-center md:text-left">
+              <h2 className="text-balance text-2xl font-bold leading-snug text-foreground sm:text-3xl">
+                Every audit boils your site down to one honest number.
+              </h2>
+              <p className="max-w-lg text-balance text-base leading-relaxed text-muted-foreground md:mx-0 mx-auto">
+                No more scrolling through a hundred metrics wondering what
+                matters. Your health score weighs every issue we find —
+                critical, worth reviewing, or minor — so you know at a
+                glance where your site stands, and exactly what to fix to
+                move the number up.
+              </p>
+            </div>
           </div>
         </section>
 
@@ -183,14 +211,12 @@ export default function LandingPage() {
           </div>
 
           <div className="mt-14 flex flex-col gap-8">
-            {TOOLS.map((tool, i) => (
+            {TOOLS.map((tool) => (
               <div
                 key={tool.name}
                 className="grid gap-8 rounded-3xl border border-border bg-card p-8 sm:p-10 md:grid-cols-[1fr_1.3fr] md:items-center"
               >
-                <div
-                  className={`flex flex-col gap-4 ${i % 2 === 1 ? "md:order-2" : ""}`}
-                >
+                <div className="flex flex-col gap-4">
                   <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-tint">
                     <tool.icon className="h-6 w-6 text-brand-strong" />
                   </span>
@@ -213,7 +239,7 @@ export default function LandingPage() {
                   </p>
                 </div>
 
-                <div className={`flex flex-col gap-3 ${i % 2 === 1 ? "md:order-1" : ""}`}>
+                <div className="flex flex-col gap-3">
                   <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
                     How it works
                   </p>
