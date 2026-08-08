@@ -56,6 +56,7 @@ export function AuditPageClient({ initialAudit }: { initialAudit: AuditDTO }) {
   if (audit.status === "running") {
     return (
       <AuditProgressView
+        auditId={audit.id}
         rootUrl={audit.site.rootUrl}
         pagesCrawled={audit.pagesCrawled}
         pageLimit={audit.pageLimit}

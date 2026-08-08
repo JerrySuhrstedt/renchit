@@ -24,3 +24,15 @@ export async function GET(
 
   return NextResponse.json({ search });
 }
+
+export async function DELETE(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const userId = await requireUserIdForApi();
+  if (userId instanceof NextResponse) return userId;
+
+  const { id } = await params;
+  await db.keywordSearch.deleteMany({ where: { id, userId } });
+  return NextResponse.json({ ok: true });
+}

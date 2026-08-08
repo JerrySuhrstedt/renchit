@@ -1,7 +1,11 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { HealthScoreDial } from "@/components/health-score-dial";
+import { RowActionsMenu } from "@/components/row-actions-menu";
 import { formatRelativeTime, hostnameOf } from "@/lib/format";
-import { ArrowUpRight, Loader2, TriangleAlert, Wrench } from "lucide-react";
+import { Loader2, TriangleAlert, Wrench } from "lucide-react";
 
 export type AuditListItem = {
   id: string;
@@ -16,7 +20,27 @@ export type AuditListItem = {
   site: { id: string; rootUrl: string; name: string | null };
 };
 
-export function AuditHistoryList({ audits }: { audits: AuditListItem[] }) {
+export function AuditHistoryList({ audits: initialAudits }: { audits: AuditListItem[] }) {
+  const [audits, setAudits] = useState(initialAudits);
+
+  async function handleDelete(id: string) {
+    if (!window.confirm("Delete this audit? This can't be undone.")) return;
+    setAudits((prev) => prev.filter((a) => a.id !== id));
+    await fetch(`/api/audits/${id}`, { method: "DELETE" }).catch(() => {});
+  }
+
+  async function handleStop(id: string) {
+    if (!window.confirm("Stop this audit?")) return;
+    setAudits((prev) =>
+      prev.map((a) =>
+        a.id === id
+          ? { ...a, status: "failed", errorMessage: "Cancelled by you." }
+          : a,
+      ),
+    );
+    await fetch(`/api/audits/${id}/cancel`, { method: "POST" }).catch(() => {});
+  }
+
   if (audits.length === 0) {
     return (
       <div className="flex flex-col items-center gap-4 rounded-3xl border border-dashed border-border bg-card/60 px-8 py-16 text-center">
@@ -74,7 +98,10 @@ export function AuditHistoryList({ audits }: { audits: AuditListItem[] }) {
               </p>
             </div>
 
-            <ArrowUpRight className="h-5 w-5 shrink-0 text-muted-foreground/50 transition-colors group-hover:text-brand-strong" />
+            <RowActionsMenu
+              onDelete={() => handleDelete(audit.id)}
+              onStop={audit.status === "running" ? () => handleStop(audit.id) : undefined}
+            />
           </Link>
         </li>
       ))}

@@ -1,6 +1,10 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
-import { ArrowUpRight, Loader2, TriangleAlert, FileSearch } from "lucide-react";
+import { Loader2, TriangleAlert, FileSearch } from "lucide-react";
 import { HealthScoreDial } from "@/components/health-score-dial";
+import { RowActionsMenu } from "@/components/row-actions-menu";
 import { hostnameOf, formatRelativeTime } from "@/lib/format";
 
 export type GraderHistoryItem = {
@@ -12,7 +16,15 @@ export type GraderHistoryItem = {
   createdAt: string;
 };
 
-export function GraderHistoryList({ grades }: { grades: GraderHistoryItem[] }) {
+export function GraderHistoryList({ grades: initialGrades }: { grades: GraderHistoryItem[] }) {
+  const [grades, setGrades] = useState(initialGrades);
+
+  async function handleDelete(id: string) {
+    if (!window.confirm("Delete this grade? This can't be undone.")) return;
+    setGrades((prev) => prev.filter((g) => g.id !== id));
+    await fetch(`/api/content-grades/${id}`, { method: "DELETE" }).catch(() => {});
+  }
+
   if (grades.length === 0) {
     return (
       <div className="flex flex-col items-center gap-4 rounded-3xl border border-dashed border-border bg-card/60 px-8 py-16 text-center">
@@ -67,7 +79,7 @@ export function GraderHistoryList({ grades }: { grades: GraderHistoryItem[] }) {
               </p>
             </div>
 
-            <ArrowUpRight className="h-5 w-5 shrink-0 text-muted-foreground/50 transition-colors group-hover:text-brand-strong" />
+            <RowActionsMenu onDelete={() => handleDelete(grade.id)} />
           </Link>
         </li>
       ))}

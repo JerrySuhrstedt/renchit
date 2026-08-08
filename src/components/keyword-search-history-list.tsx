@@ -1,5 +1,9 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
-import { ArrowUpRight, Loader2, TriangleAlert, Lightbulb } from "lucide-react";
+import { Loader2, TriangleAlert, Lightbulb } from "lucide-react";
+import { RowActionsMenu } from "@/components/row-actions-menu";
 import { formatRelativeTime } from "@/lib/format";
 
 export type KeywordSearchListItem = {
@@ -11,10 +15,18 @@ export type KeywordSearchListItem = {
 };
 
 export function KeywordSearchHistoryList({
-  searches,
+  searches: initialSearches,
 }: {
   searches: KeywordSearchListItem[];
 }) {
+  const [searches, setSearches] = useState(initialSearches);
+
+  async function handleDelete(id: string) {
+    if (!window.confirm("Delete this search? This can't be undone.")) return;
+    setSearches((prev) => prev.filter((s) => s.id !== id));
+    await fetch(`/api/keyword-searches/${id}`, { method: "DELETE" }).catch(() => {});
+  }
+
   if (searches.length === 0) {
     return (
       <div className="flex flex-col items-center gap-4 rounded-3xl border border-dashed border-border bg-card/60 px-8 py-16 text-center">
@@ -64,7 +76,7 @@ export function KeywordSearchHistoryList({
               </p>
             </div>
 
-            <ArrowUpRight className="h-5 w-5 shrink-0 text-muted-foreground/50 transition-colors group-hover:text-brand-strong" />
+            <RowActionsMenu onDelete={() => handleDelete(search.id)} />
           </Link>
         </li>
       ))}

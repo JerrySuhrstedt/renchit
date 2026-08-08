@@ -14,8 +14,10 @@ export async function startAuditJob(auditId: string, rootUrl: string, pageLimit:
 
   runAuditJob(auditId, rootUrl, pageLimit)
     .catch(async (err) => {
-      await db.audit.update({
-        where: { id: auditId },
+      // Only overwrite if still "running" — if the user cancelled it, that
+      // status (and its "Cancelled by you." message) should stick.
+      await db.audit.updateMany({
+        where: { id: auditId, status: "running" },
         data: {
           status: "failed",
           errorMessage: err instanceof Error ? err.message : "Unknown error",
@@ -46,6 +48,14 @@ async function runAuditJob(auditId: string, rootUrl: string, pageLimit: number) 
 
   await db.$transaction(
     async (tx) => {
+      // If the user cancelled this audit while the crawl was still running,
+      // don't resurrect it by writing results after the fact.
+      const current = await tx.audit.findUnique({
+        where: { id: auditId },
+        select: { status: true },
+      });
+      if (current?.status !== "running") return;
+
       // createManyAndReturn batches all pages into one insert (with ids back)
       // instead of one create() per page — with up to 50 pages, N sequential
       // round-trips to Neon could alone blow past the transaction timeout.
