@@ -64,3 +64,20 @@ model Issue {
   resolvedAt  DateTime?
   createdAt   DateTime  @default(now())
 }
+
+model KeywordSearch {
+  id        String        @id @default(cuid())
+  seed      String
+  status    String        @default("running") // running | completed | failed
+  createdAt DateTime      @default(now())
+  ideas     KeywordIdea[]
+}
+
+model KeywordIdea {
+  id       String        @id @default(cuid())
+  search   KeywordSearch @relation(fields: [searchId], references: [id], onDelete: Cascade)
+  searchId String
+  phrase   String
+  category String // question | comparison | alphabetical
+  saved    Boolean       @default(false)
+}
