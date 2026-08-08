@@ -1,8 +1,7 @@
 import Link from "next/link";
-import Image from "next/image";
 import { HealthScoreDial } from "@/components/health-score-dial";
 import { formatRelativeTime, hostnameOf } from "@/lib/format";
-import { ArrowUpRight, Loader2, TriangleAlert } from "lucide-react";
+import { ArrowUpRight, Loader2, TriangleAlert, Wrench } from "lucide-react";
 
 export type AuditListItem = {
   id: string;
@@ -21,13 +20,9 @@ export function AuditHistoryList({ audits }: { audits: AuditListItem[] }) {
   if (audits.length === 0) {
     return (
       <div className="flex flex-col items-center gap-4 rounded-3xl border border-dashed border-border bg-card/60 px-8 py-16 text-center">
-        <Image
-          src="/brand/sumolab-mark-orange.svg"
-          alt=""
-          width={40}
-          height={38}
-          className="h-10 w-auto opacity-90"
-        />
+        <span className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-tint">
+          <Wrench className="h-6 w-6 text-brand-strong" aria-hidden />
+        </span>
         <div className="space-y-1.5">
           <p className="text-lg font-semibold text-foreground">
             No audits yet

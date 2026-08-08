@@ -1,6 +1,6 @@
-import Image from "next/image";
 import { redirect } from "next/navigation";
 import { auth, signIn } from "@/lib/auth";
+import { Logo } from "@/components/logo";
 
 export default async function SignInPage() {
   const session = await auth();
@@ -10,23 +10,7 @@ export default async function SignInPage() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-8 bg-background px-5 py-16 text-center">
-      <div className="flex flex-col items-center gap-3">
-        <Image
-          src="/brand/sumolab-mark-orange.svg"
-          alt=""
-          width={48}
-          height={46}
-          className="h-12 w-auto"
-        />
-        <div className="flex items-baseline gap-1.5">
-          <span className="text-xl font-extrabold tracking-tight text-foreground">
-            SumoLab
-          </span>
-          <span className="text-xl font-extrabold tracking-tight text-brand-strong">
-            Web Wrench
-          </span>
-        </div>
-      </div>
+      <Logo />
 
       <div className="flex flex-col items-center gap-2">
         <h1 className="text-2xl font-extrabold tracking-tight text-foreground">

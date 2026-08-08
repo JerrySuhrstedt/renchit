@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import {
   Check,
   Wrench,
@@ -12,9 +11,10 @@ import {
 } from "lucide-react";
 import { LandingHeader } from "@/components/landing-header";
 import { LandingHeroPreview } from "@/components/landing-hero-preview";
+import { Logo } from "@/components/logo";
 
 export const metadata = {
-  title: "SumoLab Web Wrench — Plain-English SEO tools for real websites",
+  title: "web wrench — Plain-English SEO tools for real websites",
   description:
     "Audit your site, find real content ideas, and grade your pages — in plain English, with zero SEO jargon. Free to start.",
 };
@@ -114,8 +114,8 @@ export default function LandingPage() {
               Stop guessing what&apos;s wrong with your website.
             </h1>
             <p className="max-w-lg text-balance text-lg text-muted-foreground">
-              SumoLab Web Wrench audits your site, finds real content ideas,
-              and grades your pages — in plain English, with zero SEO jargon.
+              web wrench audits your site, finds real content ideas, and
+              grades your pages — in plain English, with zero SEO jargon.
             </p>
             <Link
               href="/sign-in"
@@ -162,9 +162,9 @@ export default function LandingPage() {
                 about next? Is this page actually ready to publish?
               </p>
               <p className="font-semibold text-foreground">
-                SumoLab Web Wrench does three things, does them well, and
-                explains every result in plain English — so you can fix your
-                site today, not learn a new discipline first.
+                web wrench does three things, does them well, and explains
+                every result in plain English — so you can fix your site
+                today, not learn a new discipline first.
               </p>
             </div>
           </div>
@@ -352,23 +352,7 @@ export default function LandingPage() {
       <footer className="border-t border-border/70 bg-card/60">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-5 py-12 sm:px-8 md:flex-row md:items-start md:justify-between">
           <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-2.5">
-              <Image
-                src="/brand/sumolab-mark-orange.svg"
-                alt=""
-                width={24}
-                height={22}
-                className="h-6 w-auto"
-              />
-              <span className="flex items-baseline gap-1.5 leading-none">
-                <span className="text-sm font-extrabold tracking-tight text-foreground">
-                  SumoLab
-                </span>
-                <span className="text-sm font-extrabold tracking-tight text-brand-strong">
-                  Web Wrench
-                </span>
-              </span>
-            </div>
+            <Logo />
             <p className="max-w-xs text-sm text-muted-foreground">
               A simpler way to keep your website healthy.
             </p>
@@ -400,7 +384,7 @@ export default function LandingPage() {
           </div>
         </div>
         <div className="border-t border-border/70 px-5 py-5 text-center text-xs text-muted-foreground sm:px-8">
-          © {new Date().getFullYear()} All rights reserved | SumoLab
+          © {new Date().getFullYear()} All Rights Reserved | SumoLab LLC
         </div>
       </footer>
     </>

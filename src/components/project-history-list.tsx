@@ -1,6 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Wrench } from "lucide-react";
 import { HealthScoreDial } from "@/components/health-score-dial";
 import { hostnameOf, formatRelativeTime } from "@/lib/format";
 
@@ -19,13 +18,9 @@ export function ProjectHistoryList({ projects }: { projects: ProjectListItem[] }
   if (projects.length === 0) {
     return (
       <div className="flex flex-col items-center gap-4 rounded-3xl border border-dashed border-border bg-card/60 px-8 py-16 text-center">
-        <Image
-          src="/brand/sumolab-mark-orange.svg"
-          alt=""
-          width={40}
-          height={38}
-          className="h-10 w-auto opacity-90"
-        />
+        <span className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-tint">
+          <Wrench className="h-6 w-6 text-brand-strong" aria-hidden />
+        </span>
         <div className="space-y-1.5">
           <p className="text-lg font-semibold text-foreground">
             No projects yet
@@ -52,13 +47,7 @@ export function ProjectHistoryList({ projects }: { projects: ProjectListItem[] }
                 <HealthScoreDial score={project.latestHealthScore} size="sm" />
               ) : (
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-tint">
-                  <Image
-                    src="/brand/sumolab-mark-orange.svg"
-                    alt=""
-                    width={24}
-                    height={22}
-                    className="h-6 w-auto"
-                  />
+                  <Wrench className="h-6 w-6 text-brand-strong" aria-hidden />
                 </div>
               )}
             </div>

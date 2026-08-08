@@ -19,7 +19,7 @@ export type GradeResult = {
   score: number;
 };
 
-const USER_AGENT = "SumoLabWebWrenchBot/1.0 (+https://sumolab.dev/web-wrench)";
+const USER_AGENT = "WebWrenchBot/1.0";
 const FETCH_TIMEOUT_MS = 12_000;
 const THIN_CONTENT_WORDS = 300;
 const IDEAL_CONTENT_WORDS = 600;

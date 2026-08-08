@@ -71,7 +71,7 @@
   --popover: #ffffff;
   --popover-foreground: #241c15;
 
-  /* Brand: SumoLab's pinned coral-red. Raw #fc5434 for large fields, rings, marks,
+  /* Brand: coral-red accent. Raw #fc5434 for large fields, rings, marks,
      and the health-score hero moment. brand-strong is a deepened variant used
      wherever white text sits on the fill, so button labels clear 4.5:1 AA. */
   --brand: #fc5434;

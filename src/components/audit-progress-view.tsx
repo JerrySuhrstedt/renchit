@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { Wrench } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { hostnameOf } from "@/lib/format";
 
@@ -33,12 +33,9 @@ export function AuditProgressView({
           className="absolute inset-0 -z-10 animate-pulse rounded-full bg-brand-tint blur-xl"
           aria-hidden
         />
-        <Image
-          src="/brand/sumolab-mark-orange.svg"
-          alt=""
-          width={56}
-          height={54}
-          className="h-14 w-auto animate-[spin_3.5s_linear_infinite]"
+        <Wrench
+          className="h-14 w-14 text-brand-strong animate-[spin_3.5s_linear_infinite]"
+          aria-hidden
         />
       </div>
 

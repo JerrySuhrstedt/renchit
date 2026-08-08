@@ -2,7 +2,7 @@ import * as cheerio from "cheerio";
 import pLimit from "p-limit";
 import type { CrawledPage, CrawlResult, LinkCheckResult, LinkRecord } from "./types";
 
-const USER_AGENT = "SumoLabWebWrenchBot/1.0 (+https://sumolab.dev/web-wrench)";
+const USER_AGENT = "WebWrenchBot/1.0";
 const FETCH_TIMEOUT_MS = 12_000;
 const CRAWL_CONCURRENCY = 5;
 const LINK_CHECK_CONCURRENCY = 8;
