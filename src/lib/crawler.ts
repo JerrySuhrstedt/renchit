@@ -1,12 +1,14 @@
 import * as cheerio from "cheerio";
 import pLimit from "p-limit";
-import type { CrawledPage, CrawlResult, LinkCheckResult, LinkRecord } from "./types";
+import type { CrawledPage, CrawlResult, ImageCheckResult, LinkCheckResult, LinkRecord } from "./types";
 
 const USER_AGENT = "RenchitBot/1.0";
 const FETCH_TIMEOUT_MS = 12_000;
 const CRAWL_CONCURRENCY = 5;
 const LINK_CHECK_CONCURRENCY = 8;
 const MAX_LINK_CHECKS = 150;
+const IMAGE_CHECK_CONCURRENCY = 8;
+const MAX_IMAGE_CHECKS = 80;
 
 function normalizeUrl(raw: string): string | null {
   try {
@@ -95,12 +97,32 @@ function extractPage(url: string, html: string): Omit<
   const wordCount = bodyText ? bodyText.split(" ").length : 0;
 
   const images = $("img")
-    .map((_, el) => ({
-      src: $(el).attr("src")?.trim() || "",
-      alt: $(el).attr("alt") ?? null,
-    }))
+    .map((_, el) => {
+      const $el = $(el);
+      // Lazy-load plugins (common on WordPress) put a placeholder in src and
+      // the real image in one of these data attributes.
+      const lazySrc =
+        $el.attr("data-src")?.trim() ||
+        $el.attr("data-lazy-src")?.trim() ||
+        $el.attr("data-original")?.trim() ||
+        "";
+      return {
+        rawSrc: lazySrc || $el.attr("src")?.trim() || "",
+        alt: $el.attr("alt") ?? null,
+      };
+    })
     .get()
-    .filter((img) => img.src);
+    .filter((img) => img.rawSrc && !img.rawSrc.startsWith("data:"))
+    .map((img) => {
+      let resolved: string | null;
+      try {
+        resolved = new URL(img.rawSrc, url).toString();
+      } catch {
+        resolved = null;
+      }
+      return resolved ? { src: resolved, alt: img.alt } : null;
+    })
+    .filter((img): img is { src: string; alt: string | null } => img !== null);
 
   const links: LinkRecord[] = $("a[href]")
     .map((_, el) => {
@@ -237,6 +259,20 @@ async function checkLink(url: string): Promise<LinkCheckResult> {
   }
 }
 
+async function checkImage(url: string): Promise<ImageCheckResult> {
+  try {
+    const res = await fetchWithTimeout(url, { method: "HEAD" });
+    const contentLength = res.headers.get("content-length");
+    return {
+      url,
+      bytes: contentLength ? Number(contentLength) : null,
+      contentType: res.headers.get("content-type"),
+    };
+  } catch {
+    return { url, bytes: null, contentType: null };
+  }
+}
+
 export async function crawlSite(
   rootUrlRaw: string,
   pageLimit: number,
@@ -317,5 +353,21 @@ export async function crawlSite(
     linkChecks.set(result.url, result);
   }
 
-  return { rootUrl, pages, linkChecks, pageLimitHit };
+  const uniqueImageUrls = new Map<string, true>();
+  for (const page of pages) {
+    for (const image of page.images) {
+      if (!uniqueImageUrls.has(image.src)) uniqueImageUrls.set(image.src, true);
+    }
+  }
+  const imageUrlsToCheck = [...uniqueImageUrls.keys()].slice(0, MAX_IMAGE_CHECKS);
+  const imageLimit = pLimit(IMAGE_CHECK_CONCURRENCY);
+  const imageResults = await Promise.all(
+    imageUrlsToCheck.map((url) => imageLimit(() => checkImage(url))),
+  );
+  const imageChecks = new Map<string, ImageCheckResult>();
+  for (const result of imageResults) {
+    imageChecks.set(result.url, result);
+  }
+
+  return { rootUrl, pages, linkChecks, imageChecks, pageLimitHit };
 }

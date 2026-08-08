@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Wrench, Check, EyeOff, RotateCcw, ExternalLink, ChevronDown } from "lucide-react";
+import { Wrench, Check, EyeOff, RotateCcw, ExternalLink, ChevronDown, Download } from "lucide-react";
 import { SEVERITY_META } from "@/lib/format";
 import type { IssueDTO, PageDTO } from "@/lib/audit-types";
 
@@ -151,6 +151,15 @@ function IssueInstanceRow({
           >
             <ExternalLink className="h-3 w-3" />
             {page.url}
+          </a>
+        )}
+        {issue.type === "large-image" && issue.affectedUrl && (
+          <a
+            href={`/api/images/optimize?issueId=${issue.id}`}
+            className="mt-1.5 flex w-fit items-center gap-1.5 rounded-full border border-brand/30 bg-brand-tint px-2.5 py-1 text-xs font-semibold text-brand-strong transition-colors hover:border-brand"
+          >
+            <Download className="h-3 w-3" />
+            Download optimized version
           </a>
         )}
         {resolved && (

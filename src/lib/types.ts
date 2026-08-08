@@ -37,10 +37,17 @@ export type LinkCheckResult = {
   error: string | null;
 };
 
+export type ImageCheckResult = {
+  url: string;
+  bytes: number | null;
+  contentType: string | null;
+};
+
 export type CrawlResult = {
   rootUrl: string;
   pages: CrawledPage[];
   linkChecks: Map<string, LinkCheckResult>;
+  imageChecks: Map<string, ImageCheckResult>;
   pageLimitHit: boolean;
 };
 

@@ -7,6 +7,7 @@ const META_DESC_MAX = 160;
 const THIN_CONTENT_WORDS = 300;
 const LARGE_PAGE_BYTES = 2_000_000;
 const SLOW_PAGE_MS = 3_000;
+const LARGE_IMAGE_BYTES = 300_000;
 
 function issue(partial: Omit<FoundIssue, "pageUrl" | "affectedUrl"> & { pageUrl?: string | null; affectedUrl?: string | null }): FoundIssue {
   return {
@@ -350,6 +351,26 @@ export function runChecks(crawl: CrawlResult): FoundIssue[] {
           }),
         );
       }
+    }
+  }
+
+  for (const page of crawl.pages) {
+    for (const image of page.images) {
+      const check = crawl.imageChecks.get(image.src);
+      if (!check?.bytes || check.bytes <= LARGE_IMAGE_BYTES) continue;
+
+      issues.push(
+        issue({
+          type: "large-image",
+          severity: "warning",
+          category: "performance",
+          title: "Large image file",
+          description: `This image is ${(check.bytes / 1_000_000).toFixed(1)}MB, which can slow down page load, especially on mobile connections.`,
+          fixSteps: "Resize and compress this image before re-uploading — most web images don't need to be wider than 1920px.",
+          pageUrl: page.url,
+          affectedUrl: image.src,
+        }),
+      );
     }
   }
 
