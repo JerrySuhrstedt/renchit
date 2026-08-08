@@ -121,7 +121,11 @@ function extractPage(url: string, html: string): Omit<
         ? { href: resolved, text: l.text, isInternal: new URL(resolved).origin === origin }
         : null;
     })
-    .filter((l): l is LinkRecord => l !== null);
+    .filter((l): l is LinkRecord => l !== null)
+    // Cloudflare's email-obfuscation links (/cdn-cgi/l/email-protection) only resolve
+    // through its client-side JS decoder — they 404 on a direct bot request even though
+    // real visitors never hit them directly, so they're not real broken links.
+    .filter((l) => !new URL(l.href).pathname.startsWith("/cdn-cgi/"));
 
   return {
     title,

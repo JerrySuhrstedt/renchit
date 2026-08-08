@@ -1,11 +1,12 @@
 import path from "node:path";
-import { defineConfig } from "prisma/config";
+import { config } from "dotenv";
+import { defineConfig, env } from "prisma/config";
 
-const dbUrl = `file:${path.join(__dirname, "prisma", "dev.db")}`;
+config({ path: path.join(__dirname, ".env") });
 
 export default defineConfig({
   schema: path.join("prisma", "schema.prisma"),
   datasource: {
-    url: dbUrl,
+    url: env("DATABASE_URL"),
   },
 });

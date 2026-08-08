@@ -358,16 +358,34 @@ export function runChecks(crawl: CrawlResult): FoundIssue[] {
       const check = crawl.linkChecks.get(link.href);
       if (!check) continue;
       if (!check.ok) {
+        // A 403/429 usually means the destination is blocking automated requests
+        // (bot protection), not that the page is actually gone — a real visitor's
+        // browser would likely load it fine. Report it with lower confidence
+        // instead of calling it a confirmed broken link.
+        const likelyBotBlock = check.statusCode === 403 || check.statusCode === 429;
+
         issues.push(
           issue({
-            type: link.isInternal ? "broken-internal-link" : "broken-external-link",
-            severity: link.isInternal ? "critical" : "warning",
+            type: likelyBotBlock
+              ? "link-check-blocked"
+              : link.isInternal
+                ? "broken-internal-link"
+                : "broken-external-link",
+            severity: likelyBotBlock ? "info" : link.isInternal ? "critical" : "warning",
             category: "links",
-            title: link.isInternal ? "Broken internal link" : "Broken external link",
-            description: `The link to ${link.href} on this page returned ${check.statusCode ?? "an error"}${check.error ? ` (${check.error})` : ""}.`,
-            fixSteps: link.isInternal
-              ? "Update the link to point to a working page, or fix/restore the destination page."
-              : "Update or remove the link, since the external destination is no longer reachable.",
+            title: likelyBotBlock
+              ? "Couldn't verify this link"
+              : link.isInternal
+                ? "Broken internal link"
+                : "Broken external link",
+            description: likelyBotBlock
+              ? `The link to ${link.href} returned ${check.statusCode} when we checked it, which usually means that site blocks automated tools rather than the page being gone. Worth a quick manual click to confirm.`
+              : `The link to ${link.href} on this page returned ${check.statusCode ?? "an error"}${check.error ? ` (${check.error})` : ""}.`,
+            fixSteps: likelyBotBlock
+              ? "Open the link yourself in a browser to confirm it works. No action needed if it loads fine."
+              : link.isInternal
+                ? "Update the link to point to a working page, or fix/restore the destination page."
+                : "Update or remove the link, since the external destination is no longer reachable.",
             pageUrl: page.url,
             affectedUrl: link.href,
           }),
