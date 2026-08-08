@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#fc5434"/>
-  <g transform="translate(136,96) scale(3.39) translate(0,-23.6)">
-    <path fill="#fffaf7" d="M70.9,23.6v23.6h-35.4v70.9H0V23.6h70.9Z"/>
-  </g>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 512 512">
+  <!-- Generator: Adobe Illustrator 30.5.1, SVG Export Plug-In . SVG Version: 2.1.4 Build 3)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: #fc5434;
+      }
+
+      .st1 {
+        fill: #231f20;
+      }
+    </style>
+  </defs>
+  <rect class="st0" width="512" height="512"/>
+  <path class="st1" d="M427.1,113.2v99.6h-149.4v299.2H127.9V113.2h299.2Z"/>
 </svg>
