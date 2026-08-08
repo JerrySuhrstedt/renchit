@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Site {
+  id        String   @id @default(cuid())
+  rootUrl   String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  audits    Audit[]
+}
+
+model Audit {
+  id            String    @id @default(cuid())
+  site          Site      @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  siteId        String
+  status        String    @default("running") // running | completed | failed
+  startedAt     DateTime  @default(now())
+  completedAt   DateTime?
+  pageLimit     Int       @default(50)
+  pagesCrawled  Int       @default(0)
+  healthScore   Int?
+  errorMessage  String?
+  pages         Page[]
+  issues        Issue[]
+}
+
+model Page {
+  id              String   @id @default(cuid())
+  audit           Audit    @relation(fields: [auditId], references: [id], onDelete: Cascade)
+  auditId         String
+  url             String
+  statusCode      Int?
+  title           String?
+  metaDescription String?
+  h1Count         Int      @default(0)
+  wordCount       Int      @default(0)
+  sizeBytes       Int      @default(0)
+  loadTimeMs      Int      @default(0)
+  canonical       String?
+  redirectedFrom  String?
+  crawledAt       DateTime @default(now())
+  issues          Issue[]
+}
+
+model Issue {
+  id          String    @id @default(cuid())
+  audit       Audit     @relation(fields: [auditId], references: [id], onDelete: Cascade)
+  auditId     String
+  page        Page?     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  pageId      String?
+  type        String
+  severity    String // critical | warning | info
+  category    String // technical | content | meta | links | performance
+  title       String
+  description String
+  fixSteps    String
+  affectedUrl String?
+  status      String    @default("open") // open | resolved | ignored
+  resolvedAt  DateTime?
+  createdAt   DateTime  @default(now())
+}
