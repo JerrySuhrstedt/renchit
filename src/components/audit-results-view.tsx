@@ -5,8 +5,8 @@ import Link from "next/link";
 import { ArrowLeft, RotateCw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { HealthScoreDial } from "@/components/health-score-dial";
-import { IssueList } from "@/components/issue-list";
-import { hostnameOf, formatRelativeTime } from "@/lib/format";
+import { IssueList, CATEGORY_ORDER } from "@/components/issue-list";
+import { CATEGORY_META, hostnameOf, formatRelativeTime } from "@/lib/format";
 import type { AuditDTO, IssueDTO } from "@/lib/audit-types";
 
 export function AuditResultsView({ audit }: { audit: AuditDTO }) {
@@ -35,6 +35,15 @@ export function AuditResultsView({ audit }: { audit: AuditDTO }) {
       resolved: issues.filter((i) => i.status === "resolved").length,
     };
   }, [issues]);
+
+  const categoryIndex = useMemo(
+    () =>
+      CATEGORY_ORDER.map((category) => ({
+        category,
+        count: visibleIssues.filter((i) => i.category === category).length,
+      })).filter((c) => c.count > 0),
+    [visibleIssues],
+  );
 
   async function handleRerun() {
     setRerunning(true);
@@ -104,6 +113,23 @@ export function AuditResultsView({ audit }: { audit: AuditDTO }) {
           </FilterTab>
         </div>
       </div>
+
+      {categoryIndex.length > 1 && (
+        <div className="mt-4 flex flex-wrap gap-2">
+          {categoryIndex.map(({ category, count }) => (
+            <a
+              key={category}
+              href={`#category-${category}`}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:border-brand hover:text-brand-strong"
+            >
+              {CATEGORY_META[category].label}
+              <span className="rounded-full bg-muted px-1.5 py-0.5 text-xs font-semibold text-muted-foreground">
+                {count}
+              </span>
+            </a>
+          ))}
+        </div>
+      )}
 
       <div className="mt-4">
         <IssueList

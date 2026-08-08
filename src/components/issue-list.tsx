@@ -1,10 +1,10 @@
 "use client";
 
-import { IssueCard } from "@/components/issue-card";
+import { IssueTypeGroup } from "@/components/issue-type-group";
 import { CATEGORY_META, type Category } from "@/lib/format";
 import type { IssueDTO, PageDTO } from "@/lib/audit-types";
 
-const CATEGORY_ORDER: Category[] = [
+export const CATEGORY_ORDER: Category[] = [
   "technical",
   "meta",
   "content",
@@ -25,14 +25,28 @@ export function IssueList({
 }) {
   const pageById = new Map(pages.map((p) => [p.id, p]));
 
-  const groups = CATEGORY_ORDER.map((category) => ({
-    category,
-    issues: issues
-      .filter((i) => i.category === category)
-      .sort((a, b) => SEVERITY_ORDER[a.severity] - SEVERITY_ORDER[b.severity]),
-  })).filter((g) => g.issues.length > 0);
+  const categoryGroups = CATEGORY_ORDER.map((category) => {
+    const categoryIssues = issues.filter((i) => i.category === category);
 
-  if (groups.length === 0) {
+    const byType = new Map<string, IssueDTO[]>();
+    for (const issue of categoryIssues) {
+      const list = byType.get(issue.type) ?? [];
+      list.push(issue);
+      byType.set(issue.type, list);
+    }
+
+    const typeGroups = [...byType.values()]
+      .map((group) => ({
+        group,
+        worstSeverity: Math.min(...group.map((i) => SEVERITY_ORDER[i.severity])),
+      }))
+      .sort((a, b) => a.worstSeverity - b.worstSeverity)
+      .map((g) => g.group);
+
+    return { category, issues: categoryIssues, typeGroups };
+  }).filter((g) => g.issues.length > 0);
+
+  if (categoryGroups.length === 0) {
     return (
       <div className="rounded-3xl border border-dashed border-success/40 bg-success-tint px-8 py-14 text-center">
         <p className="text-lg font-bold text-success">
@@ -47,8 +61,8 @@ export function IssueList({
 
   return (
     <div className="flex flex-col gap-8">
-      {groups.map((group) => (
-        <div key={group.category} className="flex flex-col gap-3">
+      {categoryGroups.map((group) => (
+        <div key={group.category} id={`category-${group.category}`} className="flex scroll-mt-24 flex-col gap-3">
           <div className="flex items-center gap-2.5">
             <h3 className="text-sm font-bold uppercase tracking-wide text-muted-foreground">
               {CATEGORY_META[group.category].label}
@@ -58,11 +72,11 @@ export function IssueList({
             </span>
           </div>
           <div className="flex flex-col gap-3">
-            {group.issues.map((issue) => (
-              <IssueCard
-                key={issue.id}
-                issue={issue}
-                page={issue.pageId ? pageById.get(issue.pageId) : undefined}
+            {group.typeGroups.map((typeIssues) => (
+              <IssueTypeGroup
+                key={typeIssues[0].type}
+                issues={typeIssues}
+                pageById={pageById}
                 onStatusChange={onStatusChange}
               />
             ))}
