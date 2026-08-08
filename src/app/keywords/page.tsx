@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { requireUser } from "@/lib/session";
 import { SiteHeader } from "@/components/site-header";
 import { NewKeywordSearchForm } from "@/components/new-keyword-search-form";
 import {
@@ -8,8 +9,9 @@ import {
 
 export const dynamic = "force-dynamic";
 
-async function getSearches(): Promise<KeywordSearchListItem[]> {
+async function getSearches(userId: string): Promise<KeywordSearchListItem[]> {
   const searches = await db.keywordSearch.findMany({
+    where: { userId },
     orderBy: { createdAt: "desc" },
     take: 25,
     include: {
@@ -27,7 +29,8 @@ async function getSearches(): Promise<KeywordSearchListItem[]> {
 }
 
 export default async function KeywordsDashboardPage() {
-  const searches = await getSearches();
+  const user = await requireUser();
+  const searches = await getSearches(user.id);
 
   return (
     <>

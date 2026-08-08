@@ -1,9 +1,14 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { requireUserIdForApi } from "@/lib/session";
 import { gradeContent } from "@/lib/content-grader";
 
 export async function GET() {
+  const userId = await requireUserIdForApi();
+  if (userId instanceof NextResponse) return userId;
+
   const grades = await db.contentGrade.findMany({
+    where: { userId },
     orderBy: { createdAt: "desc" },
     take: 25,
   });
@@ -21,6 +26,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const userId = await requireUserIdForApi();
+  if (userId instanceof NextResponse) return userId;
+
   let body: { url?: string; targetKeyword?: string };
   try {
     body = await request.json();
@@ -38,8 +46,21 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "A target keyword is required" }, { status: 400 });
   }
 
+  let siteId: string | undefined;
+  try {
+    const origin = new URL(/^https?:\/\//i.test(url) ? url : `https://${url}`).origin;
+    const site = await db.site.upsert({
+      where: { userId_rootUrl: { userId, rootUrl: origin } },
+      update: {},
+      create: { rootUrl: origin, userId },
+    });
+    siteId = site.id;
+  } catch {
+    // invalid URL — gradeContent below will surface the real error
+  }
+
   const grade = await db.contentGrade.create({
-    data: { url, targetKeyword, status: "running" },
+    data: { url, targetKeyword, status: "running", userId, siteId },
   });
 
   try {

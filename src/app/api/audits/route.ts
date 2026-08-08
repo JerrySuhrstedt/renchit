@@ -1,12 +1,17 @@
 import { NextResponse, after } from "next/server";
 import { db } from "@/lib/db";
+import { requireUserIdForApi } from "@/lib/session";
 import { normalizeAuditUrl } from "@/lib/validation";
 import { startAuditJob } from "@/lib/audit-job";
 
 const PAGE_LIMIT = 50;
 
 export async function GET() {
+  const userId = await requireUserIdForApi();
+  if (userId instanceof NextResponse) return userId;
+
   const audits = await db.audit.findMany({
+    where: { site: { userId } },
     orderBy: { startedAt: "desc" },
     include: {
       site: true,
@@ -31,6 +36,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const userId = await requireUserIdForApi();
+  if (userId instanceof NextResponse) return userId;
+
   let body: { url?: string };
   try {
     body = await request.json();
@@ -50,9 +58,9 @@ export async function POST(request: Request) {
   }
 
   const site = await db.site.upsert({
-    where: { rootUrl },
+    where: { userId_rootUrl: { userId, rootUrl } },
     update: {},
-    create: { rootUrl },
+    create: { rootUrl, userId },
   });
 
   const audit = await db.audit.create({

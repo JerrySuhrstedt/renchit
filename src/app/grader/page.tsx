@@ -1,12 +1,14 @@
 import { db } from "@/lib/db";
+import { requireUser } from "@/lib/session";
 import { SiteHeader } from "@/components/site-header";
 import { NewGraderForm } from "@/components/new-grader-form";
 import { GraderHistoryList, type GraderHistoryItem } from "@/components/grader-history-list";
 
 export const dynamic = "force-dynamic";
 
-async function getGrades(): Promise<GraderHistoryItem[]> {
+async function getGrades(userId: string): Promise<GraderHistoryItem[]> {
   const grades = await db.contentGrade.findMany({
+    where: { userId },
     orderBy: { createdAt: "desc" },
     take: 25,
   });
@@ -22,7 +24,8 @@ async function getGrades(): Promise<GraderHistoryItem[]> {
 }
 
 export default async function GraderDashboardPage() {
-  const grades = await getGrades();
+  const user = await requireUser();
+  const grades = await getGrades(user.id);
 
   return (
     <>

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, TriangleAlert } from "lucide-react";
 import { db } from "@/lib/db";
+import { requireUser } from "@/lib/session";
 import { SiteHeader } from "@/components/site-header";
 import { GraderResultsView } from "@/components/grader-results-view";
 import type { ContentGradeDTO } from "@/lib/grader-types";
@@ -14,8 +15,9 @@ export default async function GraderResultPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const user = await requireUser();
 
-  const grade = await db.contentGrade.findUnique({ where: { id } });
+  const grade = await db.contentGrade.findFirst({ where: { id, userId: user.id } });
 
   if (!grade) notFound();
 

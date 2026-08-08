@@ -1,12 +1,14 @@
 import { db } from "@/lib/db";
+import { requireUser } from "@/lib/session";
 import { SiteHeader } from "@/components/site-header";
 import { NewAuditForm } from "@/components/new-audit-form";
 import { AuditHistoryList, type AuditListItem } from "@/components/audit-history-list";
 
 export const dynamic = "force-dynamic";
 
-async function getAudits(): Promise<AuditListItem[]> {
+async function getAudits(userId: string): Promise<AuditListItem[]> {
   const audits = await db.audit.findMany({
+    where: { site: { userId } },
     orderBy: { startedAt: "desc" },
     take: 25,
     include: {
@@ -30,7 +32,8 @@ async function getAudits(): Promise<AuditListItem[]> {
 }
 
 export default async function DashboardPage() {
-  const audits = await getAudits();
+  const user = await requireUser();
+  const audits = await getAudits(user.id);
 
   return (
     <>

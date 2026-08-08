@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { requireUserIdForApi } from "@/lib/session";
 
 const VALID_STATUSES = new Set(["open", "resolved", "ignored"]);
 
@@ -7,6 +8,9 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const userId = await requireUserIdForApi();
+  if (userId instanceof NextResponse) return userId;
+
   const { id } = await params;
   let body: { status?: string };
   try {
@@ -17,6 +21,14 @@ export async function PATCH(
 
   if (!body.status || !VALID_STATUSES.has(body.status)) {
     return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+  }
+
+  const owned = await db.issue.findFirst({
+    where: { id, audit: { site: { userId } } },
+    select: { id: true },
+  });
+  if (!owned) {
+    return NextResponse.json({ error: "Issue not found" }, { status: 404 });
   }
 
   const issue = await db.issue.update({

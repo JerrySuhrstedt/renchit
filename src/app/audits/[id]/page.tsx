@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
+import { requireUser } from "@/lib/session";
 import { SiteHeader } from "@/components/site-header";
 import { AuditPageClient } from "@/components/audit-page-client";
 import type { AuditDTO } from "@/lib/audit-types";
@@ -12,9 +13,10 @@ export default async function AuditPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const user = await requireUser();
 
-  const audit = await db.audit.findUnique({
-    where: { id },
+  const audit = await db.audit.findFirst({
+    where: { id, site: { userId: user.id } },
     include: {
       site: true,
       issues: { orderBy: [{ severity: "asc" }, { createdAt: "asc" }] },

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter_Tight } from "next/font/google";
+import { AppSessionProvider } from "@/components/session-provider";
 import "./globals.css";
 
 const sans = Inter_Tight({
@@ -39,7 +40,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           FINISH: unreviewed and undocumented is unfinished; this build ends with the finish
           review, the verdict, and DESIGN.md.
         */}
-        {children}
+        <AppSessionProvider>{children}</AppSessionProvider>
       </body>
     </html>
   );

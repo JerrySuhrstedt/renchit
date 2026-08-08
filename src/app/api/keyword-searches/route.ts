@@ -1,9 +1,14 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { requireUserIdForApi } from "@/lib/session";
 import { generateKeywordIdeas } from "@/lib/keyword-ideas";
 
 export async function GET() {
+  const userId = await requireUserIdForApi();
+  if (userId instanceof NextResponse) return userId;
+
   const searches = await db.keywordSearch.findMany({
+    where: { userId },
     orderBy: { createdAt: "desc" },
     take: 25,
     include: {
@@ -23,6 +28,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const userId = await requireUserIdForApi();
+  if (userId instanceof NextResponse) return userId;
+
   let body: { seed?: string };
   try {
     body = await request.json();
@@ -39,7 +47,7 @@ export async function POST(request: Request) {
   }
 
   const search = await db.keywordSearch.create({
-    data: { seed, status: "running" },
+    data: { seed, status: "running", userId },
   });
 
   try {

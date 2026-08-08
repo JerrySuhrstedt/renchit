@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, TriangleAlert } from "lucide-react";
 import { db } from "@/lib/db";
+import { requireUser } from "@/lib/session";
 import { SiteHeader } from "@/components/site-header";
 import { KeywordResultsView } from "@/components/keyword-results-view";
 import type { KeywordSearchDTO } from "@/lib/keyword-types";
@@ -14,9 +15,10 @@ export default async function KeywordSearchPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const user = await requireUser();
 
-  const search = await db.keywordSearch.findUnique({
-    where: { id },
+  const search = await db.keywordSearch.findFirst({
+    where: { id, userId: user.id },
     include: {
       ideas: { orderBy: { phrase: "asc" } },
     },
