@@ -5,6 +5,7 @@ import {
   Wrench,
   Lightbulb,
   FileSearch,
+  MapPin,
   ArrowRight,
   Search,
   ListChecks,
@@ -59,6 +60,18 @@ const TOOLS = [
       "Get a score and a checklist of exactly what to fix before you publish",
     ],
   },
+  {
+    icon: MapPin,
+    name: "Local Listing Checker",
+    tagline: "Show up right in local search",
+    what: "Checks your business name, address, and phone number for consistency against your website, plus structured data and Google Business Profile fundamentals.",
+    why: "Mismatched business info between your website and Google is one of the most common — and most overlooked — reasons local businesses don't show up in the map pack.",
+    how: [
+      "Enter your business name, address, and phone number",
+      "We scan your website for matching info and local SEO basics",
+      "Get a score and a plain-English checklist of what to fix",
+    ],
+  },
 ];
 
 const FEATURES = [
@@ -74,12 +87,14 @@ const FEATURES = [
   { title: "Word count & readability at a glance", desc: "See if your content is thin before you publish." },
   { title: "Projects group everything by site", desc: "Every audit and grade, organized automatically." },
   { title: "Free Google sign-in", desc: "No password to create or remember." },
+  { title: "Local business info consistency check", desc: "Catch NAP mismatches between your site and Google." },
+  { title: "LocalBusiness structured data check", desc: "See if your site helps Google confirm who you are." },
 ];
 
 const FAQS = [
   {
     q: "Is this actually free?",
-    a: "Yes. Sign in with your Google account and use all three tools — no credit card required.",
+    a: "Yes. Sign in with your Google account and use all four tools — no credit card required.",
   },
   {
     q: "Do you show keyword search volume, like Ahrefs or SEMrush?",
@@ -190,9 +205,9 @@ export default function LandingPage() {
                 about next? Is this page actually ready to publish?
               </p>
               <p className="font-semibold text-foreground">
-                renchit does three things, does them well, and explains
-                every result in plain English — so you can fix your site
-                today, not learn a new discipline first.
+                renchit does a handful of things, does them well, and
+                explains every result in plain English — so you can fix your
+                site today, not learn a new discipline first.
               </p>
             </div>
           </div>
@@ -202,7 +217,7 @@ export default function LandingPage() {
         <section id="tools" className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-8">
           <div className="flex flex-col items-center gap-3 text-center">
             <h2 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-              Three tools. Nothing you don&apos;t need.
+              Four tools. Nothing you don&apos;t need.
             </h2>
             <p className="max-w-lg text-balance text-muted-foreground">
               Every tool does one job, does it with real data, and tells you
@@ -397,6 +412,9 @@ export default function LandingPage() {
               </a>
               <a href="#tools" className="text-sm text-foreground hover:text-brand-strong">
                 Content Grader
+              </a>
+              <a href="#tools" className="text-sm text-foreground hover:text-brand-strong">
+                Local Listing Checker
               </a>
             </div>
             <div className="flex flex-col gap-2.5">
