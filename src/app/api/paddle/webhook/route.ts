@@ -9,7 +9,6 @@ import { planFromPriceId } from "@/lib/plans";
  * Same two rules as any billing webhook:
  *
  * 1. Verify the signature against the raw body before trusting a byte of it.
- *    The SDK's unmarshal does verification and parsing in one step.
  * 2. Return 2xx for anything understood, even when ignored. A non-2xx makes
  *    Paddle retry, and retrying will not fix an event we do not care about.
  *
@@ -22,18 +21,18 @@ import { planFromPriceId } from "@/lib/plans";
 type PaddleSubscriptionEvent = {
   id: string;
   status: string;
-  customerId?: string | null;
-  currentBillingPeriod?: { startsAt?: string | null; endsAt?: string | null } | null;
-  scheduledChange?: { action?: string | null; effectiveAt?: string | null } | null;
-  customData?: unknown;
+  customer_id?: string | null;
+  current_billing_period?: { starts_at?: string | null; ends_at?: string | null } | null;
+  scheduled_change?: { action?: string | null; effective_at?: string | null } | null;
+  custom_data?: unknown;
   items?: Array<{ price?: { id?: string | null } | null }>;
 };
 
 type PaddleTransactionEvent = {
   id: string;
   status: string;
-  customerId?: string | null;
-  customData?: unknown;
+  customer_id?: string | null;
+  custom_data?: unknown;
   items?: Array<{ price?: { id?: string | null } | null }>;
 };
 
@@ -52,15 +51,34 @@ export async function POST(request: Request) {
   // Raw body, before any JSON parsing, or the signature will not verify.
   const payload = await request.text();
 
+  // Verify and parse as two separate steps, deliberately.
+  //
+  // The SDK's unmarshal() also builds a fully typed event object, and that
+  // construction throws on any payload missing a nested field it expects.
+  // Wrapping both in one catch reports a parsing problem as a signature
+  // failure, which sends you hunting for the wrong bug and makes Paddle retry
+  // an event that will never succeed. So: SDK for the crypto, our own parse
+  // for the shape.
+  let valid: boolean;
+  try {
+    valid = await paddle().webhooks.isSignatureValid(payload, secret, signature);
+  } catch (err) {
+    console.error("[paddle] could not check signature", err);
+    return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+  }
+  if (!valid) {
+    console.error("[paddle] signature did not match");
+    return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+  }
+
   let event: { eventType: string; data: unknown };
   try {
-    event = (await paddle().webhooks.unmarshal(payload, secret, signature)) as unknown as {
-      eventType: string;
-      data: unknown;
-    };
+    const parsed = JSON.parse(payload) as { event_type?: string; data?: unknown };
+    if (!parsed.event_type) throw new Error("no event_type");
+    event = { eventType: parsed.event_type, data: parsed.data };
   } catch (err) {
-    console.error("[paddle] signature verification failed", err);
-    return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+    console.error("[paddle] could not parse a signed payload", err);
+    return NextResponse.json({ error: "Malformed payload" }, { status: 400 });
   }
 
   try {
@@ -106,7 +124,7 @@ function normalizeStatus(paddleStatus: string): string {
 }
 
 async function syncSubscription(sub: PaddleSubscriptionEvent) {
-  const userId = await resolveUserId(sub.customData, sub.customerId);
+  const userId = await resolveUserId(sub.custom_data, sub.customer_id);
   if (!userId) {
     console.error("[paddle] subscription with no resolvable user", sub.id);
     return;
@@ -136,12 +154,12 @@ async function syncSubscription(sub: PaddleSubscriptionEvent) {
     interval: matched.interval,
     paddleSubscriptionId: sub.id,
     paddlePriceId: priceId,
-    currentPeriodEnd: sub.currentBillingPeriod?.endsAt
-      ? new Date(sub.currentBillingPeriod.endsAt)
+    currentPeriodEnd: sub.current_billing_period?.ends_at
+      ? new Date(sub.current_billing_period.ends_at)
       : null,
     // Paddle keeps the subscription active and records the pending cancel as a
     // scheduled change, rather than flipping status the way Stripe does.
-    cancelAtPeriodEnd: sub.scheduledChange?.action === "cancel",
+    cancelAtPeriodEnd: sub.scheduled_change?.action === "cancel",
   };
 
   await db.subscription.upsert({
@@ -163,7 +181,7 @@ async function onTransactionCompleted(txn: PaddleTransactionEvent) {
   const matched = priceId ? planFromPriceId(priceId) : null;
   if (!matched || matched.plan !== "lifetime") return;
 
-  const userId = await resolveUserId(txn.customData, txn.customerId);
+  const userId = await resolveUserId(txn.custom_data, txn.customer_id);
   if (!userId) {
     console.error("[paddle] completed transaction with no resolvable user", txn.id);
     return;
