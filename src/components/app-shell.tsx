@@ -19,6 +19,7 @@ import {
   LogOut,
   User,
   CreditCard,
+  Inbox,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -45,9 +46,11 @@ const NAV = [
 export function AppShell({
   children,
   defaultCollapsed = false,
+  isAdmin = false,
 }: {
   children: React.ReactNode;
   defaultCollapsed?: boolean;
+  isAdmin?: boolean;
 }) {
   const pathname = usePathname();
   const { data: session } = useSession();
@@ -68,6 +71,20 @@ export function AppShell({
   }
 
   const railWidth = collapsed ? "lg:w-[68px]" : "lg:w-60";
+
+  // Appended rather than added to NAV, so a non-admin never receives the item
+  // at all, not even hidden in the markup.
+  const nav = isAdmin
+    ? [
+        ...NAV,
+        {
+          href: "/admin/feedback",
+          label: "Feedback",
+          icon: Inbox,
+          match: (p: string) => p.startsWith("/admin"),
+        },
+      ]
+    : NAV;
 
   return (
     <div className="min-h-dvh bg-shell">
@@ -148,7 +165,7 @@ export function AppShell({
           className={`sticky top-14 z-30 hidden h-[calc(100dvh-3.5rem)] shrink-0 flex-col bg-shell pb-3 lg:flex ${railWidth} ${animate ? "transition-[width] duration-200" : ""}`}
         >
           <ul className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3 py-3">
-            {NAV.map((item) => {
+            {nav.map((item) => {
               const active = item.match(pathname);
               return (
                 <li key={item.href}>
@@ -198,7 +215,7 @@ export function AppShell({
           aria-label="Tools"
           className="fixed inset-x-0 bottom-0 z-40 flex gap-1 overflow-x-auto bg-shell px-3 py-2 lg:hidden"
         >
-          {NAV.map((item) => {
+          {nav.map((item) => {
             const active = item.match(pathname);
             return (
               <Link

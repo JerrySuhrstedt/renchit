@@ -38,6 +38,28 @@ model User {
   pageSpeedChecks PageSpeedCheck[]
   searchConsoleReports SearchConsoleReport[]
   subscription   Subscription?
+  feedback       Feedback[]
+}
+
+model Feedback {
+  id     String @id @default(cuid())
+  user   User?  @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId String?
+
+  kind    String // bug | confusing | idea | praise
+  message String
+
+  // Captured automatically. The difference between "it didn't work" and
+  // something actionable is knowing where they were and what they could see.
+  pageUrl   String?
+  plan      String?
+  userAgent String?
+  viewport  String?
+
+  status    String   @default("new") // new | triaged | done
+  createdAt DateTime @default(now())
+
+  @@index([status, createdAt])
 }
 
 model Subscription {
