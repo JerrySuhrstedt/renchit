@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { auth } from "@/lib/auth";
-import { isAdminEmail } from "@/lib/admin";
+import { adminForApi } from "@/lib/admin";
 
 const STATUSES = new Set(["new", "triaged", "done"]);
 
@@ -10,8 +9,8 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const session = await auth();
-  if (!isAdminEmail(session?.user?.email)) {
+  const caller = await adminForApi("admin");
+  if (!caller) {
     // 404 rather than 403: no reason to confirm this route exists to anyone
     // who is not an admin.
     return NextResponse.json({ error: "Not found" }, { status: 404 });

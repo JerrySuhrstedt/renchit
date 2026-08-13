@@ -78,8 +78,8 @@ export function AppShell({
     ? [
         ...NAV,
         {
-          href: "/admin/feedback",
-          label: "Feedback",
+          href: "/admin",
+          label: "Admin",
           icon: Inbox,
           match: (p: string) => p.startsWith("/admin"),
         },

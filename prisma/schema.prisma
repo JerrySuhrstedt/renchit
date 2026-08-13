@@ -29,6 +29,11 @@ model User {
   // any individual subscription: cancel, resubscribe, and it is still them.
   paddleCustomerId String? @unique
 
+  // owner | admin | user. Owner is the only role that can change roles, and
+  // the last owner cannot be demoted, so the app can never be locked out of
+  // its own admin area.
+  role String @default("user")
+
   accounts       Account[]
   sessions       Session[]
   sites          Site[]

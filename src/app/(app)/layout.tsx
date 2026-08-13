@@ -1,8 +1,7 @@
 import { cookies } from "next/headers";
 import { AppShell, SIDEBAR_COOKIE } from "@/components/app-shell";
 import { FeedbackWidget } from "@/components/feedback-widget";
-import { auth } from "@/lib/auth";
-import { isAdminEmail } from "@/lib/admin";
+import { isAdmin } from "@/lib/admin";
 
 /**
  * Wraps every signed-in tool page. Living in a route group means the shell is
@@ -14,10 +13,10 @@ import { isAdminEmail } from "@/lib/admin";
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const store = await cookies();
   const collapsed = store.get(SIDEBAR_COOKIE)?.value === "1";
-  const session = await auth();
+  const admin = await isAdmin();
 
   return (
-    <AppShell defaultCollapsed={collapsed} isAdmin={isAdminEmail(session?.user?.email)}>
+    <AppShell defaultCollapsed={collapsed} isAdmin={admin}>
       {children}
       <FeedbackWidget />
     </AppShell>
