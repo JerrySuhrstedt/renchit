@@ -92,8 +92,18 @@ export default async function BillingPage({
 
         {ent.plan === "lifetime" && (
           <p className="mt-4 rounded-2xl bg-success-tint px-4 py-3 text-sm text-muted-foreground">
-            You are a <strong className="text-foreground">Founding Member</strong>. This never
-            renews and will never be charged again.
+            {ent.isComp ? (
+              <>
+                You have <strong className="text-foreground">complimentary access</strong> as an
+                early tester. Every tool, no charge, no expiry. Thank you for
+                kicking the tires.
+              </>
+            ) : (
+              <>
+                You are a <strong className="text-foreground">Founding Member</strong>. This never
+                renews and will never be charged again.
+              </>
+            )}
           </p>
         )}
 

@@ -24,6 +24,8 @@ export type Entitlements = {
   allowedTools: "all" | ToolKey[];
   monitoring: Monitoring;
   isPaid: boolean;
+  /** Comped account (early tester). Full access, but nothing was charged. */
+  isComp: boolean;
 
   // Trial
   trialEndsAt: Date | null;
@@ -57,6 +59,7 @@ export async function getEntitlements(userId: string): Promise<Entitlements> {
       trialEndsAt: true,
       freeTool: true,
       freeToolChangedAt: true,
+      stripeCustomerId: true,
       subscription: true,
     },
   });
@@ -71,10 +74,11 @@ export async function getEntitlements(userId: string): Promise<Entitlements> {
   //    date arithmetic.
   if (sub && sub.plan === "lifetime" && ENTITLING_STATUSES.has(sub.status)) {
     return fromPlan("lifetime", "active", {
+      isComp: sub.interval === "comp",
       trialEndsAt: user.trialEndsAt,
       freeTool,
       freeToolSwitchableAt: null,
-      hasStripeCustomer: true,
+      hasStripeCustomer: Boolean(user.stripeCustomerId),
       cancelAtPeriodEnd: false,
       currentPeriodEnd: null,
     });
@@ -85,10 +89,11 @@ export async function getEntitlements(userId: string): Promise<Entitlements> {
     const notLapsed = !sub.currentPeriodEnd || sub.currentPeriodEnd.getTime() > now.getTime();
     if (notLapsed) {
       return fromPlan(sub.plan, sub.status === "past_due" ? "past_due" : "active", {
+        isComp: false,
         trialEndsAt: user.trialEndsAt,
         freeTool,
         freeToolSwitchableAt: null,
-        hasStripeCustomer: true,
+        hasStripeCustomer: Boolean(user.stripeCustomerId),
         cancelAtPeriodEnd: sub.cancelAtPeriodEnd,
         currentPeriodEnd: sub.currentPeriodEnd,
       });
@@ -98,17 +103,23 @@ export async function getEntitlements(userId: string): Promise<Entitlements> {
   // 3. Still inside the signup trial.
   if (user.trialEndsAt && user.trialEndsAt.getTime() > now.getTime()) {
     return fromPlan("trial", "trialing", {
+      isComp: false,
       trialEndsAt: user.trialEndsAt,
       freeTool,
       freeToolSwitchableAt: null,
-      hasStripeCustomer: Boolean(sub),
+      hasStripeCustomer: Boolean(user.stripeCustomerId),
       cancelAtPeriodEnd: false,
       currentPeriodEnd: null,
     });
   }
 
   // 4. Free.
-  return freeEntitlements(user.trialEndsAt, freeTool, user.freeToolChangedAt, Boolean(sub));
+  return freeEntitlements(
+    user.trialEndsAt,
+    freeTool,
+    user.freeToolChangedAt,
+    Boolean(user.stripeCustomerId),
+  );
 }
 
 function isPaidPlan(plan: string): plan is PlanKey {
@@ -126,6 +137,7 @@ function freeEntitlements(
     : null;
 
   return fromPlan("free", "free", {
+    isComp: false,
     trialEndsAt,
     freeTool,
     freeToolSwitchableAt:
@@ -141,6 +153,7 @@ function fromPlan(
   status: Entitlements["status"],
   extra: Pick<
     Entitlements,
+    | "isComp"
     | "trialEndsAt"
     | "freeTool"
     | "freeToolSwitchableAt"

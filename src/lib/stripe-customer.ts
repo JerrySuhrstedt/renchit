@@ -29,9 +29,19 @@ export async function getOrCreateCustomerId(userId: string): Promise<string> {
   return customer.id;
 }
 
-/** How many Founding Member seats have actually been paid for. */
+/**
+ * How many Founding Member seats have actually been paid for.
+ *
+ * Comped accounts (early testers, friends) are stored as lifetime with
+ * interval "comp" so they get permanent access without consuming one of the
+ * 100 seats that are for sale.
+ */
 export async function lifetimeSeatsSold(): Promise<number> {
   return db.subscription.count({
-    where: { plan: "lifetime", status: { in: ["active", "trialing", "past_due"] } },
+    where: {
+      plan: "lifetime",
+      interval: "once",
+      status: { in: ["active", "trialing", "past_due"] },
+    },
   });
 }
