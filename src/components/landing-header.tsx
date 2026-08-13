@@ -1,10 +1,13 @@
 import Link from "next/link";
 import { Logo } from "@/components/logo";
 
+// Absolute (not bare "#tools") so the same header works on /pricing and the
+// legal pages, where those sections don't exist to scroll to.
 const NAV_LINKS = [
-  { href: "#tools", label: "Tools" },
-  { href: "#how-it-works", label: "How it works" },
-  { href: "#faq", label: "FAQ" },
+  { href: "/#tools", label: "Tools" },
+  { href: "/#how-it-works", label: "How it works" },
+  { href: "/pricing", label: "Pricing" },
+  { href: "/#faq", label: "FAQ" },
 ];
 
 export function LandingHeader() {

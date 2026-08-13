@@ -150,6 +150,9 @@ export default function LandingPage() {
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/20" />
           <div className="relative mx-auto flex w-full max-w-6xl flex-col items-start gap-6 px-5 py-16 sm:px-8">
+            <span className="inline-flex items-center rounded-full bg-white/15 px-3.5 py-1.5 text-sm font-semibold text-white ring-1 ring-inset ring-white/25 backdrop-blur-sm">
+              The easiest web check tool on the internet
+            </span>
             <h1 className="max-w-xl text-balance text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
               Stop guessing what&apos;s wrong with your website.
             </h1>
@@ -439,6 +442,9 @@ export default function LandingPage() {
               <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
                 Account
               </p>
+              <Link href="/pricing" className="text-sm text-foreground hover:text-brand-strong">
+                Pricing
+              </Link>
               <Link href="/sign-in" className="text-sm text-foreground hover:text-brand-strong">
                 Sign in
               </Link>
