@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "@/lib/db";
+import { TRIAL_DAYS } from "@/lib/plans";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(db),
@@ -43,6 +44,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     // before accounts existed (a one-time migration, not an ongoing rule).
     async createUser({ user }) {
       if (!user.id) return;
+
+      // Every new account gets the full-access trial. Prisma cannot express
+      // "now plus 14 days" as a column default, so it is granted here, at the
+      // single point where an account comes into existence.
+      await db.user.update({
+        where: { id: user.id },
+        data: { trialEndsAt: new Date(Date.now() + TRIAL_DAYS * 86_400_000) },
+      });
+
       await db.site.updateMany({ where: { userId: null }, data: { userId: user.id } });
       await db.keywordSearch.updateMany({ where: { userId: null }, data: { userId: user.id } });
       await db.contentGrade.updateMany({ where: { userId: null }, data: { userId: user.id } });

@@ -69,7 +69,7 @@
 }
 
 :root {
-  /* Warm cream ground — a desk-lit, daytime workspace, never a sterile SaaS white */
+  /* Warm cream ground: a desk-lit, daytime workspace, never a sterile SaaS white */
   --background: #fdf8f3;
   --foreground: #241c15;
   --card: #ffffff;
@@ -98,7 +98,7 @@
   --input: #eadfd1;
   --ring: #fc5434;
 
-  /* Severity / status palette — distinct hues from brand so "critical" never
+  /* Severity / status palette: distinct hues from brand so "critical" never
      reads as "call to action" */
   --critical: #dc2626;
   --critical-tint: #fdecec;
@@ -116,7 +116,7 @@
   --chart-5: var(--critical);
   --radius: 1.1rem;
 
-  /* App shell — the dark "L" of sidebar + top bar wrapping the light work
+  /* App shell: the dark "L" of sidebar + top bar wrapping the light work
      surface. Same warm near-black as dark mode's ground, so the chrome reads
      as the same material in either theme rather than a bolted-on slate. */
   --shell: #1d1712;

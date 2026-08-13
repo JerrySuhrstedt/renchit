@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { requireUserIdForApi } from "@/lib/session";
+import { requireToolAccess, requireSiteCapacity } from "@/lib/entitlements";
 import { checkListing } from "@/lib/local-listing";
 
 type PostBody = {
@@ -16,6 +17,9 @@ type PostBody = {
 export async function POST(request: Request) {
   const userId = await requireUserIdForApi();
   if (userId instanceof NextResponse) return userId;
+
+  const ent = await requireToolAccess(userId, "local");
+  if (ent instanceof NextResponse) return ent;
 
   let body: PostBody;
   try {
@@ -52,6 +56,10 @@ export async function POST(request: Request) {
   let siteId: string | undefined;
   try {
     const origin = new URL(/^https?:\/\//i.test(websiteUrl) ? websiteUrl : `https://${websiteUrl}`).origin;
+
+    const overLimit = await requireSiteCapacity(userId, ent, origin);
+    if (overLimit) return overLimit;
+
     const site = await db.site.upsert({
       where: { userId_rootUrl: { userId, rootUrl: origin } },
       update: {},

@@ -16,6 +16,19 @@ model User {
   linkedinUrl   String?
   createdAt     DateTime  @default(now())
 
+  // Every account starts with a full-access trial. Null means the trial was
+  // never granted (only possible for rows created before billing existed).
+  trialEndsAt   DateTime?
+
+  // Once the trial lapses an unpaid user keeps exactly one tool. Null means
+  // they have not picked yet, which the app treats as "must choose".
+  freeTool          String?
+  freeToolChangedAt DateTime?
+
+  // Lives on the user rather than on Subscription because a customer outlives
+  // any individual subscription: cancel, resubscribe, and it is still them.
+  stripeCustomerId String? @unique
+
   accounts       Account[]
   sessions       Session[]
   sites          Site[]
@@ -24,6 +37,29 @@ model User {
   localListings  LocalListing[]
   pageSpeedChecks PageSpeedCheck[]
   searchConsoleReports SearchConsoleReport[]
+  subscription   Subscription?
+}
+
+model Subscription {
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
+
+  stripeSubscriptionId String? @unique
+  stripePriceId        String?
+
+  plan     String // starter | pro | agency | lifetime
+  status   String // active | trialing | past_due | canceled | incomplete | unpaid
+  interval String? // month | year | once
+
+  // Null for lifetime, which never renews and so never lapses.
+  currentPeriodEnd  DateTime?
+  cancelAtPeriodEnd Boolean   @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
 }
 
 model Account {

@@ -1,12 +1,16 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { requireUserIdForApi } from "@/lib/session";
+import { requireToolAccess, requireSiteCapacity } from "@/lib/entitlements";
 import { getSearchConsoleAccessToken } from "@/lib/google-token";
 import { fetchSearchConsoleReport } from "@/lib/search-console";
 
 export async function POST(request: Request) {
   const userId = await requireUserIdForApi();
   if (userId instanceof NextResponse) return userId;
+
+  const ent = await requireToolAccess(userId, "search-console");
+  if (ent instanceof NextResponse) return ent;
 
   let body: { propertyUrl?: string };
   try {
@@ -35,6 +39,10 @@ export async function POST(request: Request) {
     const host = propertyUrl.startsWith("sc-domain:")
       ? `https://${propertyUrl.slice("sc-domain:".length)}`
       : new URL(propertyUrl).origin;
+
+    const overLimit = await requireSiteCapacity(userId, ent, host);
+    if (overLimit) return overLimit;
+
     const site = await db.site.upsert({
       where: { userId_rootUrl: { userId, rootUrl: host } },
       update: {},

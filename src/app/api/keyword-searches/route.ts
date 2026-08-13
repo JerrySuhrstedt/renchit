@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { requireUserIdForApi } from "@/lib/session";
+import { requireToolAccess } from "@/lib/entitlements";
 import { generateKeywordIdeas } from "@/lib/keyword-ideas";
 
 export async function GET() {
@@ -30,6 +31,10 @@ export async function GET() {
 export async function POST(request: Request) {
   const userId = await requireUserIdForApi();
   if (userId instanceof NextResponse) return userId;
+
+  // Keyword research is not tied to a website, so there is no site limit here.
+  const ent = await requireToolAccess(userId, "keywords");
+  if (ent instanceof NextResponse) return ent;
 
   let body: { seed?: string };
   try {

@@ -1,6 +1,7 @@
 import { NextResponse, after } from "next/server";
 import { db } from "@/lib/db";
 import { requireUserIdForApi } from "@/lib/session";
+import { requireToolAccess, requireSiteCapacity } from "@/lib/entitlements";
 import { normalizeAuditUrl } from "@/lib/validation";
 import { startAuditJob } from "@/lib/audit-job";
 
@@ -39,6 +40,9 @@ export async function POST(request: Request) {
   const userId = await requireUserIdForApi();
   if (userId instanceof NextResponse) return userId;
 
+  const ent = await requireToolAccess(userId, "audit");
+  if (ent instanceof NextResponse) return ent;
+
   let body: { url?: string };
   try {
     body = await request.json();
@@ -56,6 +60,9 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json({ error: "That doesn't look like a valid URL" }, { status: 400 });
   }
+
+  const overLimit = await requireSiteCapacity(userId, ent, rootUrl);
+  if (overLimit) return overLimit;
 
   const site = await db.site.upsert({
     where: { userId_rootUrl: { userId, rootUrl } },

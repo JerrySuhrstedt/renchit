@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { requireUserIdForApi } from "@/lib/session";
+import { requireToolAccess, requireSiteCapacity } from "@/lib/entitlements";
 import { gradeContent } from "@/lib/content-grader";
 
 export async function GET() {
@@ -29,6 +30,9 @@ export async function POST(request: Request) {
   const userId = await requireUserIdForApi();
   if (userId instanceof NextResponse) return userId;
 
+  const ent = await requireToolAccess(userId, "grader");
+  if (ent instanceof NextResponse) return ent;
+
   let body: { url?: string; targetKeyword?: string };
   try {
     body = await request.json();
@@ -49,6 +53,10 @@ export async function POST(request: Request) {
   let siteId: string | undefined;
   try {
     const origin = new URL(/^https?:\/\//i.test(url) ? url : `https://${url}`).origin;
+
+    const overLimit = await requireSiteCapacity(userId, ent, origin);
+    if (overLimit) return overLimit;
+
     const site = await db.site.upsert({
       where: { userId_rootUrl: { userId, rootUrl: origin } },
       update: {},

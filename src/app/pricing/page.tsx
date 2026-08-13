@@ -1,42 +1,58 @@
 import Link from "next/link";
 import { LandingHeader } from "@/components/landing-header";
-import { PricingTiers } from "@/components/pricing-tiers";
+import { PricingTiers, LifetimeOffer } from "@/components/pricing-tiers";
+import { LIFETIME_SEATS, TRIAL_DAYS } from "@/lib/plans";
+import { lifetimeSeatsSold } from "@/lib/stripe-customer";
 import { Logo } from "@/components/logo";
 
 export const metadata = {
   title: "Pricing | renchit",
   description:
-    "Start free with one site and three audits a month. Paid plans from $7/month. No credit card required to begin.",
+    "Try every tool free for 14 days, no credit card. Then keep one tool free forever, or go unlimited from $9/month.",
 };
+
+// Seats remaining is read per request, so a sold-out deal stops selling the
+// moment the last one goes.
+export const dynamic = "force-dynamic";
 
 const FAQS = [
   {
-    q: "Is the free plan really free?",
-    a: "Yes. One website, three audits a month, and every tool. No credit card, no trial timer, no expiry. If that's all you need, stay on it as long as you like.",
+    q: "Do I need a credit card to start?",
+    a: "No. Sign up and all six tools are unlocked for 14 days with no card, no billing details, and nothing to cancel. If you do nothing at the end of the trial you simply move to the free plan.",
+  },
+  {
+    q: "What happens when the 14 days are up?",
+    a: "You pick one tool to keep, free, forever. Everything you already ran stays visible and readable, we never delete or hide your results. You just cannot start new runs with the other five unless you upgrade.",
+  },
+  {
+    q: "Can I change which free tool I keep?",
+    a: "Yes, once every 30 days. That cooldown is the only thing making the limit mean anything, otherwise everyone would just switch tools whenever they wanted and have all six.",
   },
   {
     q: "What counts as a website?",
-    a: "One domain. If you run yoursite.com, that's one website no matter how many pages we crawl on it. Audits, grades, keyword research, and speed tests for that domain all roll up under it.",
+    a: "One domain. If you run yoursite.com, that is one website no matter how many pages we crawl on it. Audits, grades, keyword research, and speed tests for that domain all roll up under it.",
   },
   {
-    q: "What happens if I hit the free audit limit?",
-    a: "Nothing breaks and nothing is deleted. You keep full access to every audit you've already run and to the other tools. You just wait until next month or upgrade for unlimited runs.",
+    q: "What is the Founding Member deal?",
+    a: "One payment of $199 for Pro-level access that never renews: 5 websites, all six tools, and every core tool we add later. We are capping it at 100 because it is funding the build, and once those are gone it will not come back.",
   },
   {
     q: "Can I change or cancel my plan?",
-    a: "Any time, and cancellation takes effect at the end of the period you've already paid for. Your data stays put if you drop back to the free plan.",
+    a: "Any time, and cancellation takes effect at the end of the period you have already paid for. Your data stays put if you drop back to the free plan.",
   },
   {
-    q: "What does “unlimited websites” actually mean?",
-    a: "Exactly what it says for any normal use, including agencies managing dozens of client sites. There's a generous fair-use ceiling in the background purely to stop automated abuse. You would have to be running hundreds of sites on daily audits to notice it.",
+    q: "What does \u201cunlimited websites\u201d actually mean?",
+    a: "Exactly what it says for any normal use, including agencies managing dozens of client sites. There is a generous fair-use ceiling in the background purely to stop automated abuse. You would have to be running hundreds of sites on daily audits to notice it.",
   },
   {
     q: "Do you offer refunds?",
-    a: "Email us within 30 days at info@sumolab.co and we'll refund you, no argument. At these prices we'd rather you feel fine about trying it.",
+    a: "Email us within 30 days at info@sumolab.co and we will refund you, no argument. That includes the Founding Member deal.",
   },
 ];
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  const seatsLeft = Math.max(0, LIFETIME_SEATS - (await lifetimeSeatsSold()));
+
   return (
     <>
       <LandingHeader />
@@ -47,11 +63,11 @@ export default function PricingPage() {
               The easiest web check tool on the internet
             </span>
             <h1 className="max-w-2xl text-balance text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl">
-              Start free. Upgrade when it&apos;s worth it.
+              Try everything free. No card needed.
             </h1>
             <p className="max-w-xl text-balance text-lg text-muted-foreground">
-              Every plan includes all five tools. What changes is how many
-              websites you manage and how often you can audit them.
+              All six tools are unlocked for {TRIAL_DAYS} days. After that keep
+              one tool free forever, or pick a plan and keep the lot.
             </p>
           </div>
 
@@ -62,6 +78,10 @@ export default function PricingPage() {
           <p className="mt-8 text-center text-sm text-muted-foreground">
             Prices in USD. Cancel any time.
           </p>
+
+          <div className="mt-16">
+            <LifetimeOffer seatsLeft={seatsLeft} />
+          </div>
         </section>
 
         <section className="border-y border-border/70 bg-card/60">

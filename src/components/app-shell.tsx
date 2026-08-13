@@ -18,6 +18,7 @@ import {
   PanelLeftOpen,
   LogOut,
   User,
+  CreditCard,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -125,6 +126,10 @@ export function AppShell({
                 <DropdownMenuItem render={<Link href="/profile" />}>
                   <User className="h-4 w-4" />
                   Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem render={<Link href="/billing" />}>
+                  <CreditCard className="h-4 w-4" />
+                  Billing
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => signOut({ redirectTo: "/sign-in" })}>
                   <LogOut className="h-4 w-4" />
