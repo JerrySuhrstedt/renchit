@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { requireAdmin } from "@/lib/admin";
 import { FeedbackRow } from "@/components/feedback-admin";
 import { AlertTriangle, Inbox } from "lucide-react";
+import { FilterChips } from "@/components/admin-stat";
 
 export const dynamic = "force-dynamic";
 
@@ -65,8 +66,24 @@ async function recentFailures() {
   ].sort((a, b) => b.at.getTime() - a.at.getTime());
 }
 
-export default async function AdminFeedbackPage() {
+const VIEWS = ["all", "new", "failures"] as const;
+type View = (typeof VIEWS)[number];
+const VIEW_LABELS: Record<View, string> = {
+  all: "Everything",
+  new: "New reports",
+  failures: "Tool failures",
+};
+
+export default async function AdminFeedbackPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ view?: string }>;
+}) {
   await requireAdmin();
+  const { view: rawView } = await searchParams;
+  const view: View = (VIEWS as readonly string[]).includes(rawView ?? "")
+    ? (rawView as View)
+    : "all";
 
   const [feedback, failures] = await Promise.all([
     db.feedback.findMany({
@@ -78,6 +95,11 @@ export default async function AdminFeedbackPage() {
   ]);
 
   const unread = feedback.filter((f) => f.status === "new").length;
+  // Arriving from a dashboard card should land on just that thing, not on a
+  // page where you still have to hunt for it.
+  const showFailures = view === "all" || view === "failures";
+  const showReports = view === "all" || view === "new";
+  const reports = view === "new" ? feedback.filter((f) => f.status === "new") : feedback;
 
   return (
     <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col px-5 pb-24 pt-8 sm:px-8">
@@ -86,8 +108,19 @@ export default async function AdminFeedbackPage() {
         What people told you, and what broke without anyone telling you.
       </p>
 
+      <FilterChips
+        basePath="/admin/feedback"
+        active={view}
+        param="view"
+        options={[
+          { key: "all", label: VIEW_LABELS.all, count: failures.length + feedback.length },
+          { key: "new", label: VIEW_LABELS.new, count: unread },
+          { key: "failures", label: VIEW_LABELS.failures, count: failures.length },
+        ]}
+      />
+
       {/* Silent failures */}
-      <section className="mt-8">
+      <section className={showFailures ? "mt-8" : "hidden"}>
         <h2 className="flex items-center gap-2 text-sm font-bold text-foreground">
           <AlertTriangle className="h-4 w-4 text-warning" aria-hidden />
           Tool failures, last 7 days ({failures.length})
@@ -120,19 +153,19 @@ export default async function AdminFeedbackPage() {
       </section>
 
       {/* Reports */}
-      <section className="mt-10">
+      <section className={showReports ? "mt-10" : "hidden"}>
         <h2 className="flex items-center gap-2 text-sm font-bold text-foreground">
           <Inbox className="h-4 w-4 text-brand-strong" aria-hidden />
           Reports ({unread} new of {feedback.length})
         </h2>
 
-        {feedback.length === 0 ? (
+        {reports.length === 0 ? (
           <p className="mt-3 rounded-2xl border border-border bg-card px-5 py-4 text-sm text-muted-foreground">
-            Nobody has sent anything yet.
+            {view === "new" ? "No new reports." : "Nobody has sent anything yet."}
           </p>
         ) : (
           <ul className="mt-3 flex flex-col gap-2">
-            {feedback.map((f) => (
+            {reports.map((f) => (
               <FeedbackRow
                 key={f.id}
                 id={f.id}

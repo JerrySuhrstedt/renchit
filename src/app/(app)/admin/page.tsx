@@ -2,6 +2,7 @@ import Link from "next/link";
 import { db } from "@/lib/db";
 import { requireAdmin } from "@/lib/admin";
 import { Inbox, Users, AlertTriangle } from "lucide-react";
+import { AdminStat } from "@/components/admin-stat";
 
 export const dynamic = "force-dynamic";
 
@@ -46,14 +47,25 @@ export default async function AdminHomePage() {
       </p>
 
       <div className="mt-8 grid gap-3 sm:grid-cols-2">
-        <Stat label="New reports" value={newFeedback} tone={newFeedback > 0 ? "brand" : "plain"} />
-        <Stat
+        <AdminStat
+          label="New reports"
+          value={newFeedback}
+          href="/admin/feedback?view=new"
+          tone={newFeedback > 0 ? "brand" : "plain"}
+        />
+        <AdminStat
           label="Tool failures, 7 days"
           value={failures}
+          href="/admin/feedback?view=failures"
           tone={failures > 0 ? "warning" : "plain"}
         />
-        <Stat label="Accounts" value={totalUsers} />
-        <Stat label="Paying" value={paying} sub={`${comped} comped, ${admins} admin`} />
+        <AdminStat label="Accounts" value={totalUsers} href="/admin/users" />
+        <AdminStat
+          label="Paying"
+          value={paying}
+          href="/admin/users?filter=paying"
+          sub={`${comped} comped, ${admins} admin`}
+        />
       </div>
 
       <div className="mt-8 grid gap-3 sm:grid-cols-2">
@@ -79,28 +91,6 @@ export default async function AdminHomePage() {
         </p>
       )}
     </main>
-  );
-}
-
-function Stat({
-  label,
-  value,
-  sub,
-  tone = "plain",
-}: {
-  label: string;
-  value: number;
-  sub?: string;
-  tone?: "plain" | "brand" | "warning";
-}) {
-  const valueColor =
-    tone === "brand" ? "text-brand-strong" : tone === "warning" ? "text-warning" : "text-foreground";
-  return (
-    <div className="rounded-2xl border border-border bg-card px-5 py-4">
-      <p className="text-sm text-muted-foreground">{label}</p>
-      <p className={`mt-1 text-3xl font-extrabold tracking-tight ${valueColor}`}>{value}</p>
-      {sub && <p className="mt-0.5 text-xs text-muted-foreground">{sub}</p>}
-    </div>
   );
 }
 
