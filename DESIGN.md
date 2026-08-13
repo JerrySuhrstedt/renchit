@@ -1,5 +1,5 @@
 ---
-name: SumoLab Web Wrench
+name: renchit
 description: A site audit tool with the warmth of Mailchimp, not the density of an SEO suite.
 colors:
   brand: "#fc5434"
@@ -66,13 +66,13 @@ components:
     rounded: "{rounded.3xl}"
 ---
 
-# Design System: SumoLab Web Wrench
+# Design System: renchit
 
 ## Overview
 
 **Creative North Star: "The Friendly Mechanic"**
 
-Web Wrench is what happens when a site-auditing tool is designed by the same
+renchit is what happens when a site-auditing tool is designed by the same
 instincts that make Mailchimp pleasant to open on a Monday morning: warm
 paper-white ground instead of clinical SaaS gray, one confident loud color
 instead of a dashboard of competing accents, and copy that explains a problem
@@ -87,22 +87,22 @@ shadows, no colored side-borders standing in for severity.
 
 **Key Characteristics:**
 - Warm cream ground, never sterile white-on-white
-- One committed brand accent (SumoLab's pinned coral-red) used sparingly and precisely
+- One committed brand accent (the pinned coral-red) used sparingly and precisely
 - Big, soft, rounded-3xl cards as the primary container language
-- A single real illustrated asset (the SumoLab sumo-knot mark) as the system's recurring motif, not decorative icon soup
+- A single real illustrated asset (the renchit logo mark) as the system's recurring motif, not decorative icon soup
 - Severity communicated by tinted pill + colored dot, never by colored borders
 - One authored motion set-piece: the health-score dial's animated reveal
 
 ## Colors
 
 A restrained neutral field (cream + warm near-black ink) carries the whole
-surface; the SumoLab coral-red is the only saturated color allowed to command
+surface; the coral-red is the only saturated color allowed to command
 attention, and status colors are deliberately a different hue family so they
 never get mistaken for a call to action.
 
 ### Primary
-- **SumoLab Coral** (`#fc5434`): The pinned brand color. Used at full strength only for large/decorative fields — the SumoLab mark, the "Web Wrench" wordmark accent, the health dial's ring stroke, hover glows. Never used as body text (fails 4.5:1 on cream) or button fills.
-- **Coral Ember** (`#c43d1c`): A deepened variant of the brand color, same hue family, used wherever brand color needs to carry white text at AA contrast — primary buttons, the "Open" filter tab, the SumoLab wordmark's "Web Wrench" text.
+- **Renchit Coral** (`#fc5434`): The pinned brand color. Used at full strength only for large/decorative fields — the renchit mark, the "renchit" wordmark accent, the health dial's ring stroke, hover glows. Never used as body text (fails 4.5:1 on cream) or button fills.
+- **Coral Ember** (`#c43d1c`): A deepened variant of the brand color, same hue family, used wherever brand color needs to carry white text at AA contrast — primary buttons, the "Open" filter tab, the renchit wordmark.
 - **Coral Whisper** (`#fef0eb`): The brand's tint, used as a soft background wash behind brand-colored icons (e.g. the crawling-state avatar).
 
 ### Neutral
@@ -119,7 +119,7 @@ never get mistaken for a call to action.
 - **Confirmed Green** (`#15803d` / tint `#e9f7ee`): Healthy score band, resolved issues, "nothing left to fix" empty state.
 
 ### Named Rules
-**The One Loud Color Rule.** SumoLab Coral is the only saturated brand color on any screen. Status colors exist to inform, not to compete with it — they always render at lower visual weight (smaller pills, never full-bleed fields).
+**The One Loud Color Rule.** Renchit Coral is the only saturated brand color on any screen. Status colors exist to inform, not to compete with it — they always render at lower visual weight (smaller pills, never full-bleed fields).
 
 ## Typography
 
@@ -177,13 +177,13 @@ Corners are large and soft throughout — `rounded-3xl` (2.42rem) on primary car
 An SVG radial gauge that animates from 0 on mount: an exponential ease-out count-up drives both the numeric readout and the ring's `stroke-dashoffset` in lockstep, colored by the resulting score band (red/amber/green). This is the system's one authored "big moment" — used at two scales (large hero on the results view, small inline badge in the history list) but never elsewhere, so it keeps its impact.
 
 ### Navigation
-- Single sticky top bar: SumoLab mark + wordmark (brand-colored "Web Wrench"), translucent cream background with backdrop blur so scrolled content softly shows through. No nav links beyond the logo-as-home-link — the product is single-purpose enough that it doesn't need one.
+- Single sticky top bar: renchit wordmark, translucent cream background with backdrop blur so scrolled content softly shows through. No nav links beyond the logo-as-home-link — the product is single-purpose enough that it doesn't need one.
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** keep SumoLab Coral (`#fc5434`) reserved for large/decorative fields and the deepened Coral Ember (`#c43d1c`) for anything carrying body-sized text, to hold WCAG AA contrast.
-- **Do** use the real SumoLab sumo-knot mark as the system's one recurring illustrated motif (empty states, loading states, favicon) rather than introducing generic icon illustrations.
+- **Do** keep Renchit Coral (`#fc5434`) reserved for large/decorative fields and the deepened Coral Ember (`#c43d1c`) for anything carrying body-sized text, to hold WCAG AA contrast.
+- **Do** use the real renchit logo mark as the system's one recurring illustrated motif (empty states, loading states, favicon) rather than introducing generic icon illustrations.
 - **Do** keep severity communicated via tinted pill + dot, never a colored card border.
 - **Do** use `rounded-3xl`/`rounded-2xl`/`rounded-full` exclusively — no sharp corners anywhere in the system.
 

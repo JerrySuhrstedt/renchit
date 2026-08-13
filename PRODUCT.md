@@ -16,11 +16,11 @@ Primary user is a small business owner or solo marketer managing their own websi
 
 ## Product Purpose
 
-SumoLab Web Wrench crawls a user's website, finds concrete SEO and technical issues (missing titles, broken links, missing alt text, slow pages, thin content, etc.), and explains each one in plain English with a specific fix. Audits are saved so the user can track whether their site is improving over time. Success = the user runs an audit, understands what's wrong without needing to Google every term, fixes real issues, and sees their health score go up on the next run.
+renchit crawls a user's website, finds concrete SEO and technical issues (missing titles, broken links, missing alt text, slow pages, thin content, etc.), and explains each one in plain English with a specific fix. Audits are saved so the user can track whether their site is improving over time. Success = the user runs an audit, understands what's wrong without needing to Google every term, fixes real issues, and sees their health score go up on the next run.
 
 ## Positioning
 
-Ahrefs and SEMrush are built for SEO professionals: hundreds of features, dense data tables, steep learning curves. Web Wrench deliberately does one job — site health auditing — and does it with the simplicity and warmth of a tool like Mailchimp: big, friendly, plain-spoken, satisfying to use. The mechanism a competitor can't casually copy is the radical scope reduction paired with AAA-polish execution, not a data or feature advantage.
+Ahrefs and SEMrush are built for SEO professionals: hundreds of features, dense data tables, steep learning curves. renchit deliberately does one job — site health auditing — and does it with the simplicity and warmth of a tool like Mailchimp: big, friendly, plain-spoken, satisfying to use. The mechanism a competitor can't casually copy is the radical scope reduction paired with AAA-polish execution, not a data or feature advantage.
 
 ## Operating Context
 
@@ -37,7 +37,8 @@ Workflow: user lands on the dashboard, enters their site URL, watches a live cra
 
 ## Brand Commitments
 
-Name: "SumoLab Web Wrench" (parent brand: SumoLab). Working metaphor: a wrench for tightening up/fixing your site. Visual canon pinned by the user: sit alongside Mailchimp's product design language — warm, confident, plain-spoken, big rounded cards, friendly geometric shapes, playful micro-motion, never dense/cold SaaS-dashboard chrome. Accent color pinned by the user: #FC5434 (a bold coral-red), used as the single committed accent per Mailchimp's own restrained-neutrals-plus-one-loud-color strategy.
+Name: "renchit" — a standalone brand, deliberately not presented as a SumoLab
+sub-product (SumoLab LLC remains the legal entity in the footer only). Working metaphor: a wrench for tightening up/fixing your site. Visual canon pinned by the user: sit alongside Mailchimp's product design language — warm, confident, plain-spoken, big rounded cards, friendly geometric shapes, playful micro-motion, never dense/cold SaaS-dashboard chrome. Accent color pinned by the user: #FC5434 (a bold coral-red), used as the single committed accent per Mailchimp's own restrained-neutrals-plus-one-loud-color strategy.
 
 ## Evidence on Hand
 
