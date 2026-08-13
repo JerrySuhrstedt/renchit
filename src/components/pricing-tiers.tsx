@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Check, Minus, ArrowRight, Loader2 } from "lucide-react";
+import { startCheckout } from "@/lib/paddle-checkout";
 import {
   ALL_FEATURES,
   LIFETIME_SEATS,
@@ -30,30 +31,15 @@ export function PricingTiers() {
 
     setBusy(plan);
     setError(null);
-    try {
-      const res = await fetch("/api/stripe/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan, interval }),
-      });
 
-      // Not signed in yet: send them to sign in, then straight back here.
-      if (res.status === 401) {
-        router.push(`/sign-in?next=${encodeURIComponent("/pricing")}`);
-        return;
-      }
-
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error ?? "Could not start checkout. Please try again.");
-        return;
-      }
-      window.location.assign(data.url);
-    } catch {
-      setError("Could not reach the server. Please try again.");
-    } finally {
-      setBusy(null);
+    const result = await startCheckout(plan, interval);
+    // Not signed in yet: send them to sign in, then straight back here.
+    if (!result.ok && result.reason === "signed-out") {
+      router.push(`/sign-in?next=${encodeURIComponent("/pricing")}`);
+      return;
     }
+    if (!result.ok) setError(result.message);
+    setBusy(null);
   }
 
   return (
@@ -169,27 +155,14 @@ export function LifetimeOffer({ seatsLeft }: { seatsLeft: number }) {
   async function buy() {
     setBusy(true);
     setError(null);
-    try {
-      const res = await fetch("/api/stripe/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan: "lifetime", interval: "once" }),
-      });
-      if (res.status === 401) {
-        router.push(`/sign-in?next=${encodeURIComponent("/pricing")}`);
-        return;
-      }
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error ?? "Could not start checkout. Please try again.");
-        return;
-      }
-      window.location.assign(data.url);
-    } catch {
-      setError("Could not reach the server. Please try again.");
-    } finally {
-      setBusy(false);
+
+    const result = await startCheckout("lifetime", "once");
+    if (!result.ok && result.reason === "signed-out") {
+      router.push(`/sign-in?next=${encodeURIComponent("/pricing")}`);
+      return;
     }
+    if (!result.ok) setError(result.message);
+    setBusy(false);
   }
 
   return (

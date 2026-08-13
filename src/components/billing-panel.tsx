@@ -7,11 +7,11 @@ import { Loader2, ExternalLink } from "lucide-react";
 import { TOOLS, type ToolKey } from "@/lib/plans";
 
 export function BillingActions({
-  hasStripeCustomer,
+  hasPaddleCustomer,
   isPaid,
   isLifetime,
 }: {
-  hasStripeCustomer: boolean;
+  hasPaddleCustomer: boolean;
   isPaid: boolean;
   isLifetime: boolean;
 }) {
@@ -22,7 +22,7 @@ export function BillingActions({
     setBusy(true);
     setError(null);
     try {
-      const res = await fetch("/api/stripe/portal", { method: "POST" });
+      const res = await fetch("/api/paddle/portal", { method: "POST" });
       const data = await res.json();
       if (!res.ok) {
         setError(data.error ?? "Could not open the billing portal.");
@@ -48,7 +48,7 @@ export function BillingActions({
           </Link>
         )}
 
-        {hasStripeCustomer && (
+        {hasPaddleCustomer && (
           <button
             type="button"
             onClick={openPortal}
@@ -67,10 +67,10 @@ export function BillingActions({
         )}
       </div>
 
-      {hasStripeCustomer && !isLifetime && (
+      {hasPaddleCustomer && !isLifetime && (
         <p className="text-xs text-muted-foreground">
           Change your card, switch plan, download invoices, or cancel. Handled
-          securely by Stripe.
+          securely by Paddle.
         </p>
       )}
 

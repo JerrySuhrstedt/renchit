@@ -27,7 +27,7 @@ model User {
 
   // Lives on the user rather than on Subscription because a customer outlives
   // any individual subscription: cancel, resubscribe, and it is still them.
-  stripeCustomerId String? @unique
+  paddleCustomerId String? @unique
 
   accounts       Account[]
   sessions       Session[]
@@ -45,8 +45,8 @@ model Subscription {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @unique
 
-  stripeSubscriptionId String? @unique
-  stripePriceId        String?
+  paddleSubscriptionId String? @unique
+  paddlePriceId        String?
 
   plan     String // starter | pro | agency | lifetime
   status   String // active | trialing | past_due | canceled | incomplete | unpaid

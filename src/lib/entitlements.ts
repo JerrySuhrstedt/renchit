@@ -17,7 +17,7 @@ import {
  */
 export type Entitlements = {
   plan: PlanKey;
-  /** Raw Stripe status when there is a subscription, otherwise derived. */
+  /** Raw Paddle status when there is a subscription, otherwise derived. */
   status: "trialing" | "active" | "past_due" | "free";
   siteLimit: number | null;
   /** "all", or the specific tools this user may run. */
@@ -37,7 +37,7 @@ export type Entitlements = {
   freeToolSwitchableAt: Date | null;
 
   // Billing surface
-  hasStripeCustomer: boolean;
+  hasPaddleCustomer: boolean;
   cancelAtPeriodEnd: boolean;
   currentPeriodEnd: Date | null;
 };
@@ -45,7 +45,7 @@ export type Entitlements = {
 const DAY_MS = 86_400_000;
 
 /**
- * Stripe keeps retrying a failed payment for roughly two weeks before giving
+ * Paddle keeps retrying a failed payment for a dunning window before giving
  * up. Cutting someone off the moment a card bounces punishes people whose bank
  * declined a routine renewal, so past_due keeps working and just shows a
  * banner. Only a terminal status actually drops them to free.
@@ -59,7 +59,7 @@ export async function getEntitlements(userId: string): Promise<Entitlements> {
       trialEndsAt: true,
       freeTool: true,
       freeToolChangedAt: true,
-      stripeCustomerId: true,
+      paddleCustomerId: true,
       subscription: true,
     },
   });
@@ -78,7 +78,7 @@ export async function getEntitlements(userId: string): Promise<Entitlements> {
       trialEndsAt: user.trialEndsAt,
       freeTool,
       freeToolSwitchableAt: null,
-      hasStripeCustomer: Boolean(user.stripeCustomerId),
+      hasPaddleCustomer: Boolean(user.paddleCustomerId),
       cancelAtPeriodEnd: false,
       currentPeriodEnd: null,
     });
@@ -93,7 +93,7 @@ export async function getEntitlements(userId: string): Promise<Entitlements> {
         trialEndsAt: user.trialEndsAt,
         freeTool,
         freeToolSwitchableAt: null,
-        hasStripeCustomer: Boolean(user.stripeCustomerId),
+        hasPaddleCustomer: Boolean(user.paddleCustomerId),
         cancelAtPeriodEnd: sub.cancelAtPeriodEnd,
         currentPeriodEnd: sub.currentPeriodEnd,
       });
@@ -107,7 +107,7 @@ export async function getEntitlements(userId: string): Promise<Entitlements> {
       trialEndsAt: user.trialEndsAt,
       freeTool,
       freeToolSwitchableAt: null,
-      hasStripeCustomer: Boolean(user.stripeCustomerId),
+      hasPaddleCustomer: Boolean(user.paddleCustomerId),
       cancelAtPeriodEnd: false,
       currentPeriodEnd: null,
     });
@@ -118,7 +118,7 @@ export async function getEntitlements(userId: string): Promise<Entitlements> {
     user.trialEndsAt,
     freeTool,
     user.freeToolChangedAt,
-    Boolean(user.stripeCustomerId),
+    Boolean(user.paddleCustomerId),
   );
 }
 
@@ -130,7 +130,7 @@ function freeEntitlements(
   trialEndsAt: Date | null,
   freeTool: ToolKey | null,
   freeToolChangedAt: Date | null,
-  hasStripeCustomer: boolean,
+  hasPaddleCustomer: boolean,
 ): Entitlements {
   const switchableAt = freeToolChangedAt
     ? new Date(freeToolChangedAt.getTime() + FREE_TOOL_SWITCH_DAYS * DAY_MS)
@@ -142,7 +142,7 @@ function freeEntitlements(
     freeTool,
     freeToolSwitchableAt:
       switchableAt && switchableAt.getTime() > Date.now() ? switchableAt : null,
-    hasStripeCustomer,
+    hasPaddleCustomer,
     cancelAtPeriodEnd: false,
     currentPeriodEnd: null,
   });
@@ -157,7 +157,7 @@ function fromPlan(
     | "trialEndsAt"
     | "freeTool"
     | "freeToolSwitchableAt"
-    | "hasStripeCustomer"
+    | "hasPaddleCustomer"
     | "cancelAtPeriodEnd"
     | "currentPeriodEnd"
   >,

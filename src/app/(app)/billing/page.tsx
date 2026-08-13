@@ -115,7 +115,7 @@ export default async function BillingPage({
         )}
 
         <BillingActions
-          hasStripeCustomer={ent.hasStripeCustomer}
+          hasPaddleCustomer={ent.hasPaddleCustomer}
           isPaid={ent.isPaid}
           isLifetime={ent.plan === "lifetime"}
         />

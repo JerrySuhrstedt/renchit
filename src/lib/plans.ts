@@ -205,24 +205,24 @@ export function isPlanKey(value: unknown): value is PlanKey {
 }
 
 // ---------------------------------------------------------------------------
-// Stripe price ids
+// Paddle price ids
 // ---------------------------------------------------------------------------
 
 export type BillingInterval = "month" | "year" | "once";
 
 /**
  * Price ids live in env rather than in code because they differ between
- * Stripe test and live mode. `scripts/stripe-seed.ts` creates the prices and
- * prints these exact lines ready to paste.
+ * Paddle sandbox and production. `scripts/paddle-seed.mts` creates the prices
+ * and writes these lines for you.
  */
 const PRICE_ENV: Record<string, string | undefined> = {
-  "starter:month": process.env.STRIPE_PRICE_STARTER_MONTHLY,
-  "starter:year": process.env.STRIPE_PRICE_STARTER_ANNUAL,
-  "pro:month": process.env.STRIPE_PRICE_PRO_MONTHLY,
-  "pro:year": process.env.STRIPE_PRICE_PRO_ANNUAL,
-  "agency:month": process.env.STRIPE_PRICE_AGENCY_MONTHLY,
-  "agency:year": process.env.STRIPE_PRICE_AGENCY_ANNUAL,
-  "lifetime:once": process.env.STRIPE_PRICE_LIFETIME,
+  "starter:month": process.env.PADDLE_PRICE_STARTER_MONTHLY,
+  "starter:year": process.env.PADDLE_PRICE_STARTER_ANNUAL,
+  "pro:month": process.env.PADDLE_PRICE_PRO_MONTHLY,
+  "pro:year": process.env.PADDLE_PRICE_PRO_ANNUAL,
+  "agency:month": process.env.PADDLE_PRICE_AGENCY_MONTHLY,
+  "agency:year": process.env.PADDLE_PRICE_AGENCY_ANNUAL,
+  "lifetime:once": process.env.PADDLE_PRICE_LIFETIME,
 };
 
 export function priceIdFor(plan: PlanKey, interval: BillingInterval): string | null {

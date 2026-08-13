@@ -2,7 +2,7 @@ import Link from "next/link";
 import { LandingHeader } from "@/components/landing-header";
 import { PricingTiers, LifetimeOffer } from "@/components/pricing-tiers";
 import { LIFETIME_SEATS, TRIAL_DAYS } from "@/lib/plans";
-import { lifetimeSeatsSold } from "@/lib/stripe-customer";
+import { lifetimeSeatsSold } from "@/lib/paddle-customer";
 import { Logo } from "@/components/logo";
 
 export const metadata = {
