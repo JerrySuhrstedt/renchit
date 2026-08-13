@@ -120,9 +120,9 @@ export function AppShell({
                   </AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <div className="flex items-center gap-3 px-2 py-1.5">
-                  <Avatar className="h-10 w-10">
+              <DropdownMenuContent align="end" className="min-w-72 p-1.5">
+                <div className="flex items-center gap-3 px-2.5 py-2.5">
+                  <Avatar className="h-11 w-11 shrink-0">
                     <AvatarImage src={session.user.image ?? undefined} alt="" />
                     <AvatarFallback className="bg-brand-tint text-sm font-semibold text-brand-strong">
                       {session.user.name?.[0]?.toUpperCase() ?? "U"}
@@ -130,11 +130,14 @@ export function AppShell({
                   </Avatar>
                   <div className="min-w-0">
                     {session.user.name && (
-                      <p className="truncate text-sm font-semibold text-foreground">
+                      <p className="text-sm font-semibold text-foreground">
                         {session.user.name}
                       </p>
                     )}
-                    <p className="truncate text-xs text-muted-foreground">
+                    {/* No truncation: the whole address is shown, wrapping to
+                        a second line rather than being cut off, however long
+                        it is. */}
+                    <p className="break-all text-xs leading-snug text-muted-foreground">
                       {session.user.email}
                     </p>
                   </div>
