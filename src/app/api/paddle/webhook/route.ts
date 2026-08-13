@@ -70,6 +70,7 @@ export async function POST(request: Request) {
       case "subscription.updated":
       case "subscription.resumed":
       case "subscription.paused":
+      case "subscription.past_due":
       case "subscription.canceled":
         await syncSubscription(event.data as PaddleSubscriptionEvent);
         break;
