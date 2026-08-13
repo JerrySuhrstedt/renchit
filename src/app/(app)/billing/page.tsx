@@ -3,6 +3,7 @@ import { requireUser } from "@/lib/session";
 import { getEntitlements } from "@/lib/entitlements";
 import { PLANS, TOOLS, monitoringLabel, siteLimitLabel } from "@/lib/plans";
 import { BillingActions, FreeToolPicker } from "@/components/billing-panel";
+import { TestModeBanner } from "@/components/test-mode-banner";
 import { CheckCircle2, AlertTriangle, Clock } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -30,6 +31,9 @@ export default async function BillingPage({
 
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-5 pb-24 pt-8 sm:px-8">
+      <div className="mb-2 -mx-5 sm:-mx-8">
+        <TestModeBanner />
+      </div>
       <h1 className="text-2xl font-extrabold tracking-tight text-foreground">Billing</h1>
       <p className="mt-1 text-sm text-muted-foreground">
         Your plan, what it includes, and how to change it.

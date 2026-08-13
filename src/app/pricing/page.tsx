@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { LandingHeader } from "@/components/landing-header";
 import { PricingTiers, LifetimeOffer } from "@/components/pricing-tiers";
+import { TestModeBanner } from "@/components/test-mode-banner";
 import { LIFETIME_SEATS, TRIAL_DAYS } from "@/lib/plans";
 import { lifetimeSeatsSold } from "@/lib/paddle-customer";
 import { Logo } from "@/components/logo";
@@ -57,6 +58,7 @@ export default async function PricingPage() {
     <>
       <LandingHeader />
       <main className="flex flex-1 flex-col">
+        <TestModeBanner />
         <section className="mx-auto w-full max-w-6xl px-5 pb-16 pt-16 sm:px-8 sm:pt-20">
           <div className="flex flex-col items-center gap-4 text-center">
             <span className="inline-flex items-center rounded-full bg-brand-tint px-3.5 py-1.5 text-sm font-semibold text-brand-strong">
