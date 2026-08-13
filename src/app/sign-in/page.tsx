@@ -5,7 +5,7 @@ import { Logo } from "@/components/logo";
 export default async function SignInPage() {
   const session = await auth();
   if (session?.user) {
-    redirect("/audit");
+    redirect("/dashboard");
   }
 
   return (
@@ -25,7 +25,7 @@ export default async function SignInPage() {
       <form
         action={async () => {
           "use server";
-          await signIn("google", { redirectTo: "/audit" });
+          await signIn("google", { redirectTo: "/dashboard" });
         }}
       >
         <button

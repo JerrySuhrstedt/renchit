@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Search, Copy, Check, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { connectSearchConsole } from "@/app/search-console/actions";
+import { connectSearchConsole } from "@/app/(app)/search-console/actions";
 
 const HELP_EMAIL = `Hi — I'm setting up an SEO tool for our website and it needs access to our Google Search Console.
 
