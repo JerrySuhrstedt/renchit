@@ -39,8 +39,8 @@ export default function TermsPage() {
           You sign in through Google. You are responsible for maintaining control
           of the Google account you use and for all activity that happens under
           your renchit account. Let us know promptly at{" "}
-          <a href="mailto:info@sumolab.co" className="font-medium text-brand-strong hover:underline">
-            info@sumolab.co
+          <a href="mailto:support@renchit.com" className="font-medium text-brand-strong hover:underline">
+            support@renchit.com
           </a>{" "}
           if you believe your account has been accessed without your permission.
         </p>
@@ -160,8 +160,8 @@ export default function TermsPage() {
         <p>
           You may stop using renchit at any time and request deletion of your
           account by emailing{" "}
-          <a href="mailto:info@sumolab.co" className="font-medium text-brand-strong hover:underline">
-            info@sumolab.co
+          <a href="mailto:support@renchit.com" className="font-medium text-brand-strong hover:underline">
+            support@renchit.com
           </a>
           . We may suspend or terminate your access if you violate these terms or
           if we discontinue the service. Provisions that by their nature should
@@ -193,8 +193,8 @@ export default function TermsPage() {
           <br />
           Chandler, Arizona, United States
           <br />
-          <a href="mailto:info@sumolab.co" className="font-medium text-brand-strong hover:underline">
-            info@sumolab.co
+          <a href="mailto:support@renchit.com" className="font-medium text-brand-strong hover:underline">
+            support@renchit.com
           </a>
           <br />
           <a

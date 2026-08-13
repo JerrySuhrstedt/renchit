@@ -19,8 +19,8 @@ export default function PrivacyPage() {
         </p>
         <p>
           If you have questions about anything here, email us at{" "}
-          <a href="mailto:info@sumolab.co" className="font-medium text-brand-strong hover:underline">
-            info@sumolab.co
+          <a href="mailto:support@renchit.com" className="font-medium text-brand-strong hover:underline">
+            support@renchit.com
           </a>
           .
         </p>
@@ -165,8 +165,8 @@ export default function PrivacyPage() {
         </p>
         <p>
           To delete your entire account and all associated data, email{" "}
-          <a href="mailto:info@sumolab.co" className="font-medium text-brand-strong hover:underline">
-            info@sumolab.co
+          <a href="mailto:support@renchit.com" className="font-medium text-brand-strong hover:underline">
+            support@renchit.com
           </a>{" "}
           and we will remove it within 30 days.
         </p>
@@ -177,8 +177,8 @@ export default function PrivacyPage() {
           Depending on where you live, you may have the right to access, correct,
           export, or delete the personal information we hold about you, and to
           object to certain processing. To exercise any of these, email{" "}
-          <a href="mailto:info@sumolab.co" className="font-medium text-brand-strong hover:underline">
-            info@sumolab.co
+          <a href="mailto:support@renchit.com" className="font-medium text-brand-strong hover:underline">
+            support@renchit.com
           </a>
           . We will not charge you or degrade your service for making a request.
         </p>
@@ -217,8 +217,8 @@ export default function PrivacyPage() {
           <br />
           Chandler, Arizona, United States
           <br />
-          <a href="mailto:info@sumolab.co" className="font-medium text-brand-strong hover:underline">
-            info@sumolab.co
+          <a href="mailto:support@renchit.com" className="font-medium text-brand-strong hover:underline">
+            support@renchit.com
           </a>
           <br />
           <a

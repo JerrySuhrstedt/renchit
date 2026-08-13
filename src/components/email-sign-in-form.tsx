@@ -38,7 +38,7 @@ export function EmailSignInForm({ redirectTo }: { redirectTo: string }) {
 
       if (res?.error) {
         setError(
-          "We could not send that email just now. Please try Google, or email info@sumolab.co.",
+          "We could not send that email just now. Please try Google, or email support@renchit.com.",
         );
         return;
       }

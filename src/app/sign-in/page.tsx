@@ -6,7 +6,7 @@ import { GoogleMark } from "@/components/google-mark";
 
 const ERRORS: Record<string, string> = {
   Configuration:
-    "Email sign-in is not finished being set up yet. Please use Google for now, or email info@sumolab.co.",
+    "Email sign-in is not finished being set up yet. Please use Google for now, or email support@renchit.com.",
   AccessDenied: "That sign-in was declined. Try again, or use a different account.",
   Verification: "That link has already been used or has expired. Request a new one below.",
 };

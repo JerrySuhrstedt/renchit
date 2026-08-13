@@ -149,8 +149,8 @@ export default async function BillingPage({
 
       <p className="mt-6 text-center text-xs text-muted-foreground">
         Questions about a charge? Email{" "}
-        <a href="mailto:info@sumolab.co" className="underline hover:text-foreground">
-          info@sumolab.co
+        <a href="mailto:support@renchit.com" className="underline hover:text-foreground">
+          support@renchit.com
         </a>{" "}
         or read the{" "}
         <Link href="/terms" className="underline hover:text-foreground">

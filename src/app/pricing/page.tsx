@@ -47,7 +47,7 @@ const FAQS = [
   },
   {
     q: "Do you offer refunds?",
-    a: "Email us within 30 days at info@sumolab.co and we will refund you, no argument. That includes the Founding Member deal.",
+    a: "Email us within 30 days at support@renchit.com and we will refund you, no argument. That includes the Founding Member deal.",
   },
 ];
 
