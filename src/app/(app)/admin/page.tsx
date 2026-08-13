@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { requireAdmin } from "@/lib/admin";
-import { Inbox, Users, AlertTriangle } from "lucide-react";
+import { Inbox, Users, AlertTriangle, Ticket } from "lucide-react";
 import { AdminStat } from "@/components/admin-stat";
 
 export const dynamic = "force-dynamic";
@@ -80,6 +80,12 @@ export default async function AdminHomePage() {
           icon={Users}
           title="Users"
           body="Roles, complimentary access, and what plan everyone is on."
+        />
+        <Card
+          href="/admin/discounts"
+          icon={Ticket}
+          title="Discount codes"
+          body="Generate shared or single-use codes that work at checkout."
         />
       </div>
 
