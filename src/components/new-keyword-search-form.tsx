@@ -77,7 +77,7 @@ export function NewKeywordSearchForm() {
       ) : (
         <p className="mt-3 px-2 text-sm text-muted-foreground">
           We&apos;ll pull real questions and phrases people search for around
-          this topic — usually done in a couple seconds.
+          this topic, usually done in a couple seconds.
         </p>
       )}
     </form>

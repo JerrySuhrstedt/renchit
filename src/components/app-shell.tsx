@@ -51,7 +51,7 @@ export function AppShell({
   const pathname = usePathname();
   const { data: session } = useSession();
   // Seeded from a cookie the server already read, so the rail renders at the
-  // right width on first paint — no post-hydration snap, no effect.
+  // right width on first paint, with no post-hydration snap and no effect.
   const [collapsed, setCollapsed] = useState(defaultCollapsed);
   // Suppress the width transition until the user actually toggles, otherwise
   // a collapsed rail animates open on every page load.
@@ -70,7 +70,7 @@ export function AppShell({
 
   return (
     <div className="min-h-dvh bg-shell">
-      {/* Top bar — dark, full width, meeting the sidebar in the corner */}
+      {/* Top bar: dark, full width, meeting the sidebar in the corner */}
       <header className="sticky top-0 z-40 flex h-14 items-center gap-3 bg-shell px-4">
         <Link
           href="/dashboard"
@@ -137,7 +137,7 @@ export function AppShell({
       </header>
 
       <div className="flex">
-        {/* Sidebar — horizontal scroller on small screens, fixed rail on lg+ */}
+        {/* Sidebar: horizontal scroller on small screens, fixed rail on lg+ */}
         <nav
           aria-label="Tools"
           className={`sticky top-14 z-30 hidden h-[calc(100dvh-3.5rem)] shrink-0 flex-col bg-shell pb-3 lg:flex ${railWidth} ${animate ? "transition-[width] duration-200" : ""}`}

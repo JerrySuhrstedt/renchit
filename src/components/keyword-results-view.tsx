@@ -90,7 +90,7 @@ export function KeywordResultsView({ search }: { search: KeywordSearchDTO }) {
             {groups.length === 0 && (
               <p className="rounded-3xl border border-dashed border-border bg-card/60 px-8 py-14 text-center text-sm text-muted-foreground">
                 {filter === "saved"
-                  ? "Nothing saved yet — click any idea below to star it."
+                  ? "Nothing saved yet. Click any idea below to star it."
                   : "No ideas found for this search."}
               </p>
             )}

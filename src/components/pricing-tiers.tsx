@@ -5,23 +5,23 @@ import Link from "next/link";
 import { Check, ArrowRight } from "lucide-react";
 
 /**
- * Every tool is currently in every plan — plans differ only on how many sites
+ * Every tool is currently in every plan; plans differ only on how many sites
  * you manage and how often you can audit. So each card spells out the full
  * feature list rather than the usual "Everything in X, plus…", because for a
  * lot of visitors pricing is the *first* page they open and "Everything in
  * Starter" tells them nothing.
  *
  * If tools later get split across plans, give a tier its own `features` array
- * and drop the ones it shouldn't include — nothing else needs to change.
+ * and drop the ones it shouldn't include. Nothing else needs to change.
  */
 const ALL_FEATURES = [
-  "Site Audit — up to 50 pages per crawl",
+  "Site Audit: up to 50 pages per crawl",
   "~20 SEO & technical checks, explained plainly",
   "Large image finder with one-click optimizing",
   "Keyword & content ideas from real Google data",
-  "Content Grader — 13 on-page checks",
+  "Content Grader: 13 on-page checks",
   "Local Listing Checker for business info",
-  "Page Speed — real mobile & desktop scores",
+  "Page Speed: real mobile & desktop scores",
   "Google Search Console connection",
   "Projects that group everything by website",
   "Full saved history, always accessible",
@@ -139,7 +139,7 @@ export function PricingTiers() {
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
                 {isFree
-                  ? "Free forever — no card required"
+                  ? "Free forever, no card required"
                   : annual
                     ? `Works out to $${(tier.annual / 12).toFixed(2)}/month`
                     : `or $${tier.annual}/year`}

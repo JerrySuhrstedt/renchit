@@ -4,7 +4,7 @@ import { PricingTiers } from "@/components/pricing-tiers";
 import { Logo } from "@/components/logo";
 
 export const metadata = {
-  title: "Pricing — renchit",
+  title: "Pricing | renchit",
   description:
     "Start free with one site and three audits a month. Paid plans from $7/month. No credit card required to begin.",
 };
@@ -12,7 +12,7 @@ export const metadata = {
 const FAQS = [
   {
     q: "Is the free plan really free?",
-    a: "Yes — one website, three audits a month, and every tool. No credit card, no trial timer, no expiry. If that's all you need, stay on it as long as you like.",
+    a: "Yes. One website, three audits a month, and every tool. No credit card, no trial timer, no expiry. If that's all you need, stay on it as long as you like.",
   },
   {
     q: "What counts as a website?",
@@ -20,7 +20,7 @@ const FAQS = [
   },
   {
     q: "What happens if I hit the free audit limit?",
-    a: "Nothing breaks and nothing is deleted. You keep full access to every audit you've already run and to the other tools — you just wait until next month or upgrade for unlimited runs.",
+    a: "Nothing breaks and nothing is deleted. You keep full access to every audit you've already run and to the other tools. You just wait until next month or upgrade for unlimited runs.",
   },
   {
     q: "Can I change or cancel my plan?",
@@ -28,7 +28,7 @@ const FAQS = [
   },
   {
     q: "What does “unlimited websites” actually mean?",
-    a: "Exactly what it says for any normal use, including agencies managing dozens of client sites. There's a generous fair-use ceiling in the background purely to stop automated abuse — you would have to be running hundreds of sites on daily audits to notice it.",
+    a: "Exactly what it says for any normal use, including agencies managing dozens of client sites. There's a generous fair-use ceiling in the background purely to stop automated abuse. You would have to be running hundreds of sites on daily audits to notice it.",
   },
   {
     q: "Do you offer refunds?",

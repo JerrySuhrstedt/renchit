@@ -205,7 +205,7 @@ function checkPage(page: CrawledPage): FoundIssue[] {
         severity: "warning",
         category: "technical",
         title: "Missing mobile viewport tag",
-        description: "This page has no viewport meta tag, which usually means it won't render properly on mobile devices — a major ranking and usability factor.",
+        description: "This page has no viewport meta tag, which usually means it won't render properly on mobile devices, a major ranking and usability factor.",
         fixSteps: 'Add <meta name="viewport" content="width=device-width, initial-scale=1"> to the page\'s <head>.',
         pageUrl: u,
       }),
@@ -263,7 +263,7 @@ function checkPage(page: CrawledPage): FoundIssue[] {
         category: "content",
         title: "Thin content",
         description: `This page has only about ${page.wordCount} words. Pages with very little content often struggle to rank for competitive terms.`,
-        fixSteps: "Expand the page with genuinely useful content — more detail, examples, or answers to related questions your audience is searching for.",
+        fixSteps: "Expand the page with genuinely useful content: more detail, examples, or answers to related questions your audience is searching for.",
         pageUrl: u,
       }),
     );
@@ -366,7 +366,7 @@ export function runChecks(crawl: CrawlResult): FoundIssue[] {
           category: "performance",
           title: "Large image file",
           description: `This image is ${(check.bytes / 1_000_000).toFixed(1)}MB, which can slow down page load, especially on mobile connections.`,
-          fixSteps: "Resize and compress this image before re-uploading — most web images don't need to be wider than 1920px.",
+          fixSteps: "Resize and compress this image before re-uploading; most web images don't need to be wider than 1920px.",
           pageUrl: page.url,
           affectedUrl: image.src,
         }),
@@ -380,7 +380,7 @@ export function runChecks(crawl: CrawlResult): FoundIssue[] {
       if (!check) continue;
       if (!check.ok) {
         // A 403/429 usually means the destination is blocking automated requests
-        // (bot protection), not that the page is actually gone — a real visitor's
+        // (bot protection), not that the page is actually gone; a real visitor's
         // browser would likely load it fine. Report it with lower confidence
         // instead of calling it a confirmed broken link.
         const likelyBotBlock = check.statusCode === 403 || check.statusCode === 429;

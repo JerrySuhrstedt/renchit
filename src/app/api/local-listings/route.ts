@@ -59,7 +59,7 @@ export async function POST(request: Request) {
     });
     siteId = site.id;
   } catch {
-    // invalid URL — checkListing below will surface the real error
+    // invalid URL; checkListing below will surface the real error
   }
 
   const listing = await db.localListing.create({

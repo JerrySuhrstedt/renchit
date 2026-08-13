@@ -27,7 +27,7 @@ export default async function ProfilePage() {
           Profile
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          This is what we know about you — update it any time.
+          This is what we know about you. Update it any time.
         </p>
 
         <div className="mt-8 flex flex-col gap-6 rounded-3xl border border-border bg-card px-6 py-8 sm:px-8">

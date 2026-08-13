@@ -56,7 +56,7 @@ export async function POST(request: Request) {
     });
     siteId = site.id;
   } catch {
-    // invalid URL — gradeContent below will surface the real error
+    // invalid URL; gradeContent below will surface the real error
   }
 
   const grade = await db.contentGrade.create({

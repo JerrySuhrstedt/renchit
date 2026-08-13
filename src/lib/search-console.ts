@@ -6,7 +6,7 @@ const LOOKBACK_DAYS = 28;
 // complete picture instead of a misleadingly quiet one.
 const DATA_LAG_DAYS = 3;
 
-// A query sitting on page 2 is the classic "almost there" win — already
+// A query sitting on page 2 is the classic "almost there" win: already
 // ranking, just below where anyone clicks.
 const OPPORTUNITY_MIN_POSITION = 11;
 const OPPORTUNITY_MAX_POSITION = 20;

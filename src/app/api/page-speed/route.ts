@@ -39,7 +39,7 @@ export async function POST(request: Request) {
   });
 
   // after() keeps this work running past the response on Vercel's serverless
-  // runtime — PageSpeed Insights typically takes 10-30s per strategy.
+  // runtime; PageSpeed Insights typically takes 10-30s per strategy.
   after(() => startPageSpeedJob(check.id, url));
 
   return NextResponse.json({ checkId: check.id }, { status: 202 });

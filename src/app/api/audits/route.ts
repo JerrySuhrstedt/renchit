@@ -73,7 +73,7 @@ export async function POST(request: Request) {
 
   // after() keeps this work running past the response on Vercel's serverless
   // runtime, where a plain unawaited promise can get frozen once the response
-  // is sent — a bare fire-and-forget call only reliably finishes on a
+  // is sent; a bare fire-and-forget call only reliably finishes on a
   // long-lived Node process (e.g. local dev).
   after(() => startAuditJob(audit.id, rootUrl, PAGE_LIMIT));
 

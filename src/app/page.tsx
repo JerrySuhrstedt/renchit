@@ -17,9 +17,9 @@ import { HealthScoreDial } from "@/components/health-score-dial";
 import { Logo } from "@/components/logo";
 
 export const metadata = {
-  title: "renchit — Plain-English SEO tools for real websites",
+  title: "renchit: Plain-English SEO tools for real websites",
   description:
-    "Audit your site, find real content ideas, and grade your pages — in plain English, with zero SEO jargon. Free to start.",
+    "Audit your site, find real content ideas, and grade your pages, in plain English, with zero SEO jargon. Free to start.",
 };
 
 const CTA_LABEL = "Get Started Free";
@@ -29,8 +29,8 @@ const TOOLS = [
     icon: Wrench,
     name: "Site Audit",
     tagline: "Know exactly what to fix",
-    what: "Crawls up to 50 real pages of your site and checks them against ~20 SEO and technical rules — broken links, missing titles, thin content, slow pages, and more.",
-    why: "Most site owners have no idea what's actually wrong with their site — SEO tools either bury you in jargon or don't tell you anything actionable at all.",
+    what: "Crawls up to 50 real pages of your site and checks them against ~20 SEO and technical rules: broken links, missing titles, thin content, slow pages, and more.",
+    why: "Most site owners have no idea what's actually wrong with their site. SEO tools either bury you in jargon or don't tell you anything actionable at all.",
     how: [
       "Paste your website URL",
       "We crawl your real pages and run every check",
@@ -41,7 +41,7 @@ const TOOLS = [
     icon: Lightbulb,
     name: "Keyword & Content Ideas",
     tagline: "Never run out of things to write",
-    what: "Pulls real questions, comparisons, and phrases people search for around any topic — straight from Google's own autocomplete, not a guess.",
+    what: "Pulls real questions, comparisons, and phrases people search for around any topic, straight from Google's own autocomplete, not a guess.",
     why: "Staring at a blank page trying to guess what your customers are searching for wastes hours and usually guesses wrong.",
     how: [
       "Enter a topic or seed keyword",
@@ -53,7 +53,7 @@ const TOOLS = [
     icon: FileSearch,
     name: "Content Grader",
     tagline: "Publish with confidence",
-    what: "Grades any page against a target keyword with ~13 on-page checks — titles, headings, keyword usage, readability, alt text, and more.",
+    what: "Grades any page against a target keyword with ~13 on-page checks: titles, headings, keyword usage, readability, alt text, and more.",
     why: "It's easy to publish a page and have no idea whether it's actually optimized until it quietly fails to rank months later.",
     how: [
       "Paste a page URL and your target keyword",
@@ -66,7 +66,7 @@ const TOOLS = [
     name: "Local Listing Checker",
     tagline: "Show up right in local search",
     what: "Checks your business name, address, and phone number for consistency against your website, plus structured data and Google Business Profile fundamentals.",
-    why: "Mismatched business info between your website and Google is one of the most common — and most overlooked — reasons local businesses don't show up in the map pack.",
+    why: "Mismatched business info between your website and Google is one of the most common (and most overlooked) reasons local businesses don't show up in the map pack.",
     how: [
       "Enter your business name, address, and phone number",
       "We scan your website for matching info and local SEO basics",
@@ -78,7 +78,7 @@ const TOOLS = [
     name: "Page Speed",
     tagline: "See your real PageSpeed score",
     what: "Runs Google's own PageSpeed Insights test on your page for both mobile and desktop, showing your Core Web Vitals and a plain-English list of what to fix.",
-    why: "A slow page loses visitors and rankings before they ever see what you offer — and \"slow\" is a guess until you see the real numbers.",
+    why: "A slow page loses visitors and rankings before they ever see what you offer, and \"slow\" is a guess until you see the real numbers.",
     how: [
       "Paste a page URL",
       "We run Google's real PageSpeed Insights test for mobile and desktop",
@@ -93,7 +93,7 @@ const FEATURES = [
   { title: "~20 built-in SEO checks", desc: "Titles, meta, headings, links, speed, and more." },
   { title: "Plain-English fixes", desc: "Every issue explains what to do, not just what's wrong." },
   { title: "Track fixed & ignored issues", desc: "Mark progress and re-run audits to compare." },
-  { title: "Real Google autocomplete data", desc: "No invented keywords — pulled live from Google." },
+  { title: "Real Google autocomplete data", desc: "No invented keywords, pulled live from Google." },
   { title: "Questions, comparisons & A–Z ideas", desc: "Organized so you always know where to start." },
   { title: "Save & copy your favorite ideas", desc: "Build a running list of what to write next." },
   { title: "13-point on-page content grading", desc: "Titles, headings, density, alt text, readability." },
@@ -103,21 +103,21 @@ const FEATURES = [
   { title: "Local business info consistency check", desc: "Catch NAP mismatches between your site and Google." },
   { title: "LocalBusiness structured data check", desc: "See if your site helps Google confirm who you are." },
   { title: "Real PageSpeed Insights scores", desc: "The same Google data behind pagespeed.web.dev." },
-  { title: "Mobile & desktop Core Web Vitals", desc: "LCP, CLS, and more — the real speed signals Google uses." },
+  { title: "Mobile & desktop Core Web Vitals", desc: "LCP, CLS, and more. The real speed signals Google uses." },
 ];
 
 const FAQS = [
   {
     q: "Is this actually free?",
-    a: "Yes. Sign in with your Google account and use all five tools — no credit card required.",
+    a: "Yes. Sign in with your Google account and use all five tools, no credit card required.",
   },
   {
     q: "Do you show keyword search volume, like Ahrefs or SEMrush?",
-    a: "Not yet — real search-volume data requires expensive paid data providers. We're focused on the free, high-value parts first: real content ideas, real site audits, and real on-page grading.",
+    a: "Not yet. Real search-volume data requires expensive paid data providers. We're focused on the free, high-value parts first: real content ideas, real site audits, and real on-page grading.",
   },
   {
     q: "How is this different from Ahrefs or SEMrush?",
-    a: "Those tools pack in hundreds of features built for SEO agencies. We do three things, do them well, and explain every result in plain English — no jargon, no learning curve.",
+    a: "Those tools pack in hundreds of features built for SEO agencies. We do three things, do them well, and explain every result in plain English, with no jargon and no learning curve.",
   },
   {
     q: "Is my data private?",
@@ -129,7 +129,7 @@ const FAQS = [
   },
   {
     q: "Do I need to know anything about SEO to use this?",
-    a: "No — that's the whole point. Every result comes with a plain-English explanation of what's wrong and exactly how to fix it.",
+    a: "No, and that's the whole point. Every result comes with a plain-English explanation of what's wrong and exactly how to fix it.",
   },
 ];
 
@@ -158,7 +158,7 @@ export default function LandingPage() {
             </h1>
             <p className="max-w-lg text-balance text-lg text-white/90">
               renchit audits your site, finds real content ideas, and grades
-              your pages — in plain English, with zero SEO jargon.
+              your pages, in plain English, with zero SEO jargon.
             </p>
             <Link
               href="/sign-in"
@@ -194,8 +194,8 @@ export default function LandingPage() {
               </h2>
               <p className="max-w-lg text-balance text-base leading-relaxed text-muted-foreground md:mx-0 mx-auto">
                 No more scrolling through a hundred metrics wondering what
-                matters. Your health score weighs every issue we find —
-                critical, worth reviewing, or minor — so you know at a
+                matters. Your health score weighs every issue we find,
+                whether critical, worth reviewing, or minor, so you know at a
                 glance where your site stands, and exactly what to fix to
                 move the number up.
               </p>
@@ -207,14 +207,14 @@ export default function LandingPage() {
         <section className="border-y border-border/70 bg-card/60">
           <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-8 sm:py-20 md:grid-cols-2 md:gap-16">
             <p className="text-balance text-2xl font-bold leading-snug text-foreground sm:text-3xl">
-              You know your website is supposed to be &ldquo;optimized&rdquo;
-              — but you have no idea what that actually means for your site,
+              You know your website is supposed to be &ldquo;optimized,&rdquo;
+              but you have no idea what that actually means for your site,
               right now.
             </p>
             <div className="flex flex-col gap-4 text-base leading-relaxed text-muted-foreground">
               <p>
-                Most SEO tools throw you into a wall of jargon — canonical
-                tags, crawl budget, keyword density — spread across dozens of
+                Most SEO tools throw you into a wall of jargon (canonical
+                tags, crawl budget, keyword density) spread across dozens of
                 tabs and hundreds of features you&apos;ll never touch.
                 They&apos;re built for agencies, not for you.
               </p>
@@ -224,7 +224,7 @@ export default function LandingPage() {
               </p>
               <p className="font-semibold text-foreground">
                 renchit does a handful of things, does them well, and
-                explains every result in plain English — so you can fix your
+                explains every result in plain English, so you can fix your
                 site today, not learn a new discipline first.
               </p>
             </div>
@@ -306,7 +306,7 @@ export default function LandingPage() {
                 {
                   icon: Sparkles,
                   title: "Sign in free",
-                  desc: "One click with your Google account — no password to create.",
+                  desc: "One click with your Google account, no password to create.",
                 },
                 {
                   icon: Search,

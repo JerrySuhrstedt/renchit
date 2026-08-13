@@ -160,7 +160,7 @@ export function NewLocalListingForm() {
         <p className="flex items-start gap-1.5 px-2 text-sm text-muted-foreground">
           <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
           We&apos;ll check your website for consistent business info and give
-          you a plain-English checklist — done in a few seconds.
+          you a plain-English checklist, done in a few seconds.
         </p>
       )}
     </form>

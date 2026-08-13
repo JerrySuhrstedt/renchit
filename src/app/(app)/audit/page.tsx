@@ -44,7 +44,7 @@ export default async function DashboardPage() {
           </h1>
           <p className="max-w-lg text-balance text-lg text-muted-foreground">
             Run a real crawl of your website and get a health score plus
-            plain-English fixes — no SEO degree required.
+            plain-English fixes, no SEO degree required.
           </p>
           <div className="mt-2 w-full max-w-xl">
             <NewAuditForm />

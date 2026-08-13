@@ -5,7 +5,7 @@ import { Search, Copy, Check, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { connectSearchConsole } from "@/app/(app)/search-console/actions";
 
-const HELP_EMAIL = `Hi — I'm setting up an SEO tool for our website and it needs access to our Google Search Console.
+const HELP_EMAIL = `Hi, I'm setting up an SEO tool for our website and it needs access to our Google Search Console.
 
 Could you either:
 1) Verify our site at search.google.com/search-console, or
@@ -26,7 +26,7 @@ export function SearchConsoleConnect() {
         <p className="mx-auto max-w-md text-sm text-muted-foreground">
           See the actual phrases people search to find you, where you rank for
           each one, and which ones you&apos;re closest to winning. This is real
-          data from Google about your site — we only ever read it.
+          data from Google about your site, and we only ever read it.
         </p>
       </div>
       <form action={connectSearchConsole}>
@@ -45,7 +45,7 @@ export function SearchConsoleConnect() {
 }
 
 /**
- * Shown alongside the connect button and on the empty-properties state — the
+ * Shown alongside the connect button and on the empty-properties state. The
  * two places someone gets stuck because the fix lives outside this app.
  */
 export function NeedHelp() {
@@ -66,7 +66,7 @@ export function NeedHelp() {
         <p className="text-sm leading-relaxed text-muted-foreground">
           Search Console is a free Google tool, but your site has to be
           verified before it collects data. Often whoever built your site has
-          already done this — you may just need them to add you.
+          already done this, so you may just need them to add you.
         </p>
         <button
           type="button"

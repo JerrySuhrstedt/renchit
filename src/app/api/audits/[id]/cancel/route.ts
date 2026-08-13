@@ -11,7 +11,7 @@ export async function POST(
 
   const { id } = await params;
 
-  // Only flips audits that are still "running" and owned by this user — the
+  // Only flips audits that are still "running" and owned by this user. The
   // background crawl job checks this same status before writing its final
   // results, so a job that finishes after cancellation won't resurrect it.
   const result = await db.audit.updateMany({

@@ -76,7 +76,7 @@ export function NewPageSpeedForm() {
         <p className="mt-3 px-2 text-sm font-medium text-critical">{error}</p>
       ) : (
         <p className="mt-3 px-2 text-sm text-muted-foreground">
-          Powered by Google&apos;s real PageSpeed Insights data — mobile and
+          Powered by Google&apos;s real PageSpeed Insights data, mobile and
           desktop, usually done in under a minute.
         </p>
       )}

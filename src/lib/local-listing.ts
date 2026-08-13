@@ -139,7 +139,7 @@ export async function checkListing(input: ListingInput): Promise<ListingResult> 
       title: "Address matches your website",
       description: addressFound
         ? "The address you gave us shows up on your website."
-        : `We couldn't find an address matching "${input.address}" on your homepage. Inconsistent addresses across the web are one of the biggest local ranking factors — make sure it's listed exactly the same everywhere.`,
+        : `We couldn't find an address matching "${input.address}" on your homepage. Inconsistent addresses across the web are one of the biggest local ranking factors, so make sure it's listed exactly the same everywhere.`,
     }),
     check({
       key: "phone-on-site",
@@ -159,7 +159,7 @@ export async function checkListing(input: ListingInput): Promise<ListingResult> 
       title: "Phone number is tap-to-call on mobile",
       description: hasClickToCall
         ? "Your phone number is a clickable tel: link, so mobile visitors can tap to call."
-        : "Your phone number doesn't look like a clickable tel: link. Most of your local traffic is on mobile — make the number tappable.",
+        : "Your phone number doesn't look like a clickable tel: link. Most of your local traffic is on mobile, so make the number tappable.",
     }),
     check({
       key: "local-business-schema",
@@ -213,7 +213,7 @@ export async function checkListing(input: ListingInput): Promise<ListingResult> 
         title: "Enough Google reviews to build trust",
         description:
           input.reviewCount >= 10
-            ? `${input.reviewCount} reviews is a solid base — customers researching you will see real social proof.`
+            ? `${input.reviewCount} reviews is a solid base. Customers researching you will see real social proof.`
             : `You have ${input.reviewCount} review${input.reviewCount === 1 ? "" : "s"} on Google. Listings with 10+ reviews are far more likely to be trusted and clicked. Ask recent happy customers for a review.`,
       }),
     );
@@ -230,7 +230,7 @@ export async function checkListing(input: ListingInput): Promise<ListingResult> 
         description:
           input.reviewRating >= 4.0
             ? `A ${input.reviewRating.toFixed(1)}-star average is a strong signal to both Google and potential customers.`
-            : `Your average rating is ${input.reviewRating.toFixed(1)} stars. Ratings under 4.0 can quietly cost you clicks in the local pack — focus on service quality and asking happy customers to leave reviews.`,
+            : `Your average rating is ${input.reviewRating.toFixed(1)} stars. Ratings under 4.0 can quietly cost you clicks in the local pack, so focus on service quality and asking happy customers to leave reviews.`,
       }),
     );
   }
@@ -246,7 +246,7 @@ export async function checkListing(input: ListingInput): Promise<ListingResult> 
         description:
           input.claimed === "yes"
             ? "Your Google Business Profile is claimed, so you control what customers see."
-            : "Your Google Business Profile isn't claimed yet. An unclaimed listing means you can't fix wrong info, respond to reviews, or add photos — claim it at business.google.com.",
+            : "Your Google Business Profile isn't claimed yet. An unclaimed listing means you can't fix wrong info, respond to reviews, or add photos. Claim it at business.google.com.",
       }),
     );
   }

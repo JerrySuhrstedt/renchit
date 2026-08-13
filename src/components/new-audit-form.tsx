@@ -77,7 +77,7 @@ export function NewAuditForm() {
       ) : (
         <p className="mt-3 px-2 text-sm text-muted-foreground">
           We&apos;ll crawl up to 50 pages and check titles, links, content, and
-          more — usually done in under a minute.
+          more, usually done in under a minute.
         </p>
       )}
     </form>

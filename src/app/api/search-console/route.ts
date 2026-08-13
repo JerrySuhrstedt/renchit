@@ -42,7 +42,7 @@ export async function POST(request: Request) {
     });
     siteId = site.id;
   } catch {
-    // Non-fatal — the report still stands on its own without a Site link.
+    // Non-fatal; the report still stands on its own without a Site link.
   }
 
   const report = await db.searchConsoleReport.create({

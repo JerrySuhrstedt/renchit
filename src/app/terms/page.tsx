@@ -1,7 +1,7 @@
 import { LegalPage, Section, Bullets } from "@/components/legal-page";
 
 export const metadata = {
-  title: "Terms of Service — renchit",
+  title: "Terms of Service | renchit",
   description:
     "The terms that govern your use of renchit, operated by SumoLab LLC.",
 };
@@ -23,8 +23,8 @@ export default function TermsPage() {
         <p>
           renchit provides website analysis tools, including site auditing,
           keyword and content idea research, on-page content grading, local
-          listing consistency checks, page speed testing, and — if you connect it
-          — reporting on your Google Search Console data. The tools produce
+          listing consistency checks, page speed testing, and, if you connect it,
+          reporting on your Google Search Console data. The tools produce
           informational analysis and suggestions.
         </p>
         <p>
@@ -89,7 +89,7 @@ export default function TermsPage() {
         <p>
           You keep all rights to the websites, keywords, business details, and
           other information you submit. You grant us only the permission needed to
-          operate the service — to fetch, process, store, and display that
+          operate the service: to fetch, process, store, and display that
           information back to you.
         </p>
       </Section>
@@ -165,8 +165,8 @@ export default function TermsPage() {
           </a>
           . We may suspend or terminate your access if you violate these terms or
           if we discontinue the service. Provisions that by their nature should
-          survive termination — including intellectual property, disclaimers, and
-          limitation of liability — will survive.
+          survive termination, including intellectual property, disclaimers, and
+          limitation of liability, will survive.
         </p>
       </Section>
 

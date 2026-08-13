@@ -91,7 +91,7 @@ export function NewGraderForm() {
       ) : (
         <p className="mt-3 px-2 text-sm text-muted-foreground">
           We&apos;ll check the page&apos;s title, headings, and content
-          against your target keyword — done in a few seconds.
+          against your target keyword, done in a few seconds.
         </p>
       )}
     </form>

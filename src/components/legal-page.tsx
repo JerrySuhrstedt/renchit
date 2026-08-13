@@ -3,7 +3,7 @@ import { Logo } from "@/components/logo";
 
 /**
  * Chrome for the public legal pages. Deliberately not the marketing
- * LandingHeader — that one's nav is same-page anchors (#tools, #faq) which
+ * LandingHeader; that one's nav is same-page anchors (#tools, #faq) which
  * point at nothing here.
  */
 export function LegalPage({

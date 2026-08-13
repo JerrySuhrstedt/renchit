@@ -82,7 +82,7 @@ export function NewSearchConsoleForm() {
           <p className="mx-auto max-w-md text-sm text-muted-foreground">
             Either your site isn&apos;t set up in Search Console yet, or it&apos;s
             set up under a different Google account than the one you signed in
-            with — that second one is very common if someone else built your
+            with. That second one is very common if someone else built your
             site.
           </p>
         </div>
@@ -133,7 +133,7 @@ export function NewSearchConsoleForm() {
         <p className="mt-3 px-2 text-sm font-medium text-critical">{error}</p>
       ) : (
         <p className="mt-3 px-2 text-sm text-muted-foreground">
-          We&apos;ll pull the last 28 days of real search data from Google —
+          We&apos;ll pull the last 28 days of real search data from Google:
           what people searched, and where you showed up.
         </p>
       )}

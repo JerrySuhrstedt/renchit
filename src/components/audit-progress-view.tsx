@@ -35,7 +35,7 @@ export function AuditProgressView({
     setStopping(true);
     await fetch(`/api/audits/${auditId}/cancel`, { method: "POST" }).catch(() => {});
     // The parent's poll (every 1.5s) will pick up the "failed"/cancelled
-    // status and swap to the failed view — no local state needed here.
+    // status and swap to the failed view; no local state needed here.
   }
 
   return (

@@ -1,7 +1,7 @@
 import { LegalPage, Section, Bullets } from "@/components/legal-page";
 
 export const metadata = {
-  title: "Privacy Policy — renchit",
+  title: "Privacy Policy | renchit",
   description:
     "How renchit collects, uses, stores, and shares your information, including Google user data.",
 };
@@ -40,7 +40,7 @@ export default function PrivacyPage() {
         <p>
           <strong className="text-foreground">Information you submit to the tools.</strong>{" "}
           This includes website addresses you ask us to analyze, target keywords,
-          topics you research, and — if you use the Local Listing Checker —
+          topics you research, and, if you use the Local Listing Checker,
           business details such as your business name, address, phone number,
           review count, and rating.
         </p>
@@ -54,7 +54,7 @@ export default function PrivacyPage() {
           <strong className="text-foreground">Google Search Console data.</strong>{" "}
           If you choose to connect Google Search Console, we request read-only
           access and retrieve search performance data for the properties you
-          select — search queries, impressions, clicks, and average position. We
+          select: search queries, impressions, clicks, and average position. We
           request read-only permission only; we cannot modify anything in your
           Search Console account.
         </p>
@@ -127,15 +127,15 @@ export default function PrivacyPage() {
         <Bullets
           items={[
             <>
-              <strong className="text-foreground">Vercel</strong> — application
+              <strong className="text-foreground">Vercel</strong>: application
               hosting and delivery
             </>,
             <>
-              <strong className="text-foreground">Neon</strong> — the managed
+              <strong className="text-foreground">Neon</strong>: the managed
               PostgreSQL database where your account and results are stored
             </>,
             <>
-              <strong className="text-foreground">Google</strong> — sign-in
+              <strong className="text-foreground">Google</strong>: sign-in
               (OAuth), PageSpeed Insights, Search Console, and search suggestion
               data
             </>,

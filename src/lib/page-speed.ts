@@ -38,7 +38,7 @@ function metricBand(score: number | null): CoreWebVital["band"] {
 
 function stripMarkdownLinks(text: string): string {
   // Lighthouse audit descriptions include markdown-style links like
-  // "[Learn more](https://...)" — strip them for plain display text.
+  // "[Learn more](https://...)"; strip them for plain display text.
   return text.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").trim();
 }
 

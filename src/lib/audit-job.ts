@@ -14,7 +14,7 @@ export async function startAuditJob(auditId: string, rootUrl: string, pageLimit:
 
   runAuditJob(auditId, rootUrl, pageLimit)
     .catch(async (err) => {
-      // Only overwrite if still "running" — if the user cancelled it, that
+      // Only overwrite if still "running"; if the user cancelled it, that
       // status (and its "Cancelled by you." message) should stick.
       await db.audit.updateMany({
         where: { id: auditId, status: "running" },
@@ -57,7 +57,7 @@ async function runAuditJob(auditId: string, rootUrl: string, pageLimit: number) 
       if (current?.status !== "running") return;
 
       // createManyAndReturn batches all pages into one insert (with ids back)
-      // instead of one create() per page — with up to 50 pages, N sequential
+      // instead of one create() per page; with up to 50 pages, N sequential
       // round-trips to Neon could alone blow past the transaction timeout.
       const createdPages =
         crawl.pages.length > 0

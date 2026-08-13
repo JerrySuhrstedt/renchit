@@ -95,7 +95,7 @@ export async function gradeContent(rawUrl: string, targetKeyword: string): Promi
       title: "Target keyword appears in the title",
       description: includesKeyword(title, keyword)
         ? "Your title tag includes the target keyword."
-        : `Your title "${title || "(missing)"}" doesn't include "${keyword}". Search engines weigh the title heavily — work it in naturally.`,
+        : `Your title "${title || "(missing)"}" doesn't include "${keyword}". Search engines weigh the title heavily, so work it in naturally.`,
     }),
     check({
       key: "title-keyword-early",
@@ -105,7 +105,7 @@ export async function gradeContent(rawUrl: string, targetKeyword: string): Promi
       title: "Keyword appears near the start of the title",
       description: includesKeyword(title.slice(0, Math.ceil(title.length / 2)), keyword)
         ? "The keyword shows up in the first half of your title, which reads best in search results."
-        : "Try moving the keyword closer to the front of the title — search engines and readers weight the beginning more.",
+        : "Try moving the keyword closer to the front of the title. Search engines and readers weight the beginning more.",
     }),
     check({
       key: "meta-has-keyword",
@@ -117,7 +117,7 @@ export async function gradeContent(rawUrl: string, targetKeyword: string): Promi
         ? includesKeyword(metaDescription, keyword)
           ? "Your meta description includes the target keyword."
           : `Your meta description doesn't mention "${keyword}". Including it can improve click-through from search results.`
-        : "This page has no meta description at all — add one that includes your target keyword.",
+        : "This page has no meta description at all. Add one that includes your target keyword.",
     }),
     check({
       key: "h1-present-single",
@@ -127,7 +127,7 @@ export async function gradeContent(rawUrl: string, targetKeyword: string): Promi
       title: "Page has exactly one H1 heading",
       description:
         h1s.length === 0
-          ? "This page has no H1 tag — add one describing what the page is about."
+          ? "This page has no H1 tag. Add one describing what the page is about."
           : h1s.length === 1
             ? "This page has a single, clear H1 heading."
             : `This page has ${h1s.length} H1 tags. Keep it to one for a clear topical focus.`,
@@ -140,7 +140,7 @@ export async function gradeContent(rawUrl: string, targetKeyword: string): Promi
       title: "Target keyword appears in the H1",
       description: h1s.some((h) => includesKeyword(h, keyword))
         ? "Your H1 includes the target keyword."
-        : "None of your H1 heading(s) mention the target keyword — this is one of the strongest on-page signals you can give.",
+        : "None of your H1 heading(s) mention the target keyword. This is one of the strongest on-page signals you can give.",
     }),
     check({
       key: "subheading-has-keyword",
@@ -150,7 +150,7 @@ export async function gradeContent(rawUrl: string, targetKeyword: string): Promi
       title: "Keyword (or a variation) appears in a subheading",
       description: subheadings.some((h) => includesKeyword(h, keyword))
         ? "At least one H2/H3 reinforces the target keyword."
-        : "None of your H2/H3 subheadings mention the keyword or a natural variation of it — this helps reinforce the page's topic as readers scan.",
+        : "None of your H2/H3 subheadings mention the keyword or a natural variation of it. This helps reinforce the page's topic as readers scan.",
     }),
     check({
       key: "url-has-keyword",
@@ -160,7 +160,7 @@ export async function gradeContent(rawUrl: string, targetKeyword: string): Promi
       title: "URL includes the target keyword",
       description: slugFriendly
         ? "Your URL slug reflects the target keyword."
-        : `The URL path "${pathname}" doesn't clearly include "${keyword}" — a descriptive URL can be a small extra signal.`,
+        : `The URL path "${pathname}" doesn't clearly include "${keyword}". A descriptive URL can be a small extra signal.`,
     }),
     check({
       key: "keyword-density",
@@ -170,9 +170,9 @@ export async function gradeContent(rawUrl: string, targetKeyword: string): Promi
       title: "Keyword usage in the body reads naturally",
       description:
         keywordOccurrences === 0
-          ? `The phrase "${keyword}" doesn't appear anywhere in the page content — it should show up naturally a few times.`
+          ? `The phrase "${keyword}" doesn't appear anywhere in the page content. It should show up naturally a few times.`
           : density > MAX_KEYWORD_DENSITY
-            ? `"${keyword}" appears ${keywordOccurrences} time${keywordOccurrences === 1 ? "" : "s"} (${density.toFixed(1)}% of all words) — that's dense enough to look like keyword stuffing. Aim for it to read naturally instead.`
+            ? `"${keyword}" appears ${keywordOccurrences} time${keywordOccurrences === 1 ? "" : "s"} (${density.toFixed(1)}% of all words). That's dense enough to look like keyword stuffing. Aim for it to read naturally instead.`
             : `"${keyword}" appears ${keywordOccurrences} time${keywordOccurrences === 1 ? "" : "s"} in the content, which reads naturally.`,
     }),
     check({
@@ -183,9 +183,9 @@ export async function gradeContent(rawUrl: string, targetKeyword: string): Promi
       title: "Page has enough content to be useful",
       description:
         wordCount < THIN_CONTENT_WORDS
-          ? `This page has about ${wordCount} words. Thin pages (under ${THIN_CONTENT_WORDS}) often struggle to rank for competitive terms — add genuinely useful detail.`
+          ? `This page has about ${wordCount} words. Thin pages (under ${THIN_CONTENT_WORDS}) often struggle to rank for competitive terms. Add genuinely useful detail.`
           : wordCount < IDEAL_CONTENT_WORDS
-            ? `This page has about ${wordCount} words — enough to be useful, though more depth (${IDEAL_CONTENT_WORDS}+ words) often performs better for competitive topics.`
+            ? `This page has about ${wordCount} words, enough to be useful, though more depth (${IDEAL_CONTENT_WORDS}+ words) often performs better for competitive topics.`
             : `This page has about ${wordCount} words, which is a solid amount of content.`,
     }),
     check({
@@ -196,7 +196,7 @@ export async function gradeContent(rawUrl: string, targetKeyword: string): Promi
       title: "Sentences are easy to read",
       description:
         avgWordsPerSentence <= 25
-          ? `Average sentence length is about ${avgWordsPerSentence.toFixed(0)} words — easy to read.`
+          ? `Average sentence length is about ${avgWordsPerSentence.toFixed(0)} words, which is easy to read.`
           : `Average sentence length is about ${avgWordsPerSentence.toFixed(0)} words, which is on the long side. Shorter sentences are generally easier to scan.`,
     }),
     check({
@@ -210,7 +210,7 @@ export async function gradeContent(rawUrl: string, targetKeyword: string): Promi
           ? "This page has no images to check."
           : images.some((img) => img.alt.length > 0)
             ? `${images.filter((img) => img.alt.length > 0).length} of ${images.length} image(s) have alt text.`
-            : `None of this page's ${images.length} image(s) have alt text — add descriptions for accessibility and image search.`,
+            : `None of this page's ${images.length} image(s) have alt text. Add descriptions for accessibility and image search.`,
     }),
     check({
       key: "has-links",
@@ -221,7 +221,7 @@ export async function gradeContent(rawUrl: string, targetKeyword: string): Promi
       description:
         linkCount > 0
           ? `This page has ${linkCount} link(s) to other pages.`
-          : "This page has no links at all — linking to related pages (yours or authoritative outside sources) gives readers and search engines somewhere to go next.",
+          : "This page has no links at all. Linking to related pages (yours or authoritative outside sources) gives readers and search engines somewhere to go next.",
     }),
   ];
 

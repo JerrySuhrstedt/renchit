@@ -41,7 +41,7 @@ export default async function KeywordsDashboardPage() {
           </h1>
           <p className="max-w-lg text-balance text-lg text-muted-foreground">
             Enter a topic and get real questions and phrases people search
-            for — straight from Google, no guesswork.
+            for, straight from Google, no guesswork.
           </p>
           <div className="mt-2 w-full max-w-xl">
             <NewKeywordSearchForm />

@@ -8,7 +8,7 @@ function greetingFor(hour: number): string {
   return "Good evening";
 }
 
-// Nothing to subscribe to — the value never changes after hydration. This is
+// Nothing to subscribe to; the value never changes after hydration. This is
 // just React's hydration-safe way to ask "am I on the client yet?", which
 // avoids the cascading re-render an effect would cause.
 const noopSubscribe = () => () => {};

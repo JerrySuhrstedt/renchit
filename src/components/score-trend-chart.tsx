@@ -11,7 +11,7 @@ const PAD_RIGHT = 12;
 const PAD_TOP = 12;
 const PAD_BOTTOM = 26;
 // Health scores are a fixed 0-100 scale, so anchor the axis there rather than
-// to the data range — a jump from 71 to 74 shouldn't fill the whole chart.
+// to the data range; a jump from 71 to 74 shouldn't fill the whole chart.
 const Y_MIN = 0;
 const Y_MAX = 100;
 const GRID_LINES = [0, 50, 100];
@@ -113,7 +113,7 @@ export function ScoreTrendChart({
           ))}
 
           {points.map((p, i) => {
-            // Label only the ends — a date under every point turns to mush.
+            // Label only the ends; a date under every point turns to mush.
             if (points.length > 2 && i !== 0 && i !== points.length - 1) return null;
             return (
               <text

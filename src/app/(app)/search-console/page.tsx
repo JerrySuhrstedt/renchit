@@ -42,7 +42,7 @@ export default async function SearchConsoleDashboardPage() {
             <span className="text-brand-strong">actually finding you for?</span>
           </h1>
           <p className="max-w-lg text-balance text-lg text-muted-foreground">
-            Real search data straight from Google — the phrases people typed,
+            Real search data straight from Google: the phrases people typed,
             where you ranked, and which ones you&apos;re closest to winning.
           </p>
           <div className="mt-2 w-full max-w-xl">

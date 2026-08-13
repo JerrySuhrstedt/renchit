@@ -70,7 +70,7 @@ export async function getSearchConsoleAccessToken(userId: string): Promise<Googl
       expires_at: refreshed.expires_in
         ? Math.floor(Date.now() / 1000) + refreshed.expires_in
         : null,
-      // Google usually omits refresh_token on refresh — keep the existing one.
+      // Google usually omits refresh_token on refresh, so keep the existing one.
       refresh_token: refreshed.refresh_token ?? account.refresh_token,
     },
   });

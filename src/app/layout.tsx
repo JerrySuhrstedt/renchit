@@ -10,9 +10,9 @@ const sans = Inter_Tight({
 });
 
 export const metadata: Metadata = {
-  title: "renchit — Site Audit",
+  title: "renchit | Site Audit",
   description:
-    "Crawl your site, find what's holding your SEO back, and get plain-English fixes. No jargon, no clutter — just a healthier site.",
+    "Crawl your site, find what's holding your SEO back, and get plain-English fixes. No jargon, no clutter, just a healthier site.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -24,17 +24,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col bg-background text-foreground">
         {/*
           THESIS: A site audit tool with the warmth of Mailchimp, not the density of an SEO
-          suite — one job, done with confidence and plain language.
+          suite; one job, done with confidence and plain language.
           OWN-WORLD: Warm cream ground (#fdf8f3), near-black warm text, single committed
           brand accent (#fc5434), an all-lowercase "renchit" wordmark (no icon mark),
           big pill/rounded-3xl cards, Inter Tight throughout for a confident, tightly-set
           voice, severity colors (red/amber/blue/green) kept visually distinct from brand.
           STORY: Visitor pastes a URL, watches a live crawl, gets a satisfying health-score
-          reveal, then reads issues as plain-English problems with concrete fixes — never
+          reveal, then reads issues as plain-English problems with concrete fixes, never
           jargon they have to Google.
-          FIRST VIEWPORT: Dashboard — wordmark top-left, a large centered URL entry card as
+          FIRST VIEWPORT: Dashboard. Wordmark top-left, a large centered URL entry card as
           the hero action, past audits below as a friendly history list.
-          FORM: Standalone identity, independent of any parent brand — a text-only wordmark
+          FORM: Standalone identity, independent of any parent brand: a text-only wordmark
           rather than a bespoke icon mark, since the product should own its own visual
           identity outright.
           FINISH: unreviewed and undocumented is unfinished; this build ends with the finish

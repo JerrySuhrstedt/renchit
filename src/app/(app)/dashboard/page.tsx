@@ -221,7 +221,7 @@ function EmptyDashboard() {
   return (
     <div className="mt-8 rounded-3xl border border-dashed border-border bg-card/60 px-8 py-12">
       <h2 className="text-center text-lg font-bold text-foreground">
-        Nothing here yet — pick a place to start
+        Nothing here yet. Pick a place to start
       </h2>
       <div className="mt-6 grid gap-3 sm:grid-cols-3">
         {tools.map((tool) => (

@@ -92,7 +92,7 @@ export function AuditHistoryList({ audits: initialAudits }: { audits: AuditListI
                 {audit.status === "completed" &&
                   `${audit.openIssueCount} open issue${audit.openIssueCount === 1 ? "" : "s"} · ${formatRelativeTime(audit.completedAt ?? audit.startedAt)}`}
                 {audit.status === "running" &&
-                  `Crawling — ${audit.pagesCrawled}/${audit.pageLimit} pages`}
+                  `Crawling ${audit.pagesCrawled}/${audit.pageLimit} pages`}
                 {audit.status === "failed" &&
                   (audit.errorMessage ?? "Audit failed")}
               </p>

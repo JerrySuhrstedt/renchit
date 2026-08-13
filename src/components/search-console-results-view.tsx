@@ -8,7 +8,7 @@ import {
 } from "@/lib/search-console-types";
 
 function formatPosition(position: number): string {
-  return position > 0 ? position.toFixed(1) : "—";
+  return position > 0 ? position.toFixed(1) : "-";
 }
 
 function formatPct(ratio: number): string {
@@ -77,14 +77,14 @@ export function SearchConsoleResultsView({ report }: { report: SearchConsoleRepo
               Your closest wins
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              These are phrases you already rank for on page 2 — positions 11 to
+              These are phrases you already rank for on page 2, positions 11 to
               20. Almost nobody scrolls to page 2, so nudging any of these up a
               few spots is the fastest traffic you can get.
             </p>
 
             {report.opportunities.length === 0 ? (
               <p className="mt-4 rounded-2xl border border-dashed border-border bg-card/60 px-6 py-8 text-center text-sm text-muted-foreground">
-                Nothing sitting on page 2 right now — either you&apos;re already
+                Nothing sitting on page 2 right now. Either you&apos;re already
                 on page 1 for your main phrases, or there isn&apos;t enough data
                 yet to tell.
               </p>
