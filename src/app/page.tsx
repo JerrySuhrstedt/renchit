@@ -445,8 +445,17 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
-        <div className="border-t border-border/70 px-5 py-5 text-center text-xs text-muted-foreground sm:px-8">
-          © {new Date().getFullYear()} All Rights Reserved | SumoLab LLC
+        <div className="flex flex-col items-center gap-2 border-t border-border/70 px-5 py-5 text-center text-xs text-muted-foreground sm:px-8">
+          <div className="flex items-center gap-3">
+            <Link href="/privacy" className="hover:text-foreground">
+              Privacy Policy
+            </Link>
+            <span aria-hidden>·</span>
+            <Link href="/terms" className="hover:text-foreground">
+              Terms of Service
+            </Link>
+          </div>
+          <p>© {new Date().getFullYear()} All Rights Reserved | SumoLab LLC</p>
         </div>
       </footer>
     </>
