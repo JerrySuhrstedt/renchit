@@ -23,6 +23,11 @@ export default async function BillingPage({
   const ent = await getEntitlements(sessionUser.id);
   const plan = PLANS[ent.plan];
 
+  // A comped tester is stored as lifetime so they inherit its entitlements,
+  // but calling them a "Founding Member" who paid once is simply untrue.
+  const planName = ent.isComp ? "Complimentary access" : plan.name;
+  const planBlurb = ent.isComp ? "Every tool, on the house." : plan.blurb;
+
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-5 pb-24 pt-8 sm:px-8">
       <h1 className="text-2xl font-extrabold tracking-tight text-foreground">Billing</h1>
@@ -59,7 +64,7 @@ export default async function BillingPage({
       {/* Current plan */}
       <div className="mt-6 rounded-3xl border border-border bg-card px-6 py-6 sm:px-8">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h2 className="text-lg font-bold text-foreground">{plan.name}</h2>
+          <h2 className="text-lg font-bold text-foreground">{planName}</h2>
           {ent.plan === "trial" && (
             <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-tint px-3 py-1 text-xs font-bold text-brand-strong">
               <Clock className="h-3.5 w-3.5" aria-hidden />
@@ -67,7 +72,7 @@ export default async function BillingPage({
             </span>
           )}
         </div>
-        <p className="mt-1 text-sm text-muted-foreground">{plan.blurb}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{planBlurb}</p>
 
         <ul className="mt-4 flex flex-col gap-1.5 text-sm text-muted-foreground">
           <li>{siteLimitLabel(plan)}</li>
@@ -116,7 +121,9 @@ export default async function BillingPage({
 
         <BillingActions
           hasPaddleCustomer={ent.hasPaddleCustomer}
-          isPaid={ent.isPaid}
+          // Comps get the "See plans" link too. They are on the house, not
+          // sold to, but they should still be able to look at pricing.
+          isPaid={ent.isPaid && !ent.isComp}
           isLifetime={ent.plan === "lifetime"}
         />
       </div>
