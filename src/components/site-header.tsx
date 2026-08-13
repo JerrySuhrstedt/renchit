@@ -20,6 +20,7 @@ const TOOLS = [
   { href: "/grader", label: "Content Grader", match: (path: string) => path.startsWith("/grader") },
   { href: "/local", label: "Local Listing", match: (path: string) => path.startsWith("/local") },
   { href: "/speed", label: "Page Speed", match: (path: string) => path.startsWith("/speed") },
+  { href: "/search-console", label: "Search Data", match: (path: string) => path.startsWith("/search-console") },
   { href: "/projects", label: "Projects", match: (path: string) => path.startsWith("/projects") },
 ];
 

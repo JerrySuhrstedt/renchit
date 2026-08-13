@@ -23,6 +23,7 @@ model User {
   contentGrades  ContentGrade[]
   localListings  LocalListing[]
   pageSpeedChecks PageSpeedCheck[]
+  searchConsoleReports SearchConsoleReport[]
 }
 
 model Account {
@@ -72,6 +73,7 @@ model Site {
   contentGrades   ContentGrade[]
   localListings   LocalListing[]
   pageSpeedChecks PageSpeedCheck[]
+  searchConsoleReports SearchConsoleReport[]
 
   @@unique([userId, rootUrl])
 }
@@ -198,4 +200,21 @@ model PageSpeedCheck {
   mobileJson   String? // JSON-serialized PageSpeedStrategyResult
   desktopJson  String? // JSON-serialized PageSpeedStrategyResult
   createdAt    DateTime @default(now())
+}
+
+model SearchConsoleReport {
+  id               String   @id @default(cuid())
+  user             User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId           String?
+  site             Site?    @relation(fields: [siteId], references: [id], onDelete: SetNull)
+  siteId           String?
+  propertyUrl      String // e.g. "sc-domain:example.com" or "https://example.com/"
+  status           String   @default("running") // running | completed | failed
+  errorMessage     String?
+  totalClicks      Int?
+  totalImpressions Int?
+  avgPosition      Float?
+  queriesJson      String? // JSON-serialized SearchQueryRow[]
+  pagesJson        String? // JSON-serialized SearchPageRow[]
+  createdAt        DateTime @default(now())
 }
