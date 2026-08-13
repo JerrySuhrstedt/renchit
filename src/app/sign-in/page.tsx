@@ -1,58 +1,88 @@
 import { redirect } from "next/navigation";
 import { auth, signIn } from "@/lib/auth";
 import { Logo } from "@/components/logo";
+import { EmailSignInForm } from "@/components/email-sign-in-form";
+import { GoogleMark } from "@/components/google-mark";
 
-export default async function SignInPage() {
+const ERRORS: Record<string, string> = {
+  Configuration:
+    "Email sign-in is not finished being set up yet. Please use Google for now, or email info@sumolab.co.",
+  AccessDenied: "That sign-in was declined. Try again, or use a different account.",
+  Verification: "That link has already been used or has expired. Request a new one below.",
+};
+
+export default async function SignInPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string; next?: string }>;
+}) {
   const session = await auth();
   if (session?.user) {
     redirect("/dashboard");
   }
 
+  const { error, next } = await searchParams;
+  const redirectTo = next && next.startsWith("/") ? next : "/dashboard";
+  const message = error ? (ERRORS[error] ?? "Something went wrong. Please try again.") : null;
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-8 bg-background px-5 py-16 text-center">
+    <main className="flex min-h-screen flex-col items-center justify-center gap-8 bg-background px-5 py-16">
       <Logo />
 
-      <div className="flex flex-col items-center gap-2">
+      <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-extrabold tracking-tight text-foreground">
           Sign in to get started
         </h1>
         <p className="max-w-sm text-balance text-sm text-muted-foreground">
-          Your audits, keyword research, and content grades are saved to your
-          account so you can pick up where you left off.
+          Every tool free for 14 days, no credit card. Your audits and saved
+          work stay on your account.
         </p>
       </div>
 
-      <form
-        action={async () => {
-          "use server";
-          await signIn("google", { redirectTo: "/dashboard" });
-        }}
-      >
-        <button
-          type="submit"
-          className="flex items-center gap-3 rounded-2xl border border-border bg-card px-6 py-3.5 text-base font-semibold text-foreground shadow-[0_1px_2px_rgba(36,28,21,0.04),0_12px_32px_-16px_rgba(36,28,21,0.18)] transition-colors hover:border-brand/40"
+      {message && (
+        <p className="max-w-sm rounded-2xl border border-critical/40 bg-critical-tint px-5 py-3 text-center text-sm font-semibold text-critical">
+          {message}
+        </p>
+      )}
+
+      <div className="flex w-full max-w-sm flex-col gap-4">
+        <form
+          action={async () => {
+            "use server";
+            await signIn("google", { redirectTo });
+          }}
         >
-          <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden>
-            <path
-              fill="#4285F4"
-              d="M23.52 12.27c0-.85-.08-1.67-.22-2.45H12v4.63h6.46c-.28 1.5-1.13 2.77-2.4 3.62v3.01h3.89c2.27-2.09 3.57-5.17 3.57-8.81z"
-            />
-            <path
-              fill="#34A853"
-              d="M12 24c3.24 0 5.95-1.07 7.94-2.92l-3.89-3.01c-1.08.72-2.45 1.15-4.05 1.15-3.11 0-5.75-2.1-6.69-4.92H1.29v3.1C3.26 21.3 7.31 24 12 24z"
-            />
-            <path
-              fill="#FBBC05"
-              d="M5.31 14.3c-.24-.72-.38-1.49-.38-2.3s.14-1.58.38-2.3V6.6H1.29A11.96 11.96 0 000 12c0 1.93.46 3.76 1.29 5.4l4.02-3.1z"
-            />
-            <path
-              fill="#EA4335"
-              d="M12 4.78c1.76 0 3.34.61 4.58 1.79l3.44-3.44C17.94 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.6l4.02 3.1c.94-2.82 3.58-4.92 6.69-4.92z"
-            />
-          </svg>
-          Sign in with Google
-        </button>
-      </form>
+          <button
+            type="submit"
+            className="flex w-full items-center justify-center gap-3 rounded-2xl border border-border bg-card px-6 py-3.5 text-base font-semibold text-foreground shadow-[0_1px_2px_rgba(36,28,21,0.04),0_12px_32px_-16px_rgba(36,28,21,0.18)] transition-colors hover:border-brand/40"
+          >
+            <GoogleMark />
+            Continue with Google
+          </button>
+        </form>
+
+        <div className="flex items-center gap-3">
+          <span className="h-px flex-1 bg-border" />
+          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            or
+          </span>
+          <span className="h-px flex-1 bg-border" />
+        </div>
+
+        <EmailSignInForm redirectTo={redirectTo} />
+      </div>
+
+      <p className="max-w-sm text-balance text-center text-xs text-muted-foreground">
+        By continuing you agree to our{" "}
+        <a href="/terms" className="underline hover:text-foreground">
+          Terms of Service
+        </a>{" "}
+        and{" "}
+        <a href="/privacy" className="underline hover:text-foreground">
+          Privacy Policy
+        </a>
+        .
+      </p>
     </main>
   );
 }

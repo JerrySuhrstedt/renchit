@@ -1,15 +1,62 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
+import Resend from "next-auth/providers/resend";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "@/lib/db";
 import { TRIAL_DAYS } from "@/lib/plans";
+import { signInEmailHtml, signInEmailText } from "@/lib/auth-email";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(db),
-  providers: [Google],
+  providers: [
+    Google,
+    /**
+     * Magic links, so anyone without a Google account can still sign up.
+     *
+     * Passwordless on purpose: no password to invent, forget, reset, or for
+     * us to store. Proving you can read the inbox is the same thing a
+     * password reset proves anyway, with fewer steps and nothing to leak.
+     *
+     * Signing in by email as an address that already exists as a Google
+     * account signs you into that same account rather than making a second
+     * one, which is safe because possession of the inbox is proven.
+     */
+    Resend({
+      apiKey: process.env.AUTH_RESEND_KEY,
+      from: process.env.EMAIL_FROM ?? "renchit <onboarding@resend.dev>",
+      name: "Email",
+      async sendVerificationRequest({ identifier, url, provider }) {
+        const host = new URL(url).host;
+        const res = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${provider.apiKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            from: provider.from,
+            to: identifier,
+            subject: "Your renchit sign-in link",
+            html: signInEmailHtml({ url, host }),
+            text: signInEmailText({ url, host }),
+          }),
+        });
+
+        if (!res.ok) {
+          // Surfacing the real reason matters here: almost every failure is
+          // an unverified sending domain, and a generic error sends you
+          // hunting the wrong thing.
+          const detail = await res.text().catch(() => "");
+          throw new Error(`Resend refused the sign-in email: ${res.status} ${detail}`);
+        }
+      },
+    }),
+  ],
   session: { strategy: "database" },
   pages: {
     signIn: "/sign-in",
+    verifyRequest: "/sign-in/check-email",
+    error: "/sign-in",
   },
   callbacks: {
     // The PrismaAdapter only writes tokens when it first links an account, so
