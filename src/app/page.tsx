@@ -85,6 +85,18 @@ const TOOLS = [
       "Get your score, Core Web Vitals, and the top fixes to speed it up",
     ],
   },
+  {
+    icon: Search,
+    name: "Search Data",
+    tagline: "See what Google already sends you",
+    what: "Connects to your Google Search Console and shows the searches people actually used to find you, how many clicks each brought, and which keywords are sitting just off page one.",
+    why: "Search Console holds the only data about your real visitors, and most site owners never open it because it is built for analysts.",
+    how: [
+      "Connect the Google account that owns your Search Console",
+      "Pick the website you want to look at",
+      "See your top searches, your traffic, and your closest near-misses",
+    ],
+  },
 ];
 
 const FEATURES = [
@@ -104,12 +116,14 @@ const FEATURES = [
   { title: "LocalBusiness structured data check", desc: "See if your site helps Google confirm who you are." },
   { title: "Real PageSpeed Insights scores", desc: "The same Google data behind pagespeed.web.dev." },
   { title: "Mobile & desktop Core Web Vitals", desc: "LCP, CLS, and more. The real speed signals Google uses." },
+  { title: "Google Search Console connection", desc: "Your real clicks and searches, without the analyst UI." },
+  { title: "Near-miss keyword finder", desc: "Pages ranking 11 to 20, where small fixes pay off most." },
 ];
 
 const FAQS = [
   {
-    q: "Is this actually free?",
-    a: "Yes. Sign in with your Google account and use all five tools, no credit card required.",
+    q: "Is it really free to try?",
+    a: "Free for 14 days, all six tools, no credit card and nothing to cancel. After that you keep one tool of your choice free forever, or pick a plan from $9/month. Either way everything you have already run stays readable.",
   },
   {
     q: "Do you show keyword search volume, like Ahrefs or SEMrush?",
@@ -235,7 +249,7 @@ export default function LandingPage() {
         <section id="tools" className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-8">
           <div className="flex flex-col items-center gap-3 text-center">
             <h2 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-              Five tools. Nothing you don&apos;t need.
+              Six tools. Nothing you don&apos;t need.
             </h2>
             <p className="max-w-lg text-balance text-muted-foreground">
               Every tool does one job, does it with real data, and tells you
