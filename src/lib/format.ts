@@ -28,6 +28,18 @@ export function scoreBand(score: number): {
   return { label: "In trouble", color: "var(--critical)", tint: "var(--critical-tint)" };
 }
 
+// Matches Google's own Lighthouse/PageSpeed Insights score thresholds
+// (90/50), which differ from our own audit health-score bands (80/50).
+export function pageSpeedBand(score: number): {
+  label: string;
+  color: string;
+  tint: string;
+} {
+  if (score >= 90) return { label: "Good", color: "var(--success)", tint: "var(--success-tint)" };
+  if (score >= 50) return { label: "Needs improvement", color: "var(--warning)", tint: "var(--warning-tint)" };
+  return { label: "Poor", color: "var(--critical)", tint: "var(--critical-tint)" };
+}
+
 export function formatRelativeTime(iso: string | Date): string {
   const date = typeof iso === "string" ? new Date(iso) : iso;
   const diffMs = Date.now() - date.getTime();

@@ -10,9 +10,11 @@ function easeOutExpo(t: number) {
 export function HealthScoreDial({
   score,
   size = "lg",
+  band: bandOverride,
 }: {
   score: number;
   size?: "lg" | "sm";
+  band?: { label: string; color: string; tint: string };
 }) {
   const [displayed, setDisplayed] = useState(0);
   const rafRef = useRef<number | null>(null);
@@ -37,7 +39,7 @@ export function HealthScoreDial({
     };
   }, [score]);
 
-  const band = scoreBand(score);
+  const band = bandOverride ?? scoreBand(score);
   const dimension = size === "lg" ? 200 : 64;
   const stroke = size === "lg" ? 16 : 7;
   const radius = dimension / 2 - stroke / 2 - 2;

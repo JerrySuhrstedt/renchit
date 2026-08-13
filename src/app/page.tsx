@@ -6,6 +6,7 @@ import {
   Lightbulb,
   FileSearch,
   MapPin,
+  Gauge,
   ArrowRight,
   Search,
   ListChecks,
@@ -72,6 +73,18 @@ const TOOLS = [
       "Get a score and a plain-English checklist of what to fix",
     ],
   },
+  {
+    icon: Gauge,
+    name: "Page Speed",
+    tagline: "See your real PageSpeed score",
+    what: "Runs Google's own PageSpeed Insights test on your page for both mobile and desktop, showing your Core Web Vitals and a plain-English list of what to fix.",
+    why: "A slow page loses visitors and rankings before they ever see what you offer — and \"slow\" is a guess until you see the real numbers.",
+    how: [
+      "Paste a page URL",
+      "We run Google's real PageSpeed Insights test for mobile and desktop",
+      "Get your score, Core Web Vitals, and the top fixes to speed it up",
+    ],
+  },
 ];
 
 const FEATURES = [
@@ -89,12 +102,14 @@ const FEATURES = [
   { title: "Free Google sign-in", desc: "No password to create or remember." },
   { title: "Local business info consistency check", desc: "Catch NAP mismatches between your site and Google." },
   { title: "LocalBusiness structured data check", desc: "See if your site helps Google confirm who you are." },
+  { title: "Real PageSpeed Insights scores", desc: "The same Google data behind pagespeed.web.dev." },
+  { title: "Mobile & desktop Core Web Vitals", desc: "LCP, CLS, and more — the real speed signals Google uses." },
 ];
 
 const FAQS = [
   {
     q: "Is this actually free?",
-    a: "Yes. Sign in with your Google account and use all four tools — no credit card required.",
+    a: "Yes. Sign in with your Google account and use all five tools — no credit card required.",
   },
   {
     q: "Do you show keyword search volume, like Ahrefs or SEMrush?",
@@ -217,7 +232,7 @@ export default function LandingPage() {
         <section id="tools" className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-8">
           <div className="flex flex-col items-center gap-3 text-center">
             <h2 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-              Four tools. Nothing you don&apos;t need.
+              Five tools. Nothing you don&apos;t need.
             </h2>
             <p className="max-w-lg text-balance text-muted-foreground">
               Every tool does one job, does it with real data, and tells you
@@ -415,6 +430,9 @@ export default function LandingPage() {
               </a>
               <a href="#tools" className="text-sm text-foreground hover:text-brand-strong">
                 Local Listing Checker
+              </a>
+              <a href="#tools" className="text-sm text-foreground hover:text-brand-strong">
+                Page Speed
               </a>
             </div>
             <div className="flex flex-col gap-2.5">
