@@ -19,7 +19,7 @@ export async function POST(request: Request) {
   const userId = await requireUserIdForApi();
   if (userId instanceof NextResponse) return userId;
 
-  let body: { name?: string; email?: string; phone?: string; smsEnabled?: boolean };
+  let body: { name?: string; email?: string };
   try {
     body = await request.json();
   } catch {
@@ -27,24 +27,15 @@ export async function POST(request: Request) {
   }
 
   const email = body.email?.trim() || null;
-  const phone = body.phone?.trim() || null;
 
-  if (!email && !phone) {
+  if (!email) {
     return NextResponse.json(
-      { error: "Add an email address, a phone number, or both." },
+      { error: "Add an email address for this contact." },
       { status: 400 },
     );
   }
-  if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
     return NextResponse.json({ error: "That email address does not look right." }, { status: 400 });
-  }
-  // E.164, which is what Twilio requires and what stops "555-1234" silently
-  // never being delivered.
-  if (phone && !/^\+[1-9]\d{7,14}$/.test(phone)) {
-    return NextResponse.json(
-      { error: "Phone numbers need the country code, like +14805551234." },
-      { status: 400 },
-    );
   }
 
   // A cap, because every recipient is an outbound message we pay for and a
@@ -62,9 +53,7 @@ export async function POST(request: Request) {
       userId,
       name: body.name?.trim() || null,
       email,
-      phone,
-      emailEnabled: Boolean(email),
-      smsEnabled: Boolean(phone) && body.smsEnabled !== false,
+      emailEnabled: true,
     },
   });
 

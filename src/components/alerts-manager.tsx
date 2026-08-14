@@ -4,8 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  Loader2, Plus, Trash2, Mail, MessageSquare, CircleCheck, CircleX,
-  CircleDashed, Pause, Play, AlertTriangle,
+  Loader2, Plus, Trash2, Mail, CircleCheck, CircleX,
+  CircleDashed, Pause, Play,
 } from "lucide-react";
 
 type Monitor = {
@@ -22,9 +22,7 @@ type Monitor = {
 type Recipient = {
   id: string;
   name: string | null;
-  email: string | null;
-  phone: string | null;
-  smsEnabled: boolean;
+  email: string;
 };
 
 type Event = {
@@ -38,13 +36,11 @@ type Event = {
 
 export function AlertsManager({
   canMonitor,
-  smsAvailable,
   initialMonitors,
   initialRecipients,
   events,
 }: {
   canMonitor: boolean;
-  smsAvailable: boolean;
   initialMonitors: Monitor[];
   initialRecipients: Recipient[];
   events: Event[];
@@ -56,7 +52,6 @@ export function AlertsManager({
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [addingPerson, setAddingPerson] = useState(false);
   const [personError, setPersonError] = useState<string | null>(null);
 
@@ -101,11 +96,11 @@ export function AlertsManager({
       const res = await fetch("/api/alert-recipients", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, phone }),
+        body: JSON.stringify({ name, email }),
       });
       const data = await res.json();
       if (!res.ok) return setPersonError(data.error ?? "Could not add that contact.");
-      setName(""); setEmail(""); setPhone("");
+      setName(""); setEmail("");
       router.refresh();
     } finally {
       setAddingPerson(false);
@@ -122,9 +117,8 @@ export function AlertsManager({
       <div className="mt-8 rounded-3xl border border-border bg-card px-6 py-8 text-center sm:px-8">
         <h2 className="text-lg font-bold text-foreground">Alerts are on the paid plans</h2>
         <p className="mx-auto mt-2 max-w-md text-balance text-sm text-muted-foreground">
-          We check your site every few minutes and email or text you the moment
-          it goes down, then again when it comes back. Nobody has to remember to
-          look.
+          We check your site every few minutes and email you the moment it goes
+          down, then again when it comes back. Nobody has to remember to look.
         </p>
         <Link
           href="/pricing"
@@ -223,25 +217,24 @@ export function AlertsManager({
                 key={r.id}
                 className="flex flex-wrap items-center gap-3 rounded-2xl border border-border bg-card px-5 py-3"
               >
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold text-foreground">
-                    {r.name || r.email || r.phone}
-                  </p>
-                  <p className="flex flex-wrap items-center gap-x-3 text-xs text-muted-foreground">
-                    {r.email && (
-                      <span className="inline-flex items-center gap-1">
-                        <Mail className="h-3 w-3" aria-hidden />
+                {/* Without a name the email is the name, so printing it on
+                    both lines just says the same thing twice. */}
+                <div className="flex min-w-0 flex-1 items-center gap-1.5">
+                  <Mail className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden />
+                  {r.name ? (
+                    <span className="min-w-0">
+                      <span className="block truncate text-sm font-semibold text-foreground">
+                        {r.name}
+                      </span>
+                      <span className="block truncate text-xs text-muted-foreground">
                         {r.email}
                       </span>
-                    )}
-                    {r.phone && (
-                      <span className="inline-flex items-center gap-1">
-                        <MessageSquare className="h-3 w-3" aria-hidden />
-                        {r.phone}
-                        {!smsAvailable && " (texting not switched on yet)"}
-                      </span>
-                    )}
-                  </p>
+                    </span>
+                  ) : (
+                    <span className="truncate text-sm font-semibold text-foreground">
+                      {r.email}
+                    </span>
+                  )}
                 </div>
                 <button
                   type="button"
@@ -255,7 +248,7 @@ export function AlertsManager({
           </ul>
         )}
 
-        <div className="mt-3 grid gap-2 rounded-2xl border border-border bg-card p-4 sm:grid-cols-3">
+        <div className="mt-3 grid gap-2 rounded-2xl border border-border bg-card p-4 sm:grid-cols-2">
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -263,18 +256,13 @@ export function AlertsManager({
             className="rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-brand"
           />
           <input
+            type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="them@example.com"
             className="rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-brand"
           />
-          <input
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="+14805551234"
-            className="rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-brand"
-          />
-          <div className="sm:col-span-3 flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
             <button
               type="button"
               onClick={addRecipient}
@@ -287,14 +275,6 @@ export function AlertsManager({
             {personError && <p className="text-sm font-semibold text-critical">{personError}</p>}
           </div>
         </div>
-
-        {!smsAvailable && (
-          <p className="mt-2 flex items-start gap-2 text-xs text-muted-foreground">
-            <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-warning" aria-hidden />
-            Text messages are not switched on yet, so phone numbers are stored
-            but not used. Email alerts work now.
-          </p>
-        )}
       </section>
 
       {/* History */}

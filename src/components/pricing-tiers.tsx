@@ -183,7 +183,7 @@ export function LifetimeOffer({ seatsLeft }: { seatsLeft: number }) {
           <ul className="mt-5 grid gap-2 sm:grid-cols-2">
             <Feature emphasis>{siteLimitLabel(tier)}</Feature>
             <Feature emphasis>All 6 tools, forever</Feature>
-            <Feature emphasis>Uptime alerts by email and text</Feature>
+            <Feature emphasis>Uptime alerts by email</Feature>
             <Feature emphasis>Every core tool we add later</Feature>
             <Feature>{tier.support}</Feature>
             <Feature>No renewal, ever</Feature>

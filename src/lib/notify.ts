@@ -1,34 +1,23 @@
 /**
  * Sending an alert to the people who asked to hear about it.
  *
- * Email goes through Resend, which is already set up for sign-in links. SMS
- * goes through Twilio if it is configured, and is skipped cleanly if not, so
- * the feature works on email alone rather than failing entirely.
+ * Email only, through Resend, which is already set up for sign-in links.
+ * Texting was cut before launch: US carriers require A2P 10DLC brand
+ * registration before an app may text, which is days of paperwork for a
+ * channel email already covers. See git history for the Twilio transport.
  */
 
 export type Recipient = {
   name: string | null;
   email: string | null;
-  phone: string | null;
   emailEnabled: boolean;
-  smsEnabled: boolean;
 };
 
 export type AlertMessage = {
   subject: string;
-  /** Kept short: this may arrive as a text message on a phone. */
-  sms: string;
   html: string;
   text: string;
 };
-
-export function smsConfigured(): boolean {
-  return Boolean(
-    process.env.TWILIO_ACCOUNT_SID &&
-      process.env.TWILIO_AUTH_TOKEN &&
-      process.env.TWILIO_FROM_NUMBER,
-  );
-}
 
 function emailConfigured(): boolean {
   const key = process.env.AUTH_RESEND_KEY;
@@ -60,30 +49,6 @@ async function sendEmail(to: string, msg: AlertMessage): Promise<boolean> {
   }
 }
 
-async function sendSms(to: string, body: string): Promise<boolean> {
-  if (!smsConfigured()) return false;
-  const sid = process.env.TWILIO_ACCOUNT_SID!;
-  try {
-    const res = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`, {
-      method: "POST",
-      headers: {
-        Authorization: `Basic ${Buffer.from(`${sid}:${process.env.TWILIO_AUTH_TOKEN}`).toString("base64")}`,
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        To: to,
-        From: process.env.TWILIO_FROM_NUMBER!,
-        Body: body,
-      }),
-    });
-    if (!res.ok) console.error("[alert] sms refused", res.status, await res.text());
-    return res.ok;
-  } catch (err) {
-    console.error("[alert] sms failed", err);
-    return false;
-  }
-}
-
 /**
  * Fans an alert out to everyone. Returns how many messages actually went, so
  * an alert nobody received is visible in the log rather than assumed sent.
@@ -96,7 +61,6 @@ export async function notifyAll(
 
   for (const r of recipients) {
     if (r.emailEnabled && r.email) sends.push(sendEmail(r.email, msg));
-    if (r.smsEnabled && r.phone) sends.push(sendSms(r.phone, msg.sms));
   }
 
   const results = await Promise.all(sends);
@@ -127,10 +91,6 @@ export function buildAlert(opts: {
 
   const subject = down ? `${host} is down` : `${host} is back up`;
 
-  const sms = down
-    ? `renchit: ${host} appears to be DOWN. ${reason}`
-    : `renchit: ${host} is back up${opts.downtimeMinutes ? ` after about ${opts.downtimeMinutes} min` : ""}.`;
-
   const headline = down ? `${host} appears to be down` : `${host} is back up`;
   const body = down
     ? `${reason} We check every few minutes and will email again the moment it recovers.`
@@ -138,7 +98,6 @@ export function buildAlert(opts: {
 
   return {
     subject,
-    sms,
     text: `${headline}\n\n${body}\n\n${opts.url}`,
     html: `<!doctype html><html><body style="margin:0;padding:0;background:${PAPER};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${PAPER};padding:40px 16px;"><tr><td align="center">

@@ -118,8 +118,17 @@ never get mistaken for a call to action.
 - **Steady Blue** (`#2563eb` / tint `#eaf1fe`): Informational, low-stakes findings.
 - **Confirmed Green** (`#15803d` / tint `#e9f7ee`): Healthy score band, resolved issues, "nothing left to fix" empty state.
 
+### Traffic Light Lamps (dashboard uptime signal only)
+A literal object, so these are fixed rather than themed: a signal on a street corner is the same color at midnight as at noon, and the lamps always sit on their own dark housing.
+- **Lamp Red** (`#e8342c`): Site is down.
+- **Lamp Amber** (`#f7b32b`): No usable reading — the last check is older than its schedule allows.
+- **Lamp Green** (`#34c759`): Site is answering.
+- **Housing** (`#2a2521`, edge `#4a423b`, unlit lens `#1b1815`): The signal body. Unlit lamps keep a 15% trace of their own color, the way a real lens does.
+
+Brighter than the status palette above because a lit lamp has to read as lit. Do not reuse these anywhere else; a traffic light means uptime and nothing else.
+
 ### Named Rules
-**The One Loud Color Rule.** Renchit Coral is the only saturated brand color on any screen. Status colors exist to inform, not to compete with it — they always render at lower visual weight (smaller pills, never full-bleed fields).
+**The One Loud Color Rule.** Renchit Coral is the only saturated brand color on any screen. Status colors exist to inform, not to compete with it — they always render at lower visual weight (smaller pills, never full-bleed fields). The traffic light is the single deliberate exception: it is contained inside its own dark housing, which is what keeps it from competing with the brand.
 
 ## Typography
 

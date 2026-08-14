@@ -2,7 +2,6 @@ import { db } from "@/lib/db";
 import { requireUser } from "@/lib/session";
 import { getEntitlements } from "@/lib/entitlements";
 import { PLANS } from "@/lib/plans";
-import { smsConfigured } from "@/lib/notify";
 import { AlertsManager } from "@/components/alerts-manager";
 
 export const dynamic = "force-dynamic";
@@ -35,7 +34,6 @@ export default async function AlertsPage() {
 
       <AlertsManager
         canMonitor={canMonitor}
-        smsAvailable={smsConfigured()}
         initialMonitors={monitors.map((m) => ({
           id: m.id,
           url: m.url,
@@ -46,13 +44,11 @@ export default async function AlertsPage() {
           lastResponseMs: m.lastResponseMs,
           lastError: m.lastError,
         }))}
-        initialRecipients={recipients.map((r) => ({
-          id: r.id,
-          name: r.name,
-          email: r.email,
-          phone: r.phone,
-          smsEnabled: r.smsEnabled,
-        }))}
+        initialRecipients={recipients
+          // Alerts are email only, so a contact with no address has nothing to
+          // show. Older phone-only rows, if any, simply drop out of the list.
+          .filter((r): r is typeof r & { email: string } => Boolean(r.email))
+          .map((r) => ({ id: r.id, name: r.name, email: r.email }))}
         events={events.map((e) => ({
           id: e.id,
           kind: e.kind,

@@ -24,6 +24,12 @@
   --color-psi-good: var(--psi-good);
   --color-psi-average: var(--psi-average);
   --color-psi-poor: var(--psi-poor);
+  --color-lamp-red: var(--lamp-red);
+  --color-lamp-amber: var(--lamp-amber);
+  --color-lamp-green: var(--lamp-green);
+  --color-lamp-housing: var(--lamp-housing);
+  --color-lamp-housing-edge: var(--lamp-housing-edge);
+  --color-lamp-off: var(--lamp-off);
   --color-success: var(--success);
   --color-success-tint: var(--success-tint);
 
@@ -118,6 +124,17 @@
   --psi-average-tint: #fff4e0;
   --psi-poor: #ff4e42;
   --psi-poor-tint: #ffeceb;
+  /* Traffic light lamps on the dashboard. Deliberately not themed: a signal
+     on a street corner is the same colour at midnight as at noon, and the
+     lamps always sit on their own dark housing, so theming them would only
+     break the metaphor people are recognising. Brighter than our status
+     palette because a lit lamp has to read as lit. */
+  --lamp-red: #e8342c;
+  --lamp-amber: #f7b32b;
+  --lamp-green: #34c759;
+  --lamp-housing: #2a2521;
+  --lamp-housing-edge: #4a423b;
+  --lamp-off: #1b1815;
 
   --success: #15803d;
   --success-tint: #e9f7ee;

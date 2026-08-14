@@ -82,13 +82,7 @@ export async function runDueMonitors(now = new Date()): Promise<RunSummary> {
       user: {
         select: {
           alertRecipients: {
-            select: {
-              name: true,
-              email: true,
-              phone: true,
-              emailEnabled: true,
-              smsEnabled: true,
-            },
+            select: { name: true, email: true, emailEnabled: true },
           },
         },
       },

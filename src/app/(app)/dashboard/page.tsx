@@ -14,14 +14,69 @@ import { requireUser } from "@/lib/session";
 import { HealthScoreDial } from "@/components/health-score-dial";
 import { DashboardGreeting } from "@/components/dashboard-greeting";
 import { ScoreTrendChart, type TrendPoint } from "@/components/score-trend-chart";
+import { UptimeLights, type UptimeLight } from "@/components/uptime-lights";
 import { hostnameOf, formatRelativeTime, pageSpeedBand } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
 const MIN_POINTS_FOR_TREND = 3;
 
+/**
+ * How far past its own schedule a check can drift before we stop trusting it.
+ * Three intervals allows for a missed run or two without crying stale, and the
+ * floor keeps a fast monitor from going grey over one slow minute.
+ */
+function isStale(lastCheckedAt: Date, intervalMinutes: number, now: number): boolean {
+  const allowance = Math.max(intervalMinutes * 3, 20) * 60_000;
+  return now - lastCheckedAt.getTime() > allowance;
+}
+
+function toLight(
+  m: {
+    id: string;
+    url: string;
+    enabled: boolean;
+    status: string;
+    intervalMinutes: number;
+    lastCheckedAt: Date | null;
+    lastError: string | null;
+    lastStatusCode: number | null;
+  },
+  now: number,
+): UptimeLight {
+  const host = hostnameOf(m.url);
+
+  if (!m.enabled) return { id: m.id, host, state: "paused", detail: "Checking is paused" };
+
+  if (!m.lastCheckedAt) {
+    return { id: m.id, host, state: "unknown", detail: "Waiting for the first check" };
+  }
+
+  if (isStale(m.lastCheckedAt, m.intervalMinutes, now)) {
+    return {
+      id: m.id,
+      host,
+      state: "unknown",
+      detail: `Last checked ${formatRelativeTime(m.lastCheckedAt.toISOString())}, so this reading is out of date`,
+    };
+  }
+
+  const checked = `Checked ${formatRelativeTime(m.lastCheckedAt.toISOString())}`;
+
+  if (m.status === "down") {
+    const why = m.lastStatusCode
+      ? `returned a ${m.lastStatusCode} error`
+      : m.lastError
+        ? `could not be reached (${m.lastError})`
+        : "could not be reached";
+    return { id: m.id, host, state: "down", detail: `${checked}, ${why}` };
+  }
+
+  return { id: m.id, host, state: "up", detail: checked };
+}
+
 async function getDashboardData(userId: string) {
-  const [audits, openIssues, latestGrade, latestListing, latestSpeed, latestSearch, counts] =
+  const [audits, openIssues, latestGrade, latestListing, latestSpeed, latestSearch, monitors, counts] =
     await Promise.all([
       db.audit.findMany({
         where: { site: { userId }, status: "completed" },
@@ -48,6 +103,10 @@ async function getDashboardData(userId: string) {
         where: { userId, status: "completed" },
         orderBy: { createdAt: "desc" },
       }),
+      db.monitor.findMany({
+        where: { userId },
+        orderBy: { createdAt: "asc" },
+      }),
       Promise.all([
         db.audit.count({ where: { site: { userId } } }),
         db.keywordSearch.count({ where: { userId } }),
@@ -57,6 +116,7 @@ async function getDashboardData(userId: string) {
     ]);
 
   const [auditCount, keywordCount, gradeCount, siteCount] = counts;
+  const now = Date.now();
 
   return {
     audits,
@@ -65,6 +125,7 @@ async function getDashboardData(userId: string) {
     latestListing,
     latestSpeed,
     latestSearch,
+    lights: monitors.map((m) => toLight(m, now)),
     auditCount,
     keywordCount,
     gradeCount,
@@ -86,7 +147,10 @@ export default async function DashboardPage() {
     }));
 
   const hasAnything =
-    data.auditCount > 0 || data.keywordCount > 0 || data.gradeCount > 0;
+    data.auditCount > 0 ||
+    data.keywordCount > 0 ||
+    data.gradeCount > 0 ||
+    data.lights.length > 0;
 
   return (
     <div className="mx-auto w-full max-w-6xl px-5 py-8 sm:px-8">
@@ -119,6 +183,8 @@ export default async function DashboardPage() {
               hint="all time"
             />
           </div>
+
+          <UptimeLights lights={data.lights} />
 
           <div className="mt-6 grid gap-6 lg:grid-cols-[1.6fr_1fr]">
             <section className="rounded-3xl border border-border bg-card p-6">
