@@ -29,6 +29,11 @@ model User {
   // any individual subscription: cancel, resubscribe, and it is still them.
   paddleCustomerId String? @unique
 
+  // When the user last looked at their finished results. Anything that
+  // completed after this is what the header badge counts, which needs one
+  // column rather than a read flag on every row of every tool.
+  resultsSeenAt DateTime?
+
   // owner | admin | user. Owner is the only role that can change roles, and
   // the last owner cannot be demoted, so the app can never be locked out of
   // its own admin area.
@@ -152,6 +157,16 @@ model Audit {
   pagesCrawled  Int       @default(0)
   healthScore   Int?
   errorMessage  String?
+
+  // A crawl is too slow to finish inside one serverless invocation, so it runs
+  // in chunks and parks its progress here between them: the queue still to
+  // visit, what it has already seen, and the pages gathered so far. Cleared
+  // once the audit finishes.
+  crawlState    String?
+  // How many chunks this audit has used. A runaway continuation loop would be
+  // expensive and invisible, so it is capped.
+  chunkCount    Int      @default(0)
+
   pages         Page[]
   issues        Issue[]
 }

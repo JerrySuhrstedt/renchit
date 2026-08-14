@@ -273,32 +273,35 @@ async function checkImage(url: string): Promise<ImageCheckResult> {
   }
 }
 
-/**
- * How long the crawl gives itself before wrapping up.
- *
- * Serverless functions are killed at a hard ceiling, and a crawl that gets
- * killed leaves the audit stuck at "running" with nothing to show. Stopping
- * ourselves a little early means we always get to write a real report, even
- * if it covers fewer pages than asked for. A partial answer beats a spinner
- * that never resolves.
- */
-const CRAWL_BUDGET_MS = 45_000;
+/** Everything needed to pick a half-finished crawl back up. */
+export type CrawlProgress = {
+  queue: string[];
+  visited: string[];
+  pages: CrawledPage[];
+};
 
-export async function crawlSite(
+/**
+ * Fetches pages until it runs out of queue, hits the page limit, or reaches
+ * its time budget. Returns whatever it has plus enough state to resume, so a
+ * crawl too big for one invocation can continue in the next one.
+ */
+export async function crawlChunk(
   rootUrlRaw: string,
   pageLimit: number,
+  budgetMs: number,
+  resume: CrawlProgress | null,
   onProgress?: (crawled: number, total: number, currentUrl: string) => void,
-): Promise<CrawlResult> {
-  const deadline = Date.now() + CRAWL_BUDGET_MS;
+): Promise<CrawlProgress & { done: boolean; pageLimitHit: boolean }> {
+  const deadline = Date.now() + budgetMs;
   const rootUrl = normalizeUrl(rootUrlRaw);
   if (!rootUrl) throw new Error("Invalid URL");
 
   const origin = new URL(rootUrl).origin;
   const robots = await fetchRobots(origin);
 
-  const visited = new Set<string>();
-  const queue: string[] = [rootUrl];
-  const pages: CrawledPage[] = [];
+  const visited = new Set<string>(resume?.visited ?? []);
+  const queue: string[] = resume?.queue ?? [rootUrl];
+  const pages: CrawledPage[] = resume?.pages ?? [];
   const limit = pLimit(CRAWL_CONCURRENCY);
   let pageLimitHit = false;
   let ranOutOfTime = false;
@@ -339,7 +342,31 @@ export async function crawlSite(
     }
   }
 
-  if (queue.length > 0) pageLimitHit = true;
+  if (queue.length > 0 && pages.length >= pageLimit) pageLimitHit = true;
+
+  return {
+    queue,
+    visited: [...visited],
+    pages,
+    // Done when there is nothing left to visit or we have all we were asked
+    // for. Running out of time is explicitly not done.
+    done: !ranOutOfTime && (queue.length === 0 || pages.length >= pageLimit),
+    pageLimitHit,
+  };
+}
+
+/**
+ * The pass that only makes sense once every page is in: checking outbound
+ * links and images across the whole crawl rather than per chunk, so nothing
+ * is requested twice.
+ */
+export async function analyseCrawl(
+  rootUrlRaw: string,
+  pages: CrawledPage[],
+  pageLimitHit: boolean,
+  ranOutOfTime: boolean,
+): Promise<CrawlResult> {
+  const rootUrl = normalizeUrl(rootUrlRaw) ?? rootUrlRaw;
 
   const uniqueLinks = new Map<string, boolean>();
   for (const page of pages) {

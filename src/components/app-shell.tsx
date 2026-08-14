@@ -22,6 +22,7 @@ import {
   Inbox,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ResultsBell } from "@/components/results-bell";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -110,6 +111,7 @@ export function AppShell({
         </Link>
 
         <div className="ml-auto flex items-center gap-2">
+          {session?.user && <ResultsBell />}
           {session?.user && (
             <DropdownMenu>
               <DropdownMenuTrigger className="rounded-full outline-none ring-brand focus-visible:ring-2">

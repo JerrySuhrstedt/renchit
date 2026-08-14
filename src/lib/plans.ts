@@ -42,7 +42,7 @@ export const TOOLS: Tool[] = [
     key: "audit",
     name: "Site Audit",
     href: "/audit",
-    blurb: "Crawls up to 50 pages and lists what is broken, in plain English.",
+    blurb: "Crawls up to 100 pages and lists what is broken, in plain English.",
   },
   {
     key: "keywords",
@@ -253,7 +253,7 @@ export function planFromPriceId(
  * of visitors pricing is the first page they open.
  */
 export const ALL_FEATURES = [
-  "Site Audit: up to 50 pages per crawl",
+  "Site Audit: up to 100 pages per crawl",
   "~20 SEO and technical checks, explained plainly",
   "Large image finder with one-click optimizing",
   "Keyword and content ideas from real Google data",

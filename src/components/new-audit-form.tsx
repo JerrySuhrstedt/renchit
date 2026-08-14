@@ -76,7 +76,7 @@ export function NewAuditForm() {
         <p className="mt-3 px-2 text-sm font-medium text-critical">{error}</p>
       ) : (
         <p className="mt-3 px-2 text-sm text-muted-foreground">
-          We&apos;ll crawl up to 50 pages and check titles, links, content, and
+          We&apos;ll crawl up to 100 pages and check titles, links, content, and
           more, usually done in under a minute.
         </p>
       )}

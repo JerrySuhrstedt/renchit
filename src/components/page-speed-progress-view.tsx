@@ -17,8 +17,9 @@ export function PageSpeedProgressView({ url }: { url: string }) {
         </p>
       </div>
 
-      <p className="text-sm text-muted-foreground">
-        This usually takes under a minute.
+      <p className="max-w-sm text-balance text-sm text-muted-foreground">
+        This runs on our servers, so you can close this tab or go do something
+        else. We will put a mark on the bell at the top when it is ready.
       </p>
     </div>
   );

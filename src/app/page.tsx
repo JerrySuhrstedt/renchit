@@ -29,7 +29,7 @@ const TOOLS = [
     icon: Wrench,
     name: "Site Audit",
     tagline: "Know exactly what to fix",
-    what: "Crawls up to 50 real pages of your site and checks them against ~20 SEO and technical rules: broken links, missing titles, thin content, slow pages, and more.",
+    what: "Crawls up to 100 real pages of your site and checks them against ~20 SEO and technical rules: broken links, missing titles, thin content, slow pages, and more.",
     why: "Most site owners have no idea what's actually wrong with their site. SEO tools either bury you in jargon or don't tell you anything actionable at all.",
     how: [
       "Paste your website URL",
@@ -100,7 +100,7 @@ const TOOLS = [
 ];
 
 const FEATURES = [
-  { title: "Real crawl, up to 50 pages", desc: "Every audit is a live crawl of your actual site." },
+  { title: "Real crawl, up to 100 pages", desc: "Every audit is a live crawl of your actual site." },
   { title: "Automatic 0–100 health score", desc: "One number that tells you where you stand." },
   { title: "~20 built-in SEO checks", desc: "Titles, meta, headings, links, speed, and more." },
   { title: "Plain-English fixes", desc: "Every issue explains what to do, not just what's wrong." },
@@ -139,7 +139,7 @@ const FAQS = [
   },
   {
     q: "How many pages does a site audit check?",
-    a: "Up to 50 pages per audit, following your site's real internal links.",
+    a: "Up to 100 pages per audit, following your site's real internal links.",
   },
   {
     q: "Do I need to know anything about SEO to use this?",

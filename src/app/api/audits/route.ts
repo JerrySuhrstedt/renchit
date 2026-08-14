@@ -5,7 +5,7 @@ import { requireToolAccess, requireSiteCapacity } from "@/lib/entitlements";
 import { normalizeAuditUrl } from "@/lib/validation";
 import { startAuditJob } from "@/lib/audit-job";
 
-const PAGE_LIMIT = 50;
+const PAGE_LIMIT = 100;
 
 // Ask for the longest run the platform allows. The crawler stops itself
 // before this, but without it the default is far shorter and crawls get cut
