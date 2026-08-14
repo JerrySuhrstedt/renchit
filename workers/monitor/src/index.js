@@ -5,13 +5,12 @@
  * Cloudflare Workers run cron triggers every minute on the free plan, so this
  * tiny worker exists purely to poke renchit on a schedule.
  *
- * Deploy:
- *   1. Cloudflare dashboard > Workers & Pages > Create > Worker
- *   2. Paste this in, deploy
- *   3. Settings > Variables > add MONITOR_SECRET (same value as in Vercel)
- *   4. Settings > Triggers > Cron Triggers > add:  every 5 minutes
+ * Deploy from this directory:
+ *   npx wrangler secret put MONITOR_SECRET   # same value as in Vercel
+ *   npx wrangler deploy
  *
- * Nothing here is secret except the variable, which Cloudflare stores encrypted.
+ * The cron schedule lives in wrangler.jsonc. Nothing here is secret except
+ * that one variable, which Cloudflare stores encrypted and never shows again.
  */
 
 const ENDPOINT = "https://www.renchit.com/api/monitors/run";

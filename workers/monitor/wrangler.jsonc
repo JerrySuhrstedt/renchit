@@ -1,0 +1,21 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "renchit-monitor",
+  "main": "src/index.js",
+  "compatibility_date": "2026-08-13",
+
+  // Vercel's Hobby plan runs cron once a day, which is useless for uptime.
+  // Cloudflare runs cron triggers on the free plan, so this worker exists
+  // purely to poke renchit on a schedule.
+  //
+  // Five minutes matches the fastest interval a monitor is allowed to use.
+  // Going faster would only multiply our outbound requests: the endpoint
+  // still checks each site no more often than its own interval says.
+  "triggers": {
+    "crons": ["*/5 * * * *"]
+  },
+
+  "observability": {
+    "enabled": true
+  }
+}

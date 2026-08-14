@@ -7,7 +7,7 @@ import { runDueMonitors } from "@/lib/monitor-runner";
  *
  * Vercel's Hobby plan runs cron once a day, which is useless for uptime, so
  * this is driven from outside: a Cloudflare Worker cron trigger, which is free
- * and runs every minute. See scripts/cloudflare-monitor-worker.js.
+ * and runs every five minutes. See workers/monitor/.
  */
 
 export const maxDuration = 60;
