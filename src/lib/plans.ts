@@ -54,7 +54,7 @@ export const TOOLS: Tool[] = [
     key: "grader",
     name: "Content Grader",
     href: "/grader",
-    blurb: "Scores one page against one keyword across 13 on-page checks.",
+    blurb: "Scores one page against one keyword across 18 on-page checks.",
   },
   {
     key: "local",
@@ -257,7 +257,7 @@ export const ALL_FEATURES = [
   "~20 SEO and technical checks, explained plainly",
   "Large image finder with one-click optimizing",
   "Keyword and content ideas from real Google data",
-  "Content Grader: 13 on-page checks",
+  "Content Grader: 18 checks, matching Yoast and Rank Math",
   "Local Listing Checker for business info",
   "Page Speed: real mobile and desktop scores",
   "Google Search Console connection",

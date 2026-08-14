@@ -53,7 +53,7 @@ const TOOLS = [
     icon: FileSearch,
     name: "Content Grader",
     tagline: "Publish with confidence",
-    what: "Grades any page against a target keyword with ~13 on-page checks: titles, headings, keyword usage, readability, alt text, and more.",
+    what: "Grades any page against a target keyword with 18 on-page checks, the same things Yoast and Rank Math look at: titles, headings, keyword usage, readability, links, and alt text.",
     why: "It's easy to publish a page and have no idea whether it's actually optimized until it quietly fails to rank months later.",
     how: [
       "Paste a page URL and your target keyword",
