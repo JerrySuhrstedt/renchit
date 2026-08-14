@@ -12,10 +12,19 @@ export type PageSpeedOpportunityDTO = {
   savings: string | null;
 };
 
+export type FieldMetricDTO = {
+  key: string;
+  label: string;
+  displayValue: string;
+  band: "good" | "needs-improvement" | "poor";
+};
+
 export type PageSpeedStrategyResultDTO = {
   score: number;
   metrics: CoreWebVitalDTO[];
   opportunities: PageSpeedOpportunityDTO[];
+  /** Absent on results stored before real-user data was captured. */
+  field?: { overall: "good" | "needs-improvement" | "poor"; metrics: FieldMetricDTO[] } | null;
 };
 
 export type PageSpeedCheckDTO = {

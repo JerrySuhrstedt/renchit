@@ -50,7 +50,62 @@ export function PageSpeedResultsView({ check }: { check: PageSpeedCheckDTO }) {
 
       {result && (
         <>
-          <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {/* Real visitors first when we have them. This is the number that
+              actually describes the site, and unlike the lab score it does not
+              move between runs, because it is not a simulation. */}
+          {result.field && (
+            <section className="mt-8 rounded-3xl border border-border bg-card p-6">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h2 className="text-lg font-bold text-foreground">What real visitors get</h2>
+                <span
+                  className="rounded-full px-2.5 py-1 text-xs font-bold"
+                  style={{
+                    backgroundColor: VITAL_BAND_META[result.field.overall].tint,
+                    color: VITAL_BAND_META[result.field.overall].color,
+                  }}
+                >
+                  {VITAL_BAND_META[result.field.overall].label}
+                </span>
+              </div>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Measured by Google from people who actually visited this page
+                over the last 28 days.
+              </p>
+              <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {result.field.metrics.map((m) => {
+                  const meta = VITAL_BAND_META[m.band];
+                  return (
+                    <div key={m.key} className="flex flex-col gap-1">
+                      <p className="text-xs text-muted-foreground">{m.label}</p>
+                      <p className="text-lg font-extrabold tabular-nums" style={{ color: meta.color }}>
+                        {m.displayValue}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          )}
+
+          <h2 className="mt-10 text-lg font-bold text-foreground">
+            Lab test {strategy === "mobile" ? "on mobile" : "on desktop"}
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Google loads the page on a simulated device. Useful for finding what
+            to fix, but the score moves between runs and can differ from what
+            you see on Google&apos;s own page.{" "}
+            <a
+              href={`https://pagespeed.web.dev/analysis?url=${encodeURIComponent(check.url)}`}
+              target="_blank"
+              rel="noreferrer"
+              className="font-medium text-brand-strong hover:underline"
+            >
+              Check it there
+            </a>
+            .
+          </p>
+
+          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
             {result.metrics.map((metric) => {
               const meta = VITAL_BAND_META[metric.band];
               return (

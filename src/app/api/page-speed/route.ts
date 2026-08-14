@@ -4,6 +4,9 @@ import { requireUserIdForApi } from "@/lib/session";
 import { requireToolAccess, requireSiteCapacity } from "@/lib/entitlements";
 import { startPageSpeedJob } from "@/lib/page-speed-job";
 
+// Google routinely takes 20 to 40 seconds per strategy, and we run two.
+export const maxDuration = 60;
+
 export async function POST(request: Request) {
   const userId = await requireUserIdForApi();
   if (userId instanceof NextResponse) return userId;
