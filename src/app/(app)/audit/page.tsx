@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/session";
+import { reapStaleRuns } from "@/lib/stale-runs";
 import { NewAuditForm } from "@/components/new-audit-form";
 import { AuditHistoryList, type AuditListItem } from "@/components/audit-history-list";
 
@@ -32,6 +33,8 @@ async function getAudits(userId: string): Promise<AuditListItem[]> {
 
 export default async function DashboardPage() {
   const user = await requireUser();
+  // Clear out anything a killed function left saying "running".
+  await reapStaleRuns(user.id);
   const audits = await getAudits(user.id);
 
   return (

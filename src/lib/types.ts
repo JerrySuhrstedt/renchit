@@ -49,6 +49,8 @@ export type CrawlResult = {
   linkChecks: Map<string, LinkCheckResult>;
   imageChecks: Map<string, ImageCheckResult>;
   pageLimitHit: boolean;
+  /** The crawl stopped on its own time budget rather than finishing. */
+  ranOutOfTime: boolean;
 };
 
 export type IssueSeverity = "critical" | "warning" | "info";

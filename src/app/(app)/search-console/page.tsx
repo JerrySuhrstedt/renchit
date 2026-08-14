@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/session";
+import { reapStaleRuns } from "@/lib/stale-runs";
 import { hasSearchConsoleScope } from "@/lib/google-token";
 import { SearchConsoleConnect } from "@/components/search-console-connect";
 import { NewSearchConsoleForm } from "@/components/new-search-console-form";
@@ -28,6 +29,8 @@ async function getReports(userId: string): Promise<SearchConsoleHistoryItem[]> {
 
 export default async function SearchConsoleDashboardPage() {
   const user = await requireUser();
+  // Clear out anything a killed function left saying "running".
+  await reapStaleRuns(user.id);
   const [connected, reports] = await Promise.all([
     hasSearchConsoleScope(user.id),
     getReports(user.id),

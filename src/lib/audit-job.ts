@@ -103,6 +103,12 @@ async function runAuditJob(auditId: string, rootUrl: string, pageLimit: number) 
           completedAt: new Date(),
           pagesCrawled: crawl.pages.length,
           healthScore,
+          // Completed, but say so plainly if we stopped on the clock rather
+          // than because the site ran out of pages. Otherwise "24 of 50" looks
+          // like a bug instead of a deliberate stop.
+          errorMessage: crawl.ranOutOfTime
+            ? `We stopped after ${crawl.pages.length} pages to get you a result in time. Everything below is real, it just does not cover the whole site.`
+            : null,
         },
       });
     },

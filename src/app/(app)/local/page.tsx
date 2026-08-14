@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/session";
+import { reapStaleRuns } from "@/lib/stale-runs";
 import { NewLocalListingForm } from "@/components/new-local-listing-form";
 import {
   LocalListingHistoryList,
@@ -27,6 +28,8 @@ async function getListings(userId: string): Promise<LocalListingHistoryItem[]> {
 
 export default async function LocalListingDashboardPage() {
   const user = await requireUser();
+  // Clear out anything a killed function left saying "running".
+  await reapStaleRuns(user.id);
   const listings = await getListings(user.id);
 
   return (

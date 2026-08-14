@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/session";
+import { reapStaleRuns } from "@/lib/stale-runs";
 import { NewPageSpeedForm } from "@/components/new-page-speed-form";
 import {
   PageSpeedHistoryList,
@@ -27,6 +28,8 @@ async function getChecks(userId: string): Promise<PageSpeedHistoryItem[]> {
 
 export default async function PageSpeedDashboardPage() {
   const user = await requireUser();
+  // Clear out anything a killed function left saying "running".
+  await reapStaleRuns(user.id);
   const checks = await getChecks(user.id);
 
   return (

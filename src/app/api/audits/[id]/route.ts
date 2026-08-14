@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { requireUserIdForApi } from "@/lib/session";
+import { reapStaleRuns } from "@/lib/stale-runs";
 
 export async function GET(
   _request: Request,
@@ -8,6 +9,10 @@ export async function GET(
 ) {
   const userId = await requireUserIdForApi();
   if (userId instanceof NextResponse) return userId;
+
+  // A run killed mid-flight leaves its row saying "running" forever, and
+  // the page polling for it is the only thing positioned to notice.
+  await reapStaleRuns(userId);
 
   const { id } = await params;
 

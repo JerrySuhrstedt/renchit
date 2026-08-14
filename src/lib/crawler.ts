@@ -273,11 +273,23 @@ async function checkImage(url: string): Promise<ImageCheckResult> {
   }
 }
 
+/**
+ * How long the crawl gives itself before wrapping up.
+ *
+ * Serverless functions are killed at a hard ceiling, and a crawl that gets
+ * killed leaves the audit stuck at "running" with nothing to show. Stopping
+ * ourselves a little early means we always get to write a real report, even
+ * if it covers fewer pages than asked for. A partial answer beats a spinner
+ * that never resolves.
+ */
+const CRAWL_BUDGET_MS = 45_000;
+
 export async function crawlSite(
   rootUrlRaw: string,
   pageLimit: number,
   onProgress?: (crawled: number, total: number, currentUrl: string) => void,
 ): Promise<CrawlResult> {
+  const deadline = Date.now() + CRAWL_BUDGET_MS;
   const rootUrl = normalizeUrl(rootUrlRaw);
   if (!rootUrl) throw new Error("Invalid URL");
 
@@ -289,8 +301,14 @@ export async function crawlSite(
   const pages: CrawledPage[] = [];
   const limit = pLimit(CRAWL_CONCURRENCY);
   let pageLimitHit = false;
+  let ranOutOfTime = false;
 
   while (queue.length > 0 && pages.length < pageLimit) {
+    if (Date.now() >= deadline) {
+      ranOutOfTime = true;
+      break;
+    }
+
     const batch = queue.splice(0, Math.min(CRAWL_CONCURRENCY, pageLimit - pages.length));
     const toFetch = batch.filter((u) => !visited.has(u));
     toFetch.forEach((u) => visited.add(u));
@@ -369,5 +387,5 @@ export async function crawlSite(
     imageChecks.set(result.url, result);
   }
 
-  return { rootUrl, pages, linkChecks, imageChecks, pageLimitHit };
+  return { rootUrl, pages, linkChecks, imageChecks, pageLimitHit, ranOutOfTime };
 }

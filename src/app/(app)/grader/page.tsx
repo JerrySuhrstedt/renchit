@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/session";
+import { reapStaleRuns } from "@/lib/stale-runs";
 import { NewGraderForm } from "@/components/new-grader-form";
 import { GraderHistoryList, type GraderHistoryItem } from "@/components/grader-history-list";
 
@@ -24,6 +25,8 @@ async function getGrades(userId: string): Promise<GraderHistoryItem[]> {
 
 export default async function GraderDashboardPage() {
   const user = await requireUser();
+  // Clear out anything a killed function left saying "running".
+  await reapStaleRuns(user.id);
   const grades = await getGrades(user.id);
 
   return (

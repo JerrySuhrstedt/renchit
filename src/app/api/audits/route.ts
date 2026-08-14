@@ -7,6 +7,11 @@ import { startAuditJob } from "@/lib/audit-job";
 
 const PAGE_LIMIT = 50;
 
+// Ask for the longest run the platform allows. The crawler stops itself
+// before this, but without it the default is far shorter and crawls get cut
+// off mid-page.
+export const maxDuration = 60;
+
 export async function GET() {
   const userId = await requireUserIdForApi();
   if (userId instanceof NextResponse) return userId;
