@@ -49,6 +49,79 @@ model User {
   searchConsoleReports SearchConsoleReport[]
   subscription   Subscription?
   feedback       Feedback[]
+  monitors       Monitor[]
+  alertRecipients AlertRecipient[]
+}
+
+/**
+ * A URL we keep an eye on.
+ *
+ * consecutiveFailures is the whole reason this is trustworthy: a single failed
+ * request means almost nothing, since networks blip. Only after several in a
+ * row do we say a site is down, which is the difference between a useful alert
+ * and one people learn to ignore.
+ */
+model Monitor {
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  site   Site?  @relation(fields: [siteId], references: [id], onDelete: SetNull)
+  siteId String?
+
+  url             String
+  enabled         Boolean @default(true)
+  intervalMinutes Int     @default(5)
+
+  // unknown until the first check completes.
+  status              String    @default("unknown") // unknown | up | down
+  consecutiveFailures Int       @default(0)
+  lastCheckedAt       DateTime?
+  lastChangedAt       DateTime?
+  lastStatusCode      Int?
+  lastResponseMs      Int?
+  lastError           String?
+
+  createdAt DateTime @default(now())
+  events    AlertEvent[]
+
+  @@unique([userId, url])
+  @@index([enabled, lastCheckedAt])
+}
+
+/** Who hears about it. */
+model AlertRecipient {
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  name  String?
+  email String?
+  phone String?
+
+  emailEnabled Boolean @default(true)
+  smsEnabled   Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+/** What happened and who was told, so an alert is never a mystery later. */
+model AlertEvent {
+  id        String  @id @default(cuid())
+  monitor   Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+  monitorId String
+
+  kind       String // down | recovered
+  statusCode Int?
+  error      String?
+  /** Minutes of downtime, on a recovery event. */
+  downtimeMinutes Int?
+
+  notified  Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([monitorId, createdAt])
 }
 
 model Feedback {
@@ -142,6 +215,7 @@ model Site {
   localListings   LocalListing[]
   pageSpeedChecks PageSpeedCheck[]
   searchConsoleReports SearchConsoleReport[]
+  monitors        Monitor[]
 
   @@unique([userId, rootUrl])
 }

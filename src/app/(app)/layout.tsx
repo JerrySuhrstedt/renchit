@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { AppShell, SIDEBAR_COOKIE } from "@/components/app-shell";
+import { AppShell, SIDEBAR_COOKIE, SIDEBAR_GROUPS_COOKIE } from "@/components/app-shell";
 import { FeedbackWidget } from "@/components/feedback-widget";
 import { isAdmin } from "@/lib/admin";
 
@@ -13,10 +13,14 @@ import { isAdmin } from "@/lib/admin";
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const store = await cookies();
   const collapsed = store.get(SIDEBAR_COOKIE)?.value === "1";
+  const closedGroups = (store.get(SIDEBAR_GROUPS_COOKIE)?.value ?? "")
+    .split(",")
+    .map((g) => decodeURIComponent(g).trim())
+    .filter(Boolean);
   const admin = await isAdmin();
 
   return (
-    <AppShell defaultCollapsed={collapsed} isAdmin={admin}>
+    <AppShell defaultCollapsed={collapsed} defaultClosedGroups={closedGroups} isAdmin={admin}>
       {children}
       <FeedbackWidget />
     </AppShell>

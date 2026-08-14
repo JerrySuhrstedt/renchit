@@ -263,6 +263,7 @@ export const ALL_FEATURES = [
   "Google Search Console connection",
   "Projects that group everything by website",
   "Full saved history, always accessible",
+  "Uptime alerts to as many people as you like",
 ];
 
 export function siteLimitLabel(plan: Plan): string {
@@ -276,7 +277,7 @@ export function toolAccessLabel(plan: Plan): string {
 }
 
 export function monitoringLabel(monitoring: Monitoring): string {
-  if (monitoring === "daily") return "Daily monitoring and alerts";
-  if (monitoring === "weekly") return "Weekly monitoring and alerts";
-  return "No automatic monitoring";
+  if (monitoring === "daily") return "Uptime alerts, checked every 5 minutes";
+  if (monitoring === "weekly") return "Uptime alerts, checked every 5 minutes";
+  return "No uptime alerts";
 }

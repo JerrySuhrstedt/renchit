@@ -128,7 +128,7 @@ export function PricingTiers() {
               <ul className="mt-6 flex flex-col gap-2.5 border-t border-border pt-5">
                 <Feature emphasis>{siteLimitLabel(tier)}</Feature>
                 <Feature emphasis>{toolAccessLabel(tier)}</Feature>
-                <Feature muted={tier.monitoring === "none"} soon={tier.monitoring !== "none"}>
+                <Feature muted={tier.monitoring === "none"}>
                   {monitoringLabel(tier.monitoring)}
                 </Feature>
                 {ALL_FEATURES.map((feature) => (
@@ -176,14 +176,14 @@ export function LifetimeOffer({ seatsLeft }: { seatsLeft: number }) {
             Pay once. Never pay again.
           </h3>
           <p className="mt-2 text-base text-muted-foreground">
-            {siteLimitLabel(tier)}, all six tools, and weekly monitoring, for a
+            {siteLimitLabel(tier)}, all six tools, and uptime alerts, for a
             single payment. This is how we fund the build, so it closes for good
             once the last seat goes.
           </p>
           <ul className="mt-5 grid gap-2 sm:grid-cols-2">
             <Feature emphasis>{siteLimitLabel(tier)}</Feature>
             <Feature emphasis>All 6 tools, forever</Feature>
-            <Feature soon>Weekly monitoring and alerts</Feature>
+            <Feature emphasis>Uptime alerts by email and text</Feature>
             <Feature emphasis>Every core tool we add later</Feature>
             <Feature>{tier.support}</Feature>
             <Feature>No renewal, ever</Feature>

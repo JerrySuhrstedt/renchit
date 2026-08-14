@@ -20,6 +20,8 @@ import {
   User,
   CreditCard,
   Inbox,
+  BellRing,
+  ChevronDown,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ResultsBell } from "@/components/results-bell";
@@ -32,6 +34,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export const SIDEBAR_COOKIE = "renchit_sidebar_collapsed";
+
+/**
+ * Which groups the user has folded away, as a comma-separated list of
+ * headings. Read on the server like the rail width, so a folded group renders
+ * folded on the very first paint rather than snapping shut after hydration.
+ */
+export const SIDEBAR_GROUPS_COOKIE = "renchit_sidebar_closed_groups";
 
 type NavItem = {
   href: string;
@@ -74,6 +83,12 @@ const NAV_GROUPS: Array<{ heading: string | null; items: NavItem[] }> = [
     ],
   },
   {
+    heading: "Alerts",
+    items: [
+      { href: "/alerts", label: "Uptime Alerts", icon: BellRing, match: (p) => p.startsWith("/alerts") },
+    ],
+  },
+  {
     heading: "Traffic",
     items: [
       { href: "/search-console", label: "Search Data", icon: Search, match: (p) => p.startsWith("/search-console") },
@@ -90,10 +105,12 @@ const NAV_GROUPS: Array<{ heading: string | null; items: NavItem[] }> = [
 export function AppShell({
   children,
   defaultCollapsed = false,
+  defaultClosedGroups = [],
   isAdmin = false,
 }: {
   children: React.ReactNode;
   defaultCollapsed?: boolean;
+  defaultClosedGroups?: string[];
   isAdmin?: boolean;
 }) {
   const pathname = usePathname();
@@ -104,6 +121,17 @@ export function AppShell({
   // Suppress the width transition until the user actually toggles, otherwise
   // a collapsed rail animates open on every page load.
   const [animate, setAnimate] = useState(false);
+  const [closedGroups, setClosedGroups] = useState<string[]>(defaultClosedGroups);
+
+  function toggleGroup(heading: string) {
+    setClosedGroups((prev) => {
+      const next = prev.includes(heading)
+        ? prev.filter((h) => h !== heading)
+        : [...prev, heading];
+      document.cookie = `${SIDEBAR_GROUPS_COOKIE}=${encodeURIComponent(next.join(","))}; path=/; max-age=31536000; samesite=lax`;
+      return next;
+    });
+  }
 
   function toggle() {
     setAnimate(true);
@@ -222,8 +250,13 @@ export function AppShell({
           className={`sticky top-14 z-30 hidden h-[calc(100dvh-3.5rem)] shrink-0 flex-col bg-shell pb-3 lg:flex ${railWidth} ${animate ? "transition-[width] duration-200" : ""}`}
         >
           <div className="flex flex-1 flex-col overflow-y-auto px-3 py-3">
-            {groups.map((group, groupIndex) => (
-              <div key={group.heading ?? "top"} className={groupIndex > 0 ? "mt-4" : ""}>
+            {groups.map((group, groupIndex) => {
+              // A folded group stays folded when the rail is icon-only too,
+              // except there is no heading to unfold it with, so icon mode
+              // always shows everything.
+              const isClosed = !collapsed && group.heading !== null && closedGroups.includes(group.heading);
+              return (
+              <div key={group.heading ?? "top"} className={groupIndex > 0 ? "mt-3" : ""}>
                 {/* Collapsed to icons there is no room for a word, so the
                     heading becomes a rule. Dropping it entirely would run the
                     groups together into one undifferentiated column. */}
@@ -231,12 +264,23 @@ export function AppShell({
                   (collapsed ? (
                     <div className="mx-2 mb-2 h-px bg-shell-border" aria-hidden />
                   ) : (
-                    <h2 className="px-2.5 pb-1.5 text-xs font-semibold uppercase tracking-wider text-shell-muted/70">
-                      {group.heading}
-                    </h2>
+                    <button
+                      type="button"
+                      onClick={() => toggleGroup(group.heading!)}
+                      aria-expanded={!isClosed}
+                      className="flex w-full items-center gap-1 rounded-md px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-shell-muted/70 transition-colors hover:text-shell-foreground"
+                    >
+                      <ChevronDown
+                        className={`h-3.5 w-3.5 shrink-0 transition-transform duration-150 ${
+                          isClosed ? "-rotate-90" : ""
+                        }`}
+                        aria-hidden
+                      />
+                      <span className="truncate">{group.heading}</span>
+                    </button>
                   ))}
 
-                <ul className="flex flex-col gap-0.5">
+                <ul className={`flex flex-col gap-0.5 ${isClosed ? "hidden" : ""}`}>
                   {group.items.map((item) => {
                     const active = item.match(pathname);
                     return (
@@ -244,11 +288,17 @@ export function AppShell({
                         <Link
                           href={item.href}
                           title={collapsed ? item.label : undefined}
-                          className={`flex items-center gap-3 rounded-lg px-2.5 py-2 text-sm font-medium transition-colors ${
+                          className={`flex items-center gap-3 rounded-lg py-2 text-sm font-medium transition-colors ${
                             active
                               ? "bg-shell-active text-shell-foreground"
                               : "text-shell-muted hover:bg-shell-hover hover:text-shell-foreground"
-                          } ${collapsed ? "justify-center" : ""}`}
+                          } ${
+                            collapsed
+                              ? "justify-center px-2.5"
+                              : group.heading
+                                ? "pl-6 pr-2.5"
+                                : "px-2.5"
+                          }`}
                         >
                           <item.icon className="h-[18px] w-[18px] shrink-0" aria-hidden />
                           {!collapsed && <span className="truncate">{item.label}</span>}
@@ -259,7 +309,8 @@ export function AppShell({
                   })}
                 </ul>
               </div>
-            ))}
+              );
+            })}
           </div>
 
           <div className="px-3">
