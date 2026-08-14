@@ -33,15 +33,58 @@ import {
 
 export const SIDEBAR_COOKIE = "renchit_sidebar_collapsed";
 
-const NAV = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, match: (p: string) => p === "/dashboard" },
-  { href: "/audit", label: "Site Audit", icon: Wrench, match: (p: string) => p === "/audit" || p.startsWith("/audits") },
-  { href: "/keywords", label: "Keyword Ideas", icon: Lightbulb, match: (p: string) => p.startsWith("/keywords") },
-  { href: "/grader", label: "Content Grader", icon: FileSearch, match: (p: string) => p.startsWith("/grader") },
-  { href: "/local", label: "Local Listing", icon: MapPin, match: (p: string) => p.startsWith("/local") },
-  { href: "/speed", label: "Page Speed", icon: Gauge, match: (p: string) => p.startsWith("/speed") },
-  { href: "/search-console", label: "Search Data", icon: Search, match: (p: string) => p.startsWith("/search-console") },
-  { href: "/projects", label: "Projects", icon: FolderKanban, match: (p: string) => p.startsWith("/projects") },
+type NavItem = {
+  href: string;
+  label: string;
+  icon: typeof LayoutDashboard;
+  match: (p: string) => boolean;
+};
+
+/**
+ * Grouped by what the person is trying to do, not by how the tools are built.
+ *
+ * Someone opens the sidebar with a question in mind: is my site broken, what
+ * should I write, is any of this working. Those are the three groups. Grouping
+ * by mechanism instead would put Page Speed and Search Data together because
+ * both call Google, which is true and useless to the reader.
+ *
+ * A null heading means the items sit at the top with no label, which is right
+ * for Dashboard: it is not a category, it is the way back.
+ */
+const NAV_GROUPS: Array<{ heading: string | null; items: NavItem[] }> = [
+  {
+    heading: null,
+    items: [
+      { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, match: (p) => p === "/dashboard" },
+    ],
+  },
+  {
+    heading: "Site health",
+    items: [
+      { href: "/audit", label: "Site Audit", icon: Wrench, match: (p) => p === "/audit" || p.startsWith("/audits") },
+      { href: "/speed", label: "Page Speed", icon: Gauge, match: (p) => p.startsWith("/speed") },
+      { href: "/local", label: "Local Listing", icon: MapPin, match: (p) => p.startsWith("/local") },
+    ],
+  },
+  {
+    heading: "Content",
+    items: [
+      { href: "/keywords", label: "Keyword Ideas", icon: Lightbulb, match: (p) => p.startsWith("/keywords") },
+      { href: "/grader", label: "Content Grader", icon: FileSearch, match: (p) => p.startsWith("/grader") },
+    ],
+  },
+  {
+    heading: "Traffic",
+    items: [
+      { href: "/search-console", label: "Search Data", icon: Search, match: (p) => p.startsWith("/search-console") },
+    ],
+  },
+  {
+    heading: "Workspace",
+    items: [
+      { href: "/projects", label: "Projects", icon: FolderKanban, match: (p) => p.startsWith("/projects") },
+    ],
+  },
 ];
 
 export function AppShell({
@@ -73,19 +116,28 @@ export function AppShell({
 
   const railWidth = collapsed ? "lg:w-[68px]" : "lg:w-60";
 
-  // Appended rather than added to NAV, so a non-admin never receives the item
-  // at all, not even hidden in the markup.
-  const nav = isAdmin
+  // Appended rather than baked into the groups, so a non-admin never receives
+  // the item at all, not even hidden in the markup.
+  const groups = isAdmin
     ? [
-        ...NAV,
+        ...NAV_GROUPS,
         {
-          href: "/admin",
-          label: "Admin",
-          icon: Inbox,
-          match: (p: string) => p.startsWith("/admin"),
+          heading: "Admin",
+          items: [
+            {
+              href: "/admin",
+              label: "Admin",
+              icon: Inbox,
+              match: (p: string) => p.startsWith("/admin"),
+            },
+          ],
         },
       ]
-    : NAV;
+    : NAV_GROUPS;
+
+  // The mobile strip is a horizontal row of icons with no room for headings,
+  // so it takes every item in order and ignores the grouping.
+  const flatNav = groups.flatMap((g) => g.items);
 
   return (
     <div className="min-h-dvh bg-shell">
@@ -169,28 +221,46 @@ export function AppShell({
           aria-label="Tools"
           className={`sticky top-14 z-30 hidden h-[calc(100dvh-3.5rem)] shrink-0 flex-col bg-shell pb-3 lg:flex ${railWidth} ${animate ? "transition-[width] duration-200" : ""}`}
         >
-          <ul className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3 py-3">
-            {nav.map((item) => {
-              const active = item.match(pathname);
-              return (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    title={collapsed ? item.label : undefined}
-                    className={`flex items-center gap-3 rounded-lg px-2.5 py-2 text-sm font-medium transition-colors ${
-                      active
-                        ? "bg-shell-active text-shell-foreground"
-                        : "text-shell-muted hover:bg-shell-hover hover:text-shell-foreground"
-                    } ${collapsed ? "justify-center" : ""}`}
-                  >
-                    <item.icon className="h-[18px] w-[18px] shrink-0" aria-hidden />
-                    {!collapsed && <span className="truncate">{item.label}</span>}
-                    {collapsed && <span className="sr-only">{item.label}</span>}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
+          <div className="flex flex-1 flex-col overflow-y-auto px-3 py-3">
+            {groups.map((group, groupIndex) => (
+              <div key={group.heading ?? "top"} className={groupIndex > 0 ? "mt-4" : ""}>
+                {/* Collapsed to icons there is no room for a word, so the
+                    heading becomes a rule. Dropping it entirely would run the
+                    groups together into one undifferentiated column. */}
+                {group.heading &&
+                  (collapsed ? (
+                    <div className="mx-2 mb-2 h-px bg-shell-border" aria-hidden />
+                  ) : (
+                    <h2 className="px-2.5 pb-1.5 text-xs font-semibold uppercase tracking-wider text-shell-muted/70">
+                      {group.heading}
+                    </h2>
+                  ))}
+
+                <ul className="flex flex-col gap-0.5">
+                  {group.items.map((item) => {
+                    const active = item.match(pathname);
+                    return (
+                      <li key={item.href}>
+                        <Link
+                          href={item.href}
+                          title={collapsed ? item.label : undefined}
+                          className={`flex items-center gap-3 rounded-lg px-2.5 py-2 text-sm font-medium transition-colors ${
+                            active
+                              ? "bg-shell-active text-shell-foreground"
+                              : "text-shell-muted hover:bg-shell-hover hover:text-shell-foreground"
+                          } ${collapsed ? "justify-center" : ""}`}
+                        >
+                          <item.icon className="h-[18px] w-[18px] shrink-0" aria-hidden />
+                          {!collapsed && <span className="truncate">{item.label}</span>}
+                          {collapsed && <span className="sr-only">{item.label}</span>}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ))}
+          </div>
 
           <div className="px-3">
             <button
@@ -220,7 +290,7 @@ export function AppShell({
           aria-label="Tools"
           className="fixed inset-x-0 bottom-0 z-40 flex gap-1 overflow-x-auto bg-shell px-3 py-2 lg:hidden"
         >
-          {nav.map((item) => {
+          {flatNav.map((item) => {
             const active = item.match(pathname);
             return (
               <Link
