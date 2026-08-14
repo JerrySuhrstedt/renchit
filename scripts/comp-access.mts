@@ -40,7 +40,7 @@ async function list() {
   );
 }
 
-async function grant(emails: string[]) {
+async function grant(emails: string[], plan = "lifetime") {
   for (const email of emails) {
     const user = await db.user.findUnique({ where: { email }, select: { id: true } });
     if (!user) {
@@ -51,14 +51,16 @@ async function grant(emails: string[]) {
       where: { userId: user.id },
       create: {
         userId: user.id,
-        plan: "lifetime",
+        plan,
         status: "active",
+        // "comp" rather than a real interval, so granted access never counts
+        // as revenue no matter which plan it points at.
         interval: "comp",
         currentPeriodEnd: null,
       },
-      update: { plan: "lifetime", status: "active", interval: "comp", currentPeriodEnd: null },
+      update: { plan, status: "active", interval: "comp", currentPeriodEnd: null },
     });
-    console.log(`  COMPED  ${email}`);
+    console.log(`  COMPED  ${email}  (${plan})`);
   }
 }
 
@@ -84,6 +86,10 @@ async function revoke(emails: string[]) {
 if (action === "list") {
   await list();
 } else if (action === "grant") {
+  // --plan <key> anywhere in the args picks the tier. Defaults to lifetime.
+  const planIdx = args.indexOf("--plan");
+  const plan = planIdx >= 0 ? args[planIdx + 1] : "lifetime";
+  if (planIdx >= 0) args.splice(planIdx, 2);
   let emails = args;
   if (args[0] === "--all-existing") {
     const all = await db.user.findMany({ select: { email: true } });
@@ -93,7 +99,7 @@ if (action === "list") {
     console.error("No emails given.");
     process.exit(1);
   }
-  await grant(emails);
+  await grant(emails, plan);
   console.log();
   await list();
 } else if (action === "revoke") {
@@ -105,6 +111,6 @@ if (action === "list") {
   console.log();
   await list();
 } else {
-  console.error("Usage: comp-access.mts list | grant <emails...> | grant --all-existing | revoke <emails...>");
+  console.error("Usage: comp-access.mts list | grant [--plan starter|pro|agency|lifetime] <emails...> | grant --all-existing | revoke <emails...>");
   process.exit(1);
 }

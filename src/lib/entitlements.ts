@@ -89,7 +89,10 @@ export async function getEntitlements(userId: string): Promise<Entitlements> {
     const notLapsed = !sub.currentPeriodEnd || sub.currentPeriodEnd.getTime() > now.getTime();
     if (notLapsed) {
       return fromPlan(sub.plan, sub.status === "past_due" ? "past_due" : "active", {
-        isComp: false,
+        // interval "comp" marks access we granted rather than sold. It applies
+        // to any plan, not just lifetime, so it has to be read here too or a
+        // comped Agency account would be counted as revenue.
+        isComp: sub.interval === "comp",
         trialEndsAt: user.trialEndsAt,
         freeTool,
         freeToolSwitchableAt: null,

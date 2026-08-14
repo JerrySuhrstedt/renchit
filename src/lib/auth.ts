@@ -62,8 +62,25 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     // The PrismaAdapter only writes tokens when it first links an account, so
     // re-authorizing to add the Search Console scope would otherwise leave the
     // original narrow-scope token in place. Persist the fresh one ourselves.
-    async signIn({ account }) {
+    async signIn({ user, account, profile }) {
       if (account?.provider !== "google" || !account.access_token) return true;
+
+      // The adapter only writes name and image when it first creates the user,
+      // so a photo added or changed in Google later never reaches us. Refresh
+      // both on every sign-in, and never overwrite a good value with a blank.
+      const picture = typeof profile?.picture === "string" ? profile.picture : null;
+      const displayName = typeof profile?.name === "string" ? profile.name : null;
+      if (user?.id && (picture || displayName)) {
+        await db.user
+          .update({
+            where: { id: user.id },
+            data: {
+              ...(picture ? { image: picture } : {}),
+              ...(displayName ? { name: displayName } : {}),
+            },
+          })
+          .catch(() => {});
+      }
 
       await db.account
         .updateMany({
