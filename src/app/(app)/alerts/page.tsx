@@ -13,9 +13,12 @@ export default async function AlertsPage() {
   const ent = await getEntitlements(user.id);
   const canMonitor = PLANS[ent.plan].monitoring !== "none";
 
-  const [monitors, recipients, events] = await Promise.all([
-    db.monitor.findMany({ where: { userId: user.id }, orderBy: { createdAt: "asc" } }),
-    db.alertRecipient.findMany({ where: { userId: user.id }, orderBy: { createdAt: "asc" } }),
+  const [monitors, events] = await Promise.all([
+    db.monitor.findMany({
+      where: { userId: user.id },
+      orderBy: { createdAt: "asc" },
+      include: { recipients: { orderBy: { createdAt: "asc" } } },
+    }),
     db.alertEvent.findMany({
       where: { monitor: { userId: user.id } },
       orderBy: { createdAt: "desc" },
@@ -43,12 +46,12 @@ export default async function AlertsPage() {
           lastCheckedAt: m.lastCheckedAt?.toISOString() ?? null,
           lastResponseMs: m.lastResponseMs,
           lastError: m.lastError,
+          recipients: m.recipients.map((r) => ({
+            id: r.id,
+            name: r.name,
+            email: r.email,
+          })),
         }))}
-        initialRecipients={recipients
-          // Alerts are email only, so a contact with no address has nothing to
-          // show. Older phone-only rows, if any, simply drop out of the list.
-          .filter((r): r is typeof r & { email: string } => Boolean(r.email))
-          .map((r) => ({ id: r.id, name: r.name, email: r.email }))}
         events={events.map((e) => ({
           id: e.id,
           kind: e.kind,

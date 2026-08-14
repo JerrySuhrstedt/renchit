@@ -81,29 +81,39 @@ model Monitor {
   lastResponseMs      Int?
   lastError           String?
 
-  createdAt DateTime @default(now())
-  events    AlertEvent[]
+  createdAt  DateTime         @default(now())
+  events     AlertEvent[]
+  recipients AlertRecipient[]
 
   @@unique([userId, url])
   @@index([enabled, lastCheckedAt])
 }
 
 /** Who hears about it. */
+/// Who hears about one specific site going down.
+///
+/// Scoped to a monitor rather than to the account: somebody who looks after
+/// the shop site should not be woken up about the client site next door.
+/// The same person watching three sites is three rows, which is the cost of
+/// keeping "who gets told about this site" answerable by looking at one place.
 model AlertRecipient {
-  id     String @id @default(cuid())
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
+  id      String  @id @default(cuid())
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String
+  monitor Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+  monitorId String
 
   name  String?
-  email String?
-  phone String?
+  email String
 
   emailEnabled Boolean @default(true)
-  smsEnabled   Boolean @default(false)
 
   createdAt DateTime @default(now())
 
+  // Adding the same address twice would just send two identical emails.
+  @@unique([monitorId, email])
   @@index([userId])
+  @@index([monitorId])
 }
 
 /** What happened and who was told, so an alert is never a mystery later. */

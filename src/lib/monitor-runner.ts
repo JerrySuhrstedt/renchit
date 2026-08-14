@@ -79,12 +79,10 @@ export async function runDueMonitors(now = new Date()): Promise<RunSummary> {
     orderBy: { lastCheckedAt: { sort: "asc", nulls: "first" } },
     take: MAX_PER_RUN,
     include: {
-      user: {
-        select: {
-          alertRecipients: {
-            select: { name: true, email: true, emailEnabled: true },
-          },
-        },
+      // This site's own people, not everyone on the account. Whoever looks
+      // after the shop site should not be woken up about a client's site.
+      recipients: {
+        select: { name: true, email: true, emailEnabled: true },
       },
     },
   });
@@ -137,7 +135,7 @@ export async function runDueMonitors(now = new Date()): Promise<RunSummary> {
         ? Math.max(1, Math.round((now.getTime() - monitor.lastChangedAt.getTime()) / 60_000))
         : null;
 
-    const recipients: Recipient[] = monitor.user.alertRecipients;
+    const recipients: Recipient[] = monitor.recipients;
     const message = buildAlert({
       kind: nextStatus === "down" ? "down" : "recovered",
       url: monitor.url,

@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { requireUserIdForApi } from "@/lib/session";
 import { getEntitlements } from "@/lib/entitlements";
 import { PLANS } from "@/lib/plans";
-import { normalizeAuditUrl } from "@/lib/validation";
+import { normalizeAuditUrl, EMAIL_PATTERN } from "@/lib/validation";
 
 export async function GET() {
   const userId = await requireUserIdForApi();
@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     );
   }
 
-  let body: { url?: string; intervalMinutes?: number };
+  let body: { url?: string; intervalMinutes?: number; email?: string; name?: string };
   try {
     body = await request.json();
   } catch {
@@ -52,6 +52,19 @@ export async function POST(request: Request) {
     url = normalizeAuditUrl(body.url);
   } catch {
     return NextResponse.json({ error: "That doesn't look like a valid URL" }, { status: 400 });
+  }
+
+  // A watched site with nobody to tell is a checkbox, not a safety net, so the
+  // first contact is part of adding the site rather than a step to remember.
+  const email = body.email?.trim();
+  if (!email) {
+    return NextResponse.json(
+      { error: "Add the email address that should hear if this site goes down." },
+      { status: 400 },
+    );
+  }
+  if (!EMAIL_PATTERN.test(email)) {
+    return NextResponse.json({ error: "That email address does not look right." }, { status: 400 });
   }
 
   // One monitor per site the plan allows, so monitoring cannot be used to get
@@ -75,10 +88,22 @@ export async function POST(request: Request) {
   // outbound requests for no benefit.
   const interval = Math.max(5, Math.min(Number(body.intervalMinutes ?? 5), 60));
 
-  const monitor = await db.monitor.upsert({
-    where: { userId_url: { userId, url } },
-    create: { userId, url, intervalMinutes: interval },
-    update: { enabled: true, intervalMinutes: interval },
+  // One transaction, so a site can never exist with nobody watching it. If the
+  // contact fails to save, the site does not get created either.
+  const monitor = await db.$transaction(async (tx) => {
+    const m = await tx.monitor.upsert({
+      where: { userId_url: { userId, url } },
+      create: { userId, url, intervalMinutes: interval },
+      update: { enabled: true, intervalMinutes: interval },
+    });
+
+    await tx.alertRecipient.upsert({
+      where: { monitorId_email: { monitorId: m.id, email } },
+      create: { userId, monitorId: m.id, email, name: body.name?.trim() || null },
+      update: {},
+    });
+
+    return m;
   });
 
   return NextResponse.json({ monitor }, { status: 201 });

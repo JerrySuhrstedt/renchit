@@ -7,3 +7,10 @@ export function normalizeAuditUrl(input: string): string {
   }
   return url.origin;
 }
+
+/**
+ * Deliberately loose. The only address that is genuinely proven valid is one
+ * that received mail, so this catches typos and pasted junk without turning
+ * away real addresses for looking unusual.
+ */
+export const EMAIL_PATTERN = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;

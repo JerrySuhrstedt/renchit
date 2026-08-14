@@ -15,6 +15,7 @@
 import { config } from "dotenv";
 config();
 import { randomBytes } from "node:crypto";
+import { readFile } from "node:fs/promises";
 
 const BASE = process.env.ADMIN_TEST_URL ?? "http://localhost:3000";
 const { db } = await import("../src/lib/db.ts");
@@ -146,31 +147,122 @@ try {
   t("with no monitors, the card invites you to add one", bare.html.includes("Watch my site"));
   t("no stray light is rendered", !bare.html.includes(">Up<"));
 
-  console.log("\nPhone field removal");
+  console.log("\nNo phone field left");
   const alerts = await get("/alerts");
-  // Proves the assertions below are looking at the real form, not a paywall.
-  t("the contact form is actually on screen", alerts.html.includes("Add contact"));
-  t("the alerts page has no phone input", !alerts.html.includes("+14805551234"));
+  // Proves the assertions below look at the real page, not a paywall.
+  t("the watch form is actually on screen", alerts.html.includes("Watch this site"));
+  t("no phone input", !alerts.html.includes("+14805551234"));
   t("no leftover texting notice", !/texting|Text messages/i.test(alerts.html));
 
-  async function post(body: unknown) {
-    const res = await fetch(`${BASE}/api/alert-recipients`, {
-      method: "POST",
+  async function api(path: string, method: string, body?: unknown) {
+    const res = await fetch(`${BASE}${path}`, {
+      method,
       headers: { "Content-Type": "application/json", cookie: `authjs.session-token=${token}` },
-      body: JSON.stringify(body),
+      ...(body === undefined ? {} : { body: JSON.stringify(body) }),
     });
-    return { status: res.status, json: await res.json() };
+    return { status: res.status, json: await res.json().catch(() => ({})) };
   }
 
-  const phoneOnly = await post({ name: "No Email", phone: "+14805551234" });
-  t("a phone-only contact is refused", phoneOnly.status === 400);
+  console.log("\nA site cannot be watched with nobody to tell");
+  const noEmail = await api("/api/monitors", "POST", { url: "shop-a.test" });
+  t("adding a site without an email is refused", noEmail.status === 400);
+  t(
+    "and no half-made site is left behind",
+    (await db.monitor.count({ where: { userId: user.id, url: { contains: "shop-a" } } })) === 0,
+  );
 
-  const withPhone = await post({ name: "Both", email: "both@renchit.test", phone: "+14805551234" });
-  t("an emailed contact is accepted", withPhone.status === 201);
-  const stored = await db.alertRecipient.findFirst({ where: { userId: user.id } });
-  t("a phone sent anyway is not stored", stored?.phone === null);
-  t("email delivery is switched on", stored?.emailEnabled === true);
-  t("sms delivery stays off", stored?.smsEnabled === false);
+  const badEmail = await api("/api/monitors", "POST", { url: "shop-a.test", email: "nope" });
+  t("a malformed email is refused", badEmail.status === 400);
+
+  const siteA = await api("/api/monitors", "POST", {
+    url: "shop-a.test",
+    email: "anna@renchit.test",
+  });
+  t("a site with an email is accepted", siteA.status === 201);
+  const monitorA = await db.monitor.findFirstOrThrow({
+    where: { userId: user.id, url: { contains: "shop-a" } },
+    include: { recipients: true },
+  });
+  t("the contact was created with the site", monitorA.recipients.length === 1);
+  t("and it is the address given", monitorA.recipients[0]?.email === "anna@renchit.test");
+
+  console.log("\nContacts stay with their own site");
+  await api("/api/monitors", "POST", { url: "shop-b.test", email: "ben@renchit.test" });
+  const monitorB = await db.monitor.findFirstOrThrow({
+    where: { userId: user.id, url: { contains: "shop-b" } },
+    include: { recipients: true },
+  });
+  t("the second site has its own contact", monitorB.recipients[0]?.email === "ben@renchit.test");
+  t(
+    "anna is not told about shop-b",
+    !monitorB.recipients.some((r) => r.email === "anna@renchit.test"),
+  );
+  t(
+    "ben is not told about shop-a",
+    !(await db.monitor.findFirstOrThrow({ where: { id: monitorA.id }, include: { recipients: true } }))
+      .recipients.some((r) => r.email === "ben@renchit.test"),
+  );
+
+  // The bug this whole change exists to prevent: the runner reading everyone
+  // on the account instead of this site's own people.
+  const runnerSrc = await readFile(new URL("../src/lib/monitor-runner.ts", import.meta.url), "utf8");
+  t("the runner reads the monitor's own recipients", runnerSrc.includes("monitor.recipients"));
+  t(
+    "the runner no longer reads the whole account",
+    !runnerSrc.includes("user.alertRecipients") && !runnerSrc.includes("alertRecipients:"),
+  );
+
+  console.log("\nA site is never left with nobody");
+  const onlyOne = await api(
+    `/api/alert-recipients?id=${monitorA.recipients[0]!.id}`,
+    "DELETE",
+  );
+  t("removing the only contact is refused", onlyOne.status === 400);
+  t("the refusal explains why", String(onlyOne.json.error).includes("only person"));
+  t(
+    "and the contact really is still there",
+    (await db.alertRecipient.count({ where: { monitorId: monitorA.id } })) === 1,
+  );
+
+  const second = await api("/api/alert-recipients", "POST", {
+    monitorId: monitorA.id,
+    email: "cara@renchit.test",
+  });
+  t("a second contact can be added to a site", second.status === 201);
+
+  const dupe = await api("/api/alert-recipients", "POST", {
+    monitorId: monitorA.id,
+    email: "cara@renchit.test",
+  });
+  t("the same address twice is refused", dupe.status === 400);
+
+  const nowRemovable = await api(
+    `/api/alert-recipients?id=${monitorA.recipients[0]!.id}`,
+    "DELETE",
+  );
+  t("with a spare, the first can be removed", nowRemovable.status === 200);
+  t(
+    "leaving exactly one",
+    (await db.alertRecipient.count({ where: { monitorId: monitorA.id } })) === 1,
+  );
+
+  console.log("\nOther people's sites");
+  const stranger = await db.user.create({
+    data: { email: `stranger-${stamp}@renchit.test` },
+  });
+  const strangerMonitor = await db.monitor.create({
+    data: { userId: stranger.id, url: "https://not-yours.test/" },
+  });
+  const intrusion = await api("/api/alert-recipients", "POST", {
+    monitorId: strangerMonitor.id,
+    email: "attacker@renchit.test",
+  });
+  t("adding a contact to someone else's site is refused", intrusion.status === 404);
+  t(
+    "and nothing was written",
+    (await db.alertRecipient.count({ where: { monitorId: strangerMonitor.id } })) === 0,
+  );
+  await db.user.delete({ where: { id: stranger.id } });
 } finally {
   await db.subscription.deleteMany({ where: { userId: user.id } });
   await db.keywordSearch.deleteMany({ where: { userId: user.id } });
