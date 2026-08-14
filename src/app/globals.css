@@ -21,6 +21,9 @@
   --color-warning-tint: var(--warning-tint);
   --color-info: var(--info);
   --color-info-tint: var(--info-tint);
+  --color-psi-good: var(--psi-good);
+  --color-psi-average: var(--psi-average);
+  --color-psi-poor: var(--psi-poor);
   --color-success: var(--success);
   --color-success-tint: var(--success-tint);
 
@@ -106,6 +109,16 @@
   --warning-tint: #fdf1e0;
   --info: #2563eb;
   --info-tint: #eaf1fe;
+  /* Google's PageSpeed Insights palette, used only for PSI scores. Kept
+     separate from our own status colours so the two never drift: these must
+     match what people see on pagespeed.web.dev. */
+  --psi-good: #0cce6b;
+  --psi-good-tint: #e6faf0;
+  --psi-average: #ffa400;
+  --psi-average-tint: #fff4e0;
+  --psi-poor: #ff4e42;
+  --psi-poor-tint: #ffeceb;
+
   --success: #15803d;
   --success-tint: #e9f7ee;
 
@@ -157,6 +170,13 @@
   --brand: #ff6b4f;
   --brand-strong: #ff8467;
   --brand-foreground: #1a0f0a;
+  --psi-good: #0cce6b;
+  --psi-good-tint: #0d2a1c;
+  --psi-average: #ffa400;
+  --psi-average-tint: #2e2109;
+  --psi-poor: #ff4e42;
+  --psi-poor-tint: #2e1412;
+
   --brand-tint: #34201a;
 
   --primary: var(--brand);

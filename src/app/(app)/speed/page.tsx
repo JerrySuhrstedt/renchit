@@ -20,6 +20,7 @@ async function getChecks(userId: string): Promise<PageSpeedHistoryItem[]> {
     url: c.url,
     status: c.status,
     mobileScore: c.mobileScore,
+    desktopScore: c.desktopScore,
     createdAt: c.createdAt.toISOString(),
   }));
 }

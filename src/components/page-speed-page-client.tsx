@@ -1,16 +1,39 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, TriangleAlert } from "lucide-react";
 import { PageSpeedProgressView } from "@/components/page-speed-progress-view";
 import { PageSpeedResultsView } from "@/components/page-speed-results-view";
 import type { PageSpeedCheckDTO } from "@/lib/page-speed-types";
+import { CELEBRATE_AT, celebrate } from "@/lib/celebrate";
 
 const POLL_INTERVAL_MS = 2000;
 
 export function PageSpeedPageClient({ initialCheck }: { initialCheck: PageSpeedCheckDTO }) {
   const [check, setCheck] = useState<PageSpeedCheckDTO>(initialCheck);
+
+  // Only celebrate a test the user actually watched finish. Someone opening an
+  // old result from history should not get confetti every visit, so this fires
+  // on the running-to-completed transition rather than on any completed check.
+  const sawRunning = useRef(initialCheck.status === "running");
+  const celebrated = useRef(false);
+
+  useEffect(() => {
+    if (check.status === "running") {
+      sawRunning.current = true;
+      return;
+    }
+    if (check.status !== "completed" || !sawRunning.current || celebrated.current) return;
+
+    // Either platform counts. Mobile is the harder number, but a 90 on desktop
+    // is still worth the moment.
+    const best = Math.max(check.mobile?.score ?? 0, check.desktop?.score ?? 0);
+    if (best >= CELEBRATE_AT) {
+      celebrated.current = true;
+      void celebrate();
+    }
+  }, [check]);
 
   useEffect(() => {
     if (check.status !== "running") return;

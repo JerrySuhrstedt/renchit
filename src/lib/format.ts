@@ -35,9 +35,12 @@ export function pageSpeedBand(score: number): {
   color: string;
   tint: string;
 } {
-  if (score >= 90) return { label: "Good", color: "var(--success)", tint: "var(--success-tint)" };
-  if (score >= 50) return { label: "Needs improvement", color: "var(--warning)", tint: "var(--warning-tint)" };
-  return { label: "Poor", color: "var(--critical)", tint: "var(--critical-tint)" };
+  // Google's own palette rather than ours, on purpose. This is the scale
+  // people already know from pagespeed.web.dev, and dressing their numbers in
+  // our brand colours makes an orange "needs work" read like a brand accent.
+  if (score >= 90) return { label: "Good", color: "var(--psi-good)", tint: "var(--psi-good-tint)" };
+  if (score >= 50) return { label: "Needs improvement", color: "var(--psi-average)", tint: "var(--psi-average-tint)" };
+  return { label: "Poor", color: "var(--psi-poor)", tint: "var(--psi-poor-tint)" };
 }
 
 export function formatRelativeTime(iso: string | Date): string {
